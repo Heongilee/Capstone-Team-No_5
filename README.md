@@ -22,3 +22,4 @@
    
 * 기능 스펙 :   
 * 개발 스펙(기술 스택) :   
+![개발_일정](https://github.com/Heongilee/Capstone-Team-No_5/blob/master/Tech_stack.jpg?raw=true)
