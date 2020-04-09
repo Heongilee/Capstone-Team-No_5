@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:recycle/MainPage.dart';
 
 class RootPage extends StatefulWidget {
@@ -6,11 +7,12 @@ class RootPage extends StatefulWidget {
   _RootPageState createState() => _RootPageState();
 }
 
-class _RootPageState extends State<RootPage> {
+class _RootPageState extends State<RootPage>{
+
   @override
   void initState() { 
     super.initState();
-    
+
     _delaying(context);
   }
 
@@ -52,8 +54,16 @@ class _RootPageState extends State<RootPage> {
   Future<void> _delaying(BuildContext context) async{
     await Future.delayed(Duration(milliseconds: 2500));
 
-    //push 말고 pushReplacement를 쓰면 뒤로 갈 수 없다.
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage()));
+    // push 말고 pushReplacement를 쓰면 뒤로 갈 수 없다.
+    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage()));
+    Navigator.pushReplacement(
+      context,
+      PageTransition(
+        type: PageTransitionType.fade,
+        child: MainPage(), 
+        duration: Duration(milliseconds: 900),
+      ),
+    );
 
     return;
   }
