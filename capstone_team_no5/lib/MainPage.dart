@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recycle/TabPage.dart';
 
 class MainPage extends StatelessWidget {
   TextEditingController _id = TextEditingController();
@@ -8,11 +9,11 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       //appBar: AppBar(),
-      body: _buildBody(),
+      body: _buildBody(context),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     return Container(
       color: Colors.white,
       child: Column(
@@ -101,7 +102,11 @@ class MainPage extends StatelessWidget {
           RaisedButton(
             child: Text('Submit'),
             color: Colors.grey[300],
-            onPressed: (){},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => TabPage()));
+              _id.clear();
+              _pw.clear();
+            },
           ),
         ],
       ),
