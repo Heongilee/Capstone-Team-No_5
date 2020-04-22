@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
+  final DocumentSnapshot account_session;
   final _FAB_size = 220.0;
   final _FAB_Imageicon_size = 140.0;
   int cnt = 0;
+
+  HomePage(this.account_session);
 
   @override
   Widget build(BuildContext context) {

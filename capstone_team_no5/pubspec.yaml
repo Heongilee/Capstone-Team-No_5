@@ -14,12 +14,19 @@ description: 2020 CapstoneDesign TeamProject Team No.5
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   page_transition: ^1.1.5
+
+  # cloud firestore
+  cloud_firestore: ^0.13.5
+
+  # firebase storage :: 이미지 
+  firebase_storage: ^3.1.5
+  
 
   # Image.network()는 페이지 전환할 때 마다 이미지를 다시 불러와 비효율적이다. 캐시로 저장하고 있으면 좋다.
   cached_network_image: ^2.1.0+1

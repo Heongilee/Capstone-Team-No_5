@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:recycle/HomePage.dart';
 import 'package:recycle/MyInfo.dart';
 import 'package:recycle/ReservationList.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TabPage extends StatefulWidget {
+  final DocumentSnapshot account_session;
+
+  TabPage(this.account_session);
+
   @override
   _TabPageState createState() => _TabPageState();
 }
@@ -17,9 +22,9 @@ class _TabPageState extends State<TabPage> {
     super.initState();
     
     _pages = [
-      HomePage(),
-      ReservationList(),
-      MyInfo(),
+      HomePage(widget.account_session),
+      ReservationList(widget.account_session),
+      MyInfo(widget.account_session),
     ];
   }
 

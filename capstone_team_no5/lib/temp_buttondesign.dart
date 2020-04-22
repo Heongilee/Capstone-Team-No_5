@@ -1,41 +1,20 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//TODO : 0. dart:async를 import 해 준다.
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-class MyInfo extends StatelessWidget {
-  final DocumentSnapshot account_session;
-  final _db = Firestore.instance;
+class ButtonDesign extends StatefulWidget {
+  @override
+  _ButtonDesignState createState() => _ButtonDesignState();
+}
 
-  MyInfo(this.account_session);
+class _ButtonDesignState extends State<ButtonDesign> {
+  // TODO : 1. StreamController객체를 만든다. 
+  StreamController _counterController = StreamController<String>() ..add("Not Applicable...");
+  var _status = "Not Applicable...";
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(context),
-      body: _buildBody(),
-    );
-  }
-
-  Widget _buildAppBar(BuildContext context) {
-    return AppBar(
-        centerTitle: true,                // 제목 가운데로 오게 하기.
-        automaticallyImplyLeading: false, // 자동으로 뒤로가기 버튼 만드는거 false...
-        backgroundColor: Colors.white,
-        title: Text('내정보', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontStyle: FontStyle.italic),),
-        actions: <Widget>[
-          IconButton(
-            color: Colors.black,
-            icon: Icon(Icons.exit_to_app), 
-            // 로그아웃 버튼
-            onPressed: (){
-              _updateStatus(0);       // 로그인 -> 로그아웃으로 상태 전환 후,
-              Navigator.pop(context); // 로그인 화면으로 이동!
-            }
-          ),
-        ],
-      );
-  }
-
-  Widget _buildBody() {
     return SafeArea(
       child: Scaffold(
         //appBar: AppBar(),
@@ -43,6 +22,15 @@ class MyInfo extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              // TODO : 3. 보여질 부분을 StreamBuilder로 감싼다.
+              StreamBuilder<String>(
+                stream: _counterController.stream,
+                builder: (context, snapshot) {
+                  return Text('${snapshot.data}', 
+                  style: TextStyle(fontSize: 24.0, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold));
+                }
+              ),
+
               Padding(padding: EdgeInsets.all(24.0),),
               SizedBox(
                 height: 35.0,
@@ -52,7 +40,10 @@ class MyInfo extends StatelessWidget {
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.assignment),
                   onPressed: (){
+                    _status = "공지사항()";
 
+                    // TODO : 2. StreamController.add([dynamic]) 를 호출해준다.
+                    _counterController.add(_status);
                   }, 
                   label: Container(width: 200.0, child: Text('공 지 사 항', textAlign: TextAlign.center,)),
                 ),
@@ -66,7 +57,9 @@ class MyInfo extends StatelessWidget {
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.question_answer),
                   onPressed: (){
+                    _status = "1:1문의()";
 
+                    _counterController.add(_status);
                   }, 
                   label: Container(width: 200.0, child: Text('1 : 1  문 의', textAlign: TextAlign.center,)),
                 ),
@@ -80,7 +73,9 @@ class MyInfo extends StatelessWidget {
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.description),
                   onPressed: (){
+                    _status = "이용안내()";
 
+                    _counterController.add(_status);
                   }, 
                   label: Container(width: 200.0, child: Text('이 용 안 내', textAlign: TextAlign.center,)),
                 ),
@@ -94,7 +89,9 @@ class MyInfo extends StatelessWidget {
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.help_outline),
                   onPressed: (){
-
+                    _status = "도움말()";
+                    
+                    _counterController.add(_status);
                   }, 
                   label: Container(width: 200.0, child: Text('도 움 말', textAlign: TextAlign.center,)),
                 ),
@@ -105,20 +102,5 @@ class MyInfo extends StatelessWidget {
         //bottomNavigationBar: BottomNavigationBar(items: null),
       ),
     );
-  }
-
-void _updateStatus(int v) async{
-    // status 0이 들어오면 로그인 -> 로그아웃
-    // status 1이 들어오면 로그아웃 -> 로그인
-    if(v == 0){
-      await _db.collection('user').document(account_session.documentID).updateData({'status' : 0});
-      print('status를 정상적으로 0으로 변경했습니다.');
-    }
-    else{
-      await _db.collection('user').document(account_session.documentID).updateData({'status' : 1});
-      print('status를 정상적으로 1으로 변경했습니다.');
-    }
-
-    return;
   }
 }

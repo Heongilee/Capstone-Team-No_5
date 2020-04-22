@@ -1,4 +1,4 @@
-package com.recycle
+package com.capstone.recycle
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
