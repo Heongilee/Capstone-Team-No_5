@@ -110,7 +110,7 @@ class MainPage extends StatelessWidget {
               doc = _db.collection('user').where("id", isEqualTo: _id.text).getDocuments().then((QuerySnapshot qs){
                 _currentDoc = (qs.documents.isEmpty)? null : qs.documents.single;
 
-                // TODO : _id랑 _pw가 빈 입력이 들어올 때 에러메시지 출력. (2020-04-22)
+                // TODO : _id랑 _pw가 빈 입력이 들어올 때 에러메시지 출력하도록 하기. (2020-04-22)
                 if(_currentDoc != null){
                   // print("나의 현재 문서는 : "+ _currentDoc?.documentID);
                   qs.documents.forEach((f){
@@ -198,7 +198,7 @@ class MainPage extends StatelessWidget {
       await _db.collection('user').document(_currentDoc.documentID).updateData({'status' : 1});
       print('status를 정상적으로 1으로 변경했습니다.');
     }
-
+    
     return;
   }
 } 

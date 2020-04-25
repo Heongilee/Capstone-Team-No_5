@@ -4,12 +4,25 @@ import 'package:flutter/material.dart';
 class ReservationList extends StatelessWidget {
   // 로그인 세션
   final DocumentSnapshot account_session;
+  ReservationList(this.account_session);
   // 예약 목록의 리스트 개수.
   final _itemsize = 50;
   // 대형 폐기물 상태 리스트.
   final _statusList = ["Processing...", "Receipt completed", "Done"];
 
-  ReservationList(this.account_session);
+  // dataColumn_List
+  List<DataColumn> dataColumn = [];
+  bool sorted_dataColumn = false;
+  // dataRow_List
+  List<DataRow> dataRow = [];   // TODO : 이놈 정렬 해야한다.
+  bool sorted_dataRow = false;
+
+  void onSort(int col_Idx, bool asc){
+    if(col_Idx == 0){
+      if(asc){
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,21 +60,18 @@ class ReservationList extends StatelessWidget {
       sortAscending: true,
       horizontalMargin: 12.0,
       columnSpacing: 28.0,
-      columns: _getDataColumns(), 
+      columns: _getDataColumns(),
       rows: _getDataRows(_itemsize),
     );
   }
   
   List<DataColumn> _getDataColumns(){
-    List<DataColumn> dataColumn = [];
-
     dataColumn.add(DataColumn(numeric: true, label: Text('Date', style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic, fontSize: 16.0),textAlign: TextAlign.center,)));
     dataColumn.add(DataColumn(label: Text('Status', style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic, fontSize: 16.0),textAlign: TextAlign.center,)));
 
     return dataColumn;
   }
   List<DataRow> _getDataRows(int row_number){
-    List<DataRow> dataRow = [];
     var _year = 2000;
 
     for(int i = 0; i < row_number;i++){

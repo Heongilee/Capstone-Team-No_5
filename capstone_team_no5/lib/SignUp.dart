@@ -1,14 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-class SignUp extends StatelessWidget {
-
+class text_cont_class{
   final _id = TextEditingController();
   final _pw = TextEditingController();
   final _name = TextEditingController();
   final _address = TextEditingController();
   final _phoneNum = TextEditingController();
-  final _Email = TextEditingController();
+  final _email = TextEditingController();
   final _comfilm = TextEditingController();
+}
+
+class SignUp extends StatelessWidget with text_cont_class{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,13 +37,7 @@ class SignUp extends StatelessWidget {
         child: Center(
           child: Column(
             children: <Widget>[
-              Padding(padding: EdgeInsets.all(8.0)),
-              Text('회원가입',
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              Padding(padding: EdgeInsets.all(24.0)),
               Flexible( // ID
                 child: Container(
                   alignment: Alignment(0.0, 0.0),
@@ -155,7 +153,6 @@ class SignUp extends StatelessWidget {
                   ),
                 ),
               ),
-              
               Flexible( // address
                 child: Container(
                   alignment: Alignment(0.0, 0.0),
@@ -194,23 +191,24 @@ class SignUp extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.only(
-                right: 30.0,
-                )
-              ),
-              RaisedButton(
-                child: Container(
-                  // width: 100,
-                  // height: 30,
-                  // alignment: Alignment(0.0, 0.0),
-                  child:Text(
-                    '직접입력',
-                    style: TextStyle(color: Colors.black),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Container(
+                      // width: 100,
+                      // height: 30,
+                      // alignment: Alignment(0.0, 0.0),
+                      child:Text(
+                        '직접입력',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    onPressed: null,
                   ),
-                ),
-                onPressed: null,
+                  Padding(padding: EdgeInsets.only(left: 35.0)),
+                ],
               ),
-
               Flexible( // phone
                 child: Container(
                   alignment: Alignment(0.0, 0.0),
@@ -265,7 +263,7 @@ class SignUp extends StatelessWidget {
                       Container(
                         width: 60,
                         child: Text(
-                          "주소",
+                          "이메일",
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                         ),
                       ),
@@ -273,7 +271,7 @@ class SignUp extends StatelessWidget {
                         child: Container(
                           margin: EdgeInsets.only(right: 20),
                           child: TextField(
-                            controller: _Email,
+                            controller: _email,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                               border: InputBorder.none,
@@ -287,6 +285,7 @@ class SignUp extends StatelessWidget {
                   ),
                 ),
               ),
+              // TODO : 이메일 인증 버튼!!
             ],
           ),
         ),
