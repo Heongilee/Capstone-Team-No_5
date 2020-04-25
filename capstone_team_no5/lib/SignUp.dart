@@ -1,8 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
-class text_cont_class{
+class signup_text_editing_controller{
   final _id = TextEditingController();
   final _pw = TextEditingController();
   final _name = TextEditingController();
@@ -12,12 +10,17 @@ class text_cont_class{
   final _comfilm = TextEditingController();
 }
 
-class SignUp extends StatelessWidget with text_cont_class{
+class SignUp extends StatelessWidget with signup_text_editing_controller{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    body: signup(),
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black,), 
+          onPressed: (){
+            Navigator.of(context).pop();
+          }
+        ),
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Text('SIGN UP',
@@ -28,6 +31,7 @@ class SignUp extends StatelessWidget with text_cont_class{
           ),
         ),
       ),
+      body: signup(),
     );
   }
 

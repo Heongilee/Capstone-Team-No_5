@@ -18,9 +18,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // home: TabPage(),
-      // home: RootPage(),
+      home: RootPage(),
       // home: ButtonDesign(),
-      home: SignUp(),
+      // home: SignUp(),
     );
   }
 }
