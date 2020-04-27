@@ -3,36 +3,19 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:recycle/SignUp.dart';
 import 'package:recycle/TabPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart' show rootBundle; // json타입 configuration파일을 불러오기 위함.(아이디 기억여부 및 자동로그인 여부)
 
 class mainpage_text_editing_controller{
-  final _filepath = 'assets/json/RootPage-config.json';
   final _id = TextEditingController();
   final _pw = TextEditingController();
-  StreamController _checkboxController_remember_my_id= StreamController<bool>()..add(false);
-  StreamController _checkboxController_auto_login = StreamController<bool>()..add(false);
+  StreamController _checkboxController_remember_my_id= StreamController<bool>();
+  StreamController _checkboxController_auto_login = StreamController<bool>();
   bool remember_my_id = false;
   bool auto_login = false;
-
-  Map<String, dynamic> _mainpageConfig;
-  Future<dynamic> loadAsset() async{
-    _mainpageConfig = await rootBundle.loadStructuredData(_filepath, (String s) async{
-      return json.decode(s);
-    });
-  }
-  Future<File> get _localFile async{
-    return File('$_filepath');
-  }
-  Future<void> saveAsset() async{
-    final file = await _localFile;
-    // TODO : 이 부분 안됨...
-    // 1. Firestore status를 가져와서 자동로그인 여부랑 연동하기
-    // 2. ...
-    return file.writeAsString(json.encode((_mainpageConfig)));
-  }
+  
   void setRecent_my_id(){}
   void switch_checkbox(dynamic text){}
 }
@@ -41,10 +24,11 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller{
   final _db = Firestore.instance;
   DocumentSnapshot _currentDoc;
 
-  @override
-  void setRecent_my_id() {
-    super.setRecent_my_id();
-    
+  // 기본 생성자 오버로딩
+  MainPage(){
+    _checkboxController_remember_my_id.add(false);
+    _checkboxController_auto_login.add(false);
+
   }
 
   @override
@@ -74,25 +58,6 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller{
   }
 
   Widget _buildBody(BuildContext context) {
-    loadAsset().then((onValue){
-      // Load json configuration status
-       _checkboxController_remember_my_id.add(_mainpageConfig['remember_my_id']);
-       _checkboxController_auto_login.add(_mainpageConfig['auto_login']);
-       if(_mainpageConfig['remember_my_id']){
-        _id.text = _mainpageConfig['recent_my_id'];
-       }
-
-      // TEST output
-      print('1');
-      print('${_mainpageConfig['remember_my_id']}');  // bool 반환!!
-      print('2');
-      print('${_mainpageConfig['auto_login']}');  // bool 반환!!
-      print('3');
-      print('${_mainpageConfig['recent_my_id']}');  // String 반환!!
-      print('4');
-      print(_mainpageConfig.toString());
-    });
-
     return SafeArea(
       child: Container(
         color: Colors.white,
@@ -278,20 +243,7 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller{
                         else{ //if(f['status'] == 1){...}
                           if(f['pw'] == _pw.text){  // 패스워드 맞음
                             _updateStatus(1); // 로그인 상태로 전환.
-                            // ID기억이 체크되어 있으면 입력받은 ID를 config에 저장.
-                            if(_mainpageConfig['remember_my_id']){
-                              _mainpageConfig['recent_my_id'] = _id.text;
-                              _mainpageConfig['remember_my_id'] = false;
-                              _mainpageConfig['auto_login'] = false;
-                              print('5');
-                              print(_mainpageConfig['recent_my_id']);
-                              print('6');
-                              print(_mainpageConfig['remember_my_id']);
-                              print('7');
-                              print(_mainpageConfig['auto_login']);
 
-                              saveAsset();
-                            }
                             // 페이지 전환으로 인한 텍스트 필드값 초기화
                             if(!remember_my_id){
                               _id.clear();

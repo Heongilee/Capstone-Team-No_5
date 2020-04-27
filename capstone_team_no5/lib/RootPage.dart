@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:recycle/MainPage.dart';
+import 'MyApp_config.dart';
+import 'TabPage.dart';
 
 class RootPage extends StatefulWidget {
   @override
@@ -8,10 +11,11 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage>{
-
+  
   @override
   void initState() { 
     super.initState();
+    MyApp_config();
 
     _delaying(context);
   }
@@ -53,17 +57,35 @@ class _RootPageState extends State<RootPage>{
 
   Future<void> _delaying(BuildContext context) async{
     await Future.delayed(Duration(milliseconds: 2500));
+    MyApp_config obj = new MyApp_config();
 
-    // push 말고 pushReplacement를 쓰면 뒤로 갈 수 없다.
-    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage()));
-    Navigator.pushReplacement(
-      context,
-      PageTransition(
-        type: PageTransitionType.fade,
-        child: MainPage(), 
-        duration: Duration(milliseconds: 900),
-      ),
-    );
+    obj.readMyconfig().then((MyApp_config onValue){
+      print(onValue.toString());  // { , false, false }
+
+      if(onValue.chkboxAUTO){ // 자동로그인이 설정되어 있는 경우...
+        // TODO : receiveID값 Firestore의 user컬렉션에 있는 ID와 연결 후 로그인시킨다.
+        // Navigator.pushReplacement로 하면 뒤로 다시 돌아올 수 없다.
+        Navigator.pushReplacement(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: TabPage(null),
+            duration: Duration(milliseconds: 900),
+          ),
+        );
+      }
+      else{
+        // Navigator.pushReplacement로 하면 뒤로 다시 돌아올 수 없다.
+        Navigator.pushReplacement(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: MainPage(), 
+            duration: Duration(milliseconds: 900),
+          ),
+        );
+      }
+    });
 
     return;
   }
