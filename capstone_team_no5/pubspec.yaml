@@ -27,9 +27,12 @@ dependencies:
   # firebase storage :: 이미지 
   firebase_storage: ^3.1.5
   
-
   # Image.network()는 페이지 전환할 때 마다 이미지를 다시 불러와 비효율적이다. 캐시로 저장하고 있으면 좋다.
   cached_network_image: ^2.1.0+1
+
+  # asset 파일 읽고 쓰는 라이브러리.
+  path_provider: ^1.6.7
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -48,6 +51,7 @@ flutter:
   assets:
     - assets/images/Logo.png
     - assets/icon/Trash_bin.png
+    - assets/json/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
