@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:recycle/MainPage.dart';
@@ -11,7 +12,8 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage>{
-  
+  final _db = Firestore.instance;
+  DocumentSnapshot _currentDoc;
   @override
   void initState() { 
     super.initState();
@@ -57,34 +59,51 @@ class _RootPageState extends State<RootPage>{
 
   Future<void> _delaying(BuildContext context) async{
     await Future.delayed(Duration(milliseconds: 2500));
-    MyApp_config obj = new MyApp_config();
 
-    obj.readMyconfig().then((MyApp_config onValue){
-      print(onValue.toString());  // { , false, false }
+    MyApp_config().readMyconfig().then((MyApp_config onValue) async{
+      // TODO : 1. 자동 로그인 될 때도 안 될때도 있음... 
+      // TODO : 2. 자동 로그인이면 상관 없는데 아닌경우, 앱을 그냥 끄면 로그인 상태에서 로그아웃됨...
+      // (2020-04-28 :: 17:19)
 
-      if(onValue.chkboxAUTO){ // 자동로그인이 설정되어 있는 경우...
-        // TODO : receiveID값 Firestore의 user컬렉션에 있는 ID와 연결 후 로그인시킨다.
+      // TEST OUTPUT
+      print("TEST OUTPUT 1 : " + onValue.toString());  // { admin, false, false }
+
+      await accessMyFirestore(onValue.receiveID);
+
+      if(_currentDoc != null && onValue.chkboxAUTO == true){
         // Navigator.pushReplacement로 하면 뒤로 다시 돌아올 수 없다.
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           PageTransition(
             type: PageTransitionType.fade,
-            child: TabPage(null),
+            child: TabPage(_currentDoc),
             duration: Duration(milliseconds: 900),
           ),
-        );
+        ).then((onValue){
+          // 자동 로그인을 했을 때 로그아웃하면 RootPage로 돌아와버리기 때문에 바로 로그인 페이지로 이동시킨다.
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+        });
       }
       else{
         // Navigator.pushReplacement로 하면 뒤로 다시 돌아올 수 없다.
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           PageTransition(
             type: PageTransitionType.fade,
-            child: MainPage(), 
+            child: MainPage(),
             duration: Duration(milliseconds: 900),
           ),
         );
       }
+    });
+    return;
+  }
+
+  // * 계정 정보가 있으면 qs.documents.single을 반환, 계정 정보를 찾지 못하면 null반환.
+  Future<void> accessMyFirestore(String chkID) async{
+    Future<dynamic> doc = _db.collection('user').where('id', isEqualTo: chkID).getDocuments();
+    await doc.then((qs){
+      _currentDoc = (qs.documents.isEmpty)? null : qs.documents.single;
     });
 
     return;

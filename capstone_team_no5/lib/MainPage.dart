@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
+import 'package:recycle/MyApp_config.dart';
 
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:recycle/SignUp.dart';
 import 'package:recycle/TabPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,13 +9,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class mainpage_text_editing_controller{
   final _id = TextEditingController();
   final _pw = TextEditingController();
-  StreamController _checkboxController_remember_my_id= StreamController<bool>();
-  StreamController _checkboxController_auto_login = StreamController<bool>();
+  StreamController _checkboxController_remember_my_id = StreamController<bool>()..add(false);
+  StreamController _checkboxController_auto_login = StreamController<bool>()..add(false);
   bool remember_my_id = false;
   bool auto_login = false;
   
   void setRecent_my_id(){}
   void switch_checkbox(dynamic text){}
+  void dispose(){
+    _checkboxController_remember_my_id.close();
+    _checkboxController_auto_login.close();
+  }
 }
 
 class MainPage extends StatelessWidget with mainpage_text_editing_controller{
@@ -26,9 +28,12 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller{
 
   // 기본 생성자 오버로딩
   MainPage(){
-    _checkboxController_remember_my_id.add(false);
-    _checkboxController_auto_login.add(false);
-
+    // 싱글톤 객체 호출
+    MyApp_config().readMyconfig().then((obj){
+      _checkboxController_remember_my_id.add(obj.chkboxID);
+      _checkboxController_auto_login.add(obj.chkboxAUTO);
+      _id.text = obj.receiveID;
+    });
   }
 
   @override
@@ -162,8 +167,7 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller{
                       height: 30.0,
                       child: Checkbox(
                         value: snapshot.data, 
-                        onChanged: (bool value1){
-                          // TODO : 아이디 기억
+                        onChanged: (bool value1){ // TODO : 아이디 기억
                           switch_checkbox('remember_my_id');
                         }
                       )
@@ -179,8 +183,7 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller{
                       height: 30.0,
                       child: Checkbox(
                         value: snapshot.data, 
-                        onChanged: (bool value2){
-                          // TODO : 자동 로그인
+                        onChanged: (bool value2){ // TODO : 자동 로그인
                           switch_checkbox('auto_login');
                         }
                       )
@@ -243,6 +246,12 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller{
                         else{ //if(f['status'] == 1){...}
                           if(f['pw'] == _pw.text){  // 패스워드 맞음
                             _updateStatus(1); // 로그인 상태로 전환.
+
+                            // dispose();  // Stream close
+                            MyApp_config().chkboxID = remember_my_id;
+                            MyApp_config().chkboxAUTO = auto_login;
+                            MyApp_config().receiveID = _id.text;
+                            MyApp_config().writeMyconfig(MyApp_config().toJson());
 
                             // 페이지 전환으로 인한 텍스트 필드값 초기화
                             if(!remember_my_id){
@@ -335,4 +344,4 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller{
     
     return;
   }
-} 
+}
