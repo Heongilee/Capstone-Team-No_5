@@ -14,6 +14,8 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage>{
   final _db = Firestore.instance;
   DocumentSnapshot _currentDoc;
+  bool _checkV1 = false;
+
   @override
   void initState() { 
     super.initState();
@@ -85,6 +87,9 @@ class _RootPageState extends State<RootPage>{
         });
       }
       else{
+        if(onValue.chkboxAUTO == false && _checkV1 == true){
+          _updateStatus(0); // 로그아웃 상태로 전환
+        }
         // Navigator.pushReplacement로 하면 뒤로 다시 돌아올 수 없다.
         Navigator.push(
           context,
@@ -104,8 +109,27 @@ class _RootPageState extends State<RootPage>{
     Future<dynamic> doc = _db.collection('user').where('id', isEqualTo: chkID).getDocuments();
     await doc.then((qs){
       _currentDoc = (qs.documents.isEmpty)? null : qs.documents.single;
+
+      qs.documents.forEach((f){
+        if(f['status'] == 1) _checkV1 = true;
+      });
     });
 
+    return;
+  }
+
+  Future<void> _updateStatus(int v) async{
+    // status 0이 들어오면 로그인 -> 로그아웃
+    // status 1이 들어오면 로그아웃 -> 로그인
+    if(v == 0){
+      await _db.collection('user').document(_currentDoc.documentID).updateData({'status' : 0});
+      print('status를 정상적으로 0으로 변경했습니다.');
+    }
+    else{
+      await _db.collection('user').document(_currentDoc.documentID).updateData({'status' : 1});
+      print('status를 정상적으로 1으로 변경했습니다.');
+    }
+    
     return;
   }
 } 

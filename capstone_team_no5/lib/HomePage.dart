@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:recycle/TakingPicture.dart';
 
 class HomePage extends StatelessWidget {
   final DocumentSnapshot account_session;
@@ -24,11 +25,11 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      body: _buildBody(),
+      body: _buildBody(context),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     return SafeArea(
       child: Center(
         child: Column(
@@ -44,8 +45,7 @@ class HomePage extends StatelessWidget {
             child: MaterialButton(
               // 대형 폐기물 수거 신청 처리 작동... 
               onPressed: () {
-                  cnt += 1;
-                  print("$cnt 번 눌렸습니다.");
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> TakingPicture()));
               },
               shape: CircleBorder(),
               child: Stack(
