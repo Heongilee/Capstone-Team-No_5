@@ -58,7 +58,7 @@ class _RootPageState extends State<RootPage>{
   }
 
   Future<void> _delaying(BuildContext context) async{
-    await Future.delayed(Duration(milliseconds: 2500));
+    await Future.delayed(Duration(milliseconds: 1500));
 
     MyApp_config().readMyconfig().then((MyApp_config onValue) async{
       // TODO : 1. 자동 로그인 될 때도 안 될때도 있음... 
