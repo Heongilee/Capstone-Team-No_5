@@ -21,6 +21,9 @@ dependencies:
     sdk: flutter
   page_transition: ^1.1.5
 
+  # 카메라 모듈을 불러오기 위함.
+  image_picker: ^0.6.5+3
+
   # cloud firestore
   cloud_firestore: ^0.13.5
 
