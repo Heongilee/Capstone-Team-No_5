@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:80279008633:ios:cc4599ea9fe812dccdaba8</string>
+	<string>1:80279008633:ios:b1e61878399c4b70cdaba8</string>
 	<key>DATABASE_URL</key>
 	<string>https://capstone-no5.firebaseio.com</string>
 </dict>
