@@ -63,10 +63,6 @@ class _RootPageState extends State<RootPage>{
     await Future.delayed(Duration(milliseconds: 1500));
 
     MyApp_config().readMyconfig().then((MyApp_config onValue) async{
-      // TODO : 1. 자동 로그인 될 때도 안 될때도 있음... 
-      // TODO : 2. 자동 로그인이면 상관 없는데 아닌경우, 앱을 그냥 끄면 로그인 상태에서 로그아웃됨...
-      // (2020-04-28 :: 17:19)
-
       // TEST OUTPUT
       print("TEST OUTPUT 1 : " + onValue.toString());  // { admin, false, false }
 

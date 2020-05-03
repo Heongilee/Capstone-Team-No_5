@@ -29,7 +29,7 @@ class MyApp_config with MyAppConfigFunction{
   // MyApp_config(this._receiveID, this._chkboxID, this._chkboxAUTO);
   factory MyApp_config() => _getInstance;
 
-  MyApp_config._internal({String receiveID = "", bool chkboxID = false, bool chkboxAUTO = false}){
+  MyApp_config._internal({String receiveID = " ", bool chkboxID = false, bool chkboxAUTO = false}){
     this._receiveID = receiveID;
     this._chkboxID = chkboxID;
     this._chkboxAUTO = chkboxAUTO;
