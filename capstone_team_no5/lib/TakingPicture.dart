@@ -58,13 +58,15 @@ class _TakingPictureState extends State<TakingPicture> {
             Container(
               width: 300.0,
               height: 300.0,
-              child: (_image == null)
+              child: (_listViewItem.length == 0)
                   ? Center(
                       child: Image(
                           image: AssetImage('assets/images/pictureGuide.png')))
                   : _buildListView(),
             ),
-            Padding(padding: EdgeInsets.all(16.0)),
+            Padding(padding: EdgeInsets.all(2.0)),
+            Text('● TIP : 이미지를 길게 누르면 사진을 목록에서 삭제 시킬 수 있어요!', textScaleFactor: 0.65,),
+            Padding(padding: EdgeInsets.all(14.0)),
             SizedBox(
               width: 250.0,
               child: RaisedButton(
@@ -102,6 +104,7 @@ class _TakingPictureState extends State<TakingPicture> {
   }
 
   Future _getImage() async {
+    // 사진 앱 불러옴
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
 
     setState(() {
@@ -111,6 +114,7 @@ class _TakingPictureState extends State<TakingPicture> {
       print(image.toString());
       // 중간에 이미지 촬영을 안 하고 바로 넘어갔을 경우... 처리
       if (_image != null) _addlistViewItem(_image);
+      _image = null;
     });
   }
 
