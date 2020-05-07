@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recycle/RootPage.dart'; // 원래 페이지
 
+// 2020-05-07
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
