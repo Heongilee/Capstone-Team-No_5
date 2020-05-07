@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recycle/NoticePage.dart';
 import 'package:recycle/RootPage.dart'; // 원래 페이지
 
 // 2020-05-07
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       ),
       home: RootPage(),
       // home: TakingPicture(),
+      // home: NoticePage(),
     );
   }
 }
