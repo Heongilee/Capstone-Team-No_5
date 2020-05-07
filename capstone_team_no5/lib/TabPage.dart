@@ -5,9 +5,9 @@ import 'package:recycle/ReservationList.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TabPage extends StatefulWidget {
-  final DocumentSnapshot account_session;
+  final DocumentSnapshot _currentAccount;
 
-  TabPage(this.account_session);
+  TabPage(this._currentAccount);
 
   @override
   _TabPageState createState() => _TabPageState();
@@ -22,9 +22,9 @@ class _TabPageState extends State<TabPage> {
     super.initState();
     
     _pages = [
-      HomePage(widget.account_session),
-      ReservationList(widget.account_session),
-      MyInfo(widget.account_session),
+      HomePage(widget._currentAccount),
+      ReservationList(widget._currentAccount),
+      MyInfo(widget._currentAccount),
     ];
   }
 

@@ -33,7 +33,7 @@ dependencies:
   # Image.network()는 페이지 전환할 때 마다 이미지를 다시 불러와 비효율적이다. 캐시로 저장하고 있으면 좋다.
   cached_network_image: ^2.1.0+1
 
-  # asset 파일 읽고 쓰는 라이브러리.
+  #  파일 읽고 쓰는 라이브러리.
   path_provider: ^1.6.7
   
 
@@ -52,7 +52,7 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
   assets:
-    - assets/images/Logo.png
+    - assets/images/
     - assets/icon/Trash_bin.png
     - assets/json/
   # The following line ensures that the Material Icons font is

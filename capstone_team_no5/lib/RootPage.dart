@@ -11,13 +11,13 @@ class RootPage extends StatefulWidget {
   _RootPageState createState() => _RootPageState();
 }
 
-class _RootPageState extends State<RootPage>{
+class _RootPageState extends State<RootPage> {
   final _db = Firestore.instance;
   DocumentSnapshot _currentDoc;
   bool _checkV1 = false;
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     MyApp_config();
 
@@ -27,7 +27,6 @@ class _RootPageState extends State<RootPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: ,
       body: _buildBody(context),
     );
   }
@@ -40,39 +39,44 @@ class _RootPageState extends State<RootPage>{
           children: <Widget>[
             Image(image: AssetImage('assets/images/Logo.png')),
             Padding(padding: EdgeInsets.all(8.0)),
-            Text('생활 폐기물 품목 측정 기술', style: TextStyle(
-              fontSize: 27.0,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic,
-            ),),
+            Text(
+              '생활 폐기물 품목 측정 기술',
+              style: TextStyle(
+                fontSize: 27.0,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
             Padding(padding: EdgeInsets.all(3.0)),
-            Text('캡스톤 01반 5조', style: TextStyle(
-              fontSize: 15.0,
-            ),),
+            Text(
+              '캡스톤 01반 5조',
+              style: TextStyle(
+                fontSize: 15.0,
+              ),
+            ),
             Padding(padding: EdgeInsets.all(3.0)),
-            Text('외 유 내 강', style: TextStyle(
-              fontSize: 15.0,
-            ),),
+            Text(
+              '외 유 내 강',
+              style: TextStyle(
+                fontSize: 15.0,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Future<void> _delaying(BuildContext context) async{
+  Future<void> _delaying(BuildContext context) async {
     await Future.delayed(Duration(milliseconds: 1500));
 
-    MyApp_config().readMyconfig().then((MyApp_config onValue) async{
-      // TODO : 1. 자동 로그인 될 때도 안 될때도 있음... 
-      // TODO : 2. 자동 로그인이면 상관 없는데 아닌경우, 앱을 그냥 끄면 로그인 상태에서 로그아웃됨...
-      // (2020-04-28 :: 17:19)
-
+    MyApp_config().readMyconfig().then((MyApp_config onValue) async {
       // TEST OUTPUT
-      print("TEST OUTPUT 1 : " + onValue.toString());  // { admin, false, false }
+      print("TEST OUTPUT 1 : " + onValue.toString()); // { admin, false, false }
 
       await accessMyFirestore(onValue.receiveID);
 
-      if(_currentDoc != null && onValue.chkboxAUTO == true){
+      if (_currentDoc != null && onValue.chkboxAUTO == true) {
         // Navigator.pushReplacement로 하면 뒤로 다시 돌아올 수 없다.
         Navigator.push(
           context,
@@ -81,17 +85,16 @@ class _RootPageState extends State<RootPage>{
             child: TabPage(_currentDoc),
             duration: Duration(milliseconds: 900),
           ),
-        ).then((onValue){
-          // 자동 로그인을 했을 때 로그아웃하면 RootPage로 돌아와버리기 때문에 바로 로그인 페이지로 이동시킨다.
+        ).whenComplete(() {
+          // There are multiple heroes that share the same tag within a subtree. 에러 뜨는데 걍 무시.
           Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
         });
-      }
-      else{
-        if(onValue.chkboxAUTO == false && _checkV1 == true){
+      } else {
+        if (onValue.chkboxAUTO == false && _checkV1 == true) {
           _updateStatus(0); // 로그아웃 상태로 전환
         }
         // Navigator.pushReplacement로 하면 뒤로 다시 돌아올 수 없다.
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           PageTransition(
             type: PageTransitionType.fade,
@@ -105,31 +108,37 @@ class _RootPageState extends State<RootPage>{
   }
 
   // * 계정 정보가 있으면 qs.documents.single을 반환, 계정 정보를 찾지 못하면 null반환.
-  Future<void> accessMyFirestore(String chkID) async{
-    Future<dynamic> doc = _db.collection('user').where('id', isEqualTo: chkID).getDocuments();
-    await doc.then((qs){
-      _currentDoc = (qs.documents.isEmpty)? null : qs.documents.single;
+  Future<void> accessMyFirestore(String chkID) async {
+    Future<dynamic> doc =
+        _db.collection('user').where('id', isEqualTo: chkID).getDocuments();
+    await doc.then((qs) {
+      _currentDoc = (qs.documents.isEmpty) ? null : qs.documents.single;
 
-      qs.documents.forEach((f){
-        if(f['status'] == 1) _checkV1 = true;
+      qs.documents.forEach((f) {
+        if (f['status'] == 1) _checkV1 = true;
       });
     });
 
     return;
   }
 
-  Future<void> _updateStatus(int v) async{
+  Future<void> _updateStatus(int v) async {
     // status 0이 들어오면 로그인 -> 로그아웃
     // status 1이 들어오면 로그아웃 -> 로그인
-    if(v == 0){
-      await _db.collection('user').document(_currentDoc.documentID).updateData({'status' : 0});
+    if (v == 0) {
+      await _db
+          .collection('user')
+          .document(_currentDoc.documentID)
+          .updateData({'status': 0});
       print('status를 정상적으로 0으로 변경했습니다.');
-    }
-    else{
-      await _db.collection('user').document(_currentDoc.documentID).updateData({'status' : 1});
+    } else {
+      await _db
+          .collection('user')
+          .document(_currentDoc.documentID)
+          .updateData({'status': 1});
       print('status를 정상적으로 1으로 변경했습니다.');
     }
-    
+
     return;
   }
-} 
+}
