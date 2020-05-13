@@ -3,6 +3,7 @@ import 'package:recycle/RootPage.dart'; // 원래 페이지
 import 'package:recycle/SignUp.dart';
 import 'package:recycle/MainPage.dart';
 import 'package:recycle/TrashListComfirmation.dart';
+import 'package:recycle/TakingPicture.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
         // brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
-      home: SignUp(),
+      home: TrashListComfirmation(),
       // home: TakingPicture(),
     );
   }
