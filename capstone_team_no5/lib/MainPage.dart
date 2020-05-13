@@ -262,8 +262,13 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                             // dispose();  // Stream close
                             MyApp_config().chkboxID = remember_my_id;
                             MyApp_config().chkboxAUTO = auto_login;
-                            MyApp_config().receiveID = (MyApp_config().chkboxID || MyApp_config().chkboxAUTO) ? _id.text : "";
-                            MyApp_config().writeMyconfig(MyApp_config().toJson());
+                            MyApp_config().receiveID =
+                                (MyApp_config().chkboxID ||
+                                        MyApp_config().chkboxAUTO)
+                                    ? _id.text
+                                    : "";
+                            MyApp_config()
+                                .writeMyconfig(MyApp_config().toJson());
 
                             // 페이지 전환으로 인한 텍스트 필드값 초기화
                             if (!remember_my_id) {

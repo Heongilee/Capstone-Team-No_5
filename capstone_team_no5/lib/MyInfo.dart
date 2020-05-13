@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:recycle/ComplainPage.dart';
+import 'package:recycle/HelpPage.dart';
+import 'package:recycle/NoticePage.dart';
+import 'package:recycle/UserhelpPage.dart';
 
 class UserInfo {
   static final UserInfo _instance = UserInfo._internal();
@@ -25,7 +29,7 @@ class MyInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: _buildBody(),
+      body: _buildBody(context),
     );
   }
 
@@ -54,7 +58,7 @@ class MyInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         //appBar: AppBar(),
@@ -77,17 +81,37 @@ class MyInfo extends StatelessWidget {
                       textScaleFactor: 2.0,
                     );
                   }),
+              Padding(padding: EdgeInsets.all(4.0)),
+              StreamBuilder<DocumentSnapshot>(
+                  stream: _db
+                      .collection('user')
+                      .document(_currentAccount.documentID)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    // 스냅샷 데이터 검사는 함수 진입하고 맨 첫 줄에 해야함. 안 그러면 에러 남.
+                    if (!snapshot.hasData)
+                      return Center(child: CircularProgressIndicator());
+                    final DocumentSnapshot document = snapshot.data;
+                    return Text(
+                      document['email'] ?? '<No message retrived>',
+                      textScaleFactor: 1.0,
+                    );
+                  }),
               Padding(
                 padding: EdgeInsets.all(24.0),
               ),
               SizedBox(
                 height: 35.0,
                 child: FloatingActionButton.extended(
+                  heroTag: 'noticePage_key',
                   tooltip: "Hi, This is extended button.", //길게 누르면 설명 버튼이 뜸.
                   backgroundColor: Colors.grey[300],
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.assignment),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => NoticePage()));
+                  },
                   label: Container(
                       width: 200.0,
                       child: Text(
@@ -102,11 +126,17 @@ class MyInfo extends StatelessWidget {
               SizedBox(
                 height: 35.0,
                 child: FloatingActionButton.extended(
+                  heroTag: 'complain_key',
                   tooltip: "Hi, This is extended button.",
                   backgroundColor: Colors.grey[300],
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.question_answer),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ComplainPage()));
+                  },
                   label: Container(
                       width: 200.0,
                       child: Text(
@@ -121,11 +151,17 @@ class MyInfo extends StatelessWidget {
               SizedBox(
                 height: 35.0,
                 child: FloatingActionButton.extended(
+                  heroTag: 'Userhelp_key',
                   tooltip: "Hi, This is extended button.",
                   backgroundColor: Colors.grey[300],
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.description),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserhelpPage()));
+                  },
                   label: Container(
                       width: 200.0,
                       child: Text(
@@ -140,11 +176,15 @@ class MyInfo extends StatelessWidget {
               SizedBox(
                 height: 35.0,
                 child: FloatingActionButton.extended(
+                  heroTag: 'help_key',
                   tooltip: "Hi, This is extended button.",
                   backgroundColor: Colors.grey[300],
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.help_outline),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HelpPage()));
+                  },
                   label: Container(
                       width: 200.0,
                       child: Text(
@@ -153,6 +193,7 @@ class MyInfo extends StatelessWidget {
                       )),
                 ),
               ),
+              Padding(padding: EdgeInsets.only()),
             ],
           ),
         ),
