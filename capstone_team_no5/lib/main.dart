@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:recycle/NoticePage.dart';
 import 'package:recycle/RootPage.dart'; // 원래 페이지
+import 'package:recycle/SignUp.dart';
+import 'package:recycle/MainPage.dart';
+import 'package:recycle/TrashListComfirmation.dart';
 
 // 2020-05-07
 void main() => runApp(MyApp());
@@ -16,6 +19,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: RootPage(),
+      // home: SignUp(),
       // home: TakingPicture(),
       // home: NoticePage(),
     );

@@ -81,6 +81,22 @@ class MyInfo extends StatelessWidget {
                       textScaleFactor: 2.0,
                     );
                   }),
+              Padding(padding: EdgeInsets.all(4.0)),
+              StreamBuilder<DocumentSnapshot>(
+                  stream: _db
+                      .collection('user')
+                      .document(_currentAccount.documentID)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    // 스냅샷 데이터 검사는 함수 진입하고 맨 첫 줄에 해야함. 안 그러면 에러 남.
+                    if (!snapshot.hasData)
+                      return Center(child: CircularProgressIndicator());
+                    final DocumentSnapshot document = snapshot.data;
+                    return Text(
+                      document['email'] ?? '<No message retrived>',
+                      textScaleFactor: 1.0,
+                    );
+                  }),
               Padding(
                 padding: EdgeInsets.all(24.0),
               ),
@@ -178,7 +194,6 @@ class MyInfo extends StatelessWidget {
                 ),
               ),
               Padding(padding: EdgeInsets.only()),
-              Text('test'),
             ],
           ),
         ),
