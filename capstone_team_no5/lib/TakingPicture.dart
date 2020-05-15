@@ -11,7 +11,7 @@ class TakingPicture extends StatefulWidget {
 
 class _TakingPictureState extends State<TakingPicture> {
   File _image;
-  List<Widget> _listViewItem = [];
+  List<File> _listViewItem = [];
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,10 @@ class _TakingPictureState extends State<TakingPicture> {
                   : _buildListView(),
             ),
             Padding(padding: EdgeInsets.all(2.0)),
-            Text('● TIP : 이미지를 길게 누르면 사진을 목록에서 삭제 시킬 수 있어요!', textScaleFactor: 0.65,),
+            Text(
+              '● TIP : 이미지를 길게 누르면 사진을 목록에서 삭제 시킬 수 있어요!',
+              textScaleFactor: 0.65,
+            ),
             Padding(padding: EdgeInsets.all(14.0)),
             SizedBox(
               width: 250.0,
@@ -145,7 +148,8 @@ class _TakingPictureState extends State<TakingPicture> {
                                 Navigator.of(context).pop();
                               }),
                           SimpleDialogOption(
-                              child: Text('아니오'), onPressed: () {
+                              child: Text('아니오'),
+                              onPressed: () {
                                 Navigator.of(context).pop();
                               }),
                         ],
@@ -159,7 +163,10 @@ class _TakingPictureState extends State<TakingPicture> {
                 padding: EdgeInsets.only(right: 10.0),
                 width: 300.0,
                 height: 300.0,
-                child: _listViewItem[idx],
+                child: Image.file(
+                  _listViewItem[idx],
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
@@ -169,6 +176,9 @@ class _TakingPictureState extends State<TakingPicture> {
   }
 
   void _addlistViewItem(File image) {
-    _listViewItem.add(Image.file(image, fit: BoxFit.cover));
+    _listViewItem.add(image);
+    _listViewItem.forEach((File element) {
+      print(element.path);
+    });
   }
 }
