@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:recycle/TrashListComfirmation.dart';
 
 class TakingPicture extends StatefulWidget {
   @override
@@ -97,6 +98,12 @@ class _TakingPictureState extends State<TakingPicture> {
                           );
                         },
                       );
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  TrashListComfirmation(_listViewItem, 0)));
                     }
                   }),
             ),
