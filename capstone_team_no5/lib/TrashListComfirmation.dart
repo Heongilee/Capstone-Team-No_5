@@ -119,7 +119,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   RaisedButton(
-                      child: Text(
+                      child: Text( 
                         '다시찍기',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20.0),

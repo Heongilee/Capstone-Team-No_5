@@ -114,18 +114,63 @@ class _TakingPictureState extends State<TakingPicture> {
   }
 
   Future _getImage() async {
-    // 사진 앱 불러옴
-    File image = await ImagePicker.pickImage(source: ImageSource.camera);
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          File image;
+          return SimpleDialog(
+            title: Text(
+              '이미지를 불러올 방식을 선택하세요.',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                child: SimpleDialogOption(
+                    child: Text('카메라 어플 실행'),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
 
-    setState(() {
-      // 이미지 스트림이 들어오면 리스트가 repaint되는 식으로 작성!!
-      _image = image;
+                      // 사진 앱 불러옴
+                      image = await ImagePicker.pickImage(
+                          source: ImageSource.camera);
 
-      print(image.toString());
-      // 중간에 이미지 촬영을 안 하고 바로 넘어갔을 경우... 처리
-      if (_image != null) _addlistViewItem(_image);
-      _image = null;
-    });
+                      setState(() {
+                        // 이미지 스트림이 들어오면 리스트가 repaint되는 식으로 작성!!
+                        _image = image;
+
+                        print(image.toString());
+                        // 중간에 이미지 촬영을 안 하고 바로 넘어갔을 경우... 처리
+                        if (_image != null) _addlistViewItem(_image);
+                        _image = null;
+                      });
+                    }),
+              ),
+              Container(
+                  padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                  child: SimpleDialogOption(
+                      child: Text('갤러리에서 사진 선택.'),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+
+                        // 사진 앱 불러옴
+                        image = await ImagePicker.pickImage(
+                            source: ImageSource.gallery);
+
+                        setState(() {
+                          // 이미지 스트림이 들어오면 리스트가 repaint되는 식으로 작성!!
+                          _image = image;
+
+                          print(image.toString());
+                          // 중간에 이미지 촬영을 안 하고 바로 넘어갔을 경우... 처리
+                          if (_image != null) _addlistViewItem(_image);
+                          _image = null;
+                        });
+                      })),
+            ],
+          );
+        });
   }
 
   Widget _buildListView() {
@@ -144,21 +189,30 @@ class _TakingPictureState extends State<TakingPicture> {
                     barrierDismissible: true,
                     builder: (BuildContext context) {
                       return SimpleDialog(
-                        title: Text('삭제하시겠습니까?'),
+                        title: Text(
+                          '삭제하시겠습니까?',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         children: <Widget>[
-                          SimpleDialogOption(
-                              child: Text('예'),
-                              onPressed: () {
-                                setState(() {
-                                  _listViewItem.remove(_listViewItem[idx]);
-                                });
-                                Navigator.of(context).pop();
-                              }),
-                          SimpleDialogOption(
-                              child: Text('아니오'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              }),
+                          Container(
+                            padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                            child: SimpleDialogOption(
+                                child: Text('예'),
+                                onPressed: () {
+                                  setState(() {
+                                    _listViewItem.remove(_listViewItem[idx]);
+                                  });
+                                  Navigator.of(context).pop();
+                                }),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                            child: SimpleDialogOption(
+                                child: Text('아니오'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                }),
+                          ),
                         ],
                       );
                     });
