@@ -23,7 +23,7 @@ class MyInfo extends StatelessWidget {
   final _db = Firestore.instance;
   var myUser;
 
-  MyInfo(this._currentAccount) {}
+  MyInfo(this._currentAccount);
 
   @override
   Widget build(BuildContext context) {

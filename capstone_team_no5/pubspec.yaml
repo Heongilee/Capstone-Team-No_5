@@ -21,6 +21,15 @@ dependencies:
     sdk: flutter
   page_transition: ^1.1.5
 
+  #이메일 전송 라이브러리2 -> 이건 진짜 된다.
+  url_launcher: ^5.4.7
+
+  # 이메일 전송 라이브러리
+  flutter_mailer: ^0.5.0
+
+  # 도로명주소 API
+  kopo: ^0.1.1
+
   # 카메라 모듈을 불러오기 위함.
   image_picker: ^0.6.5+3
 
