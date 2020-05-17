@@ -71,7 +71,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
               fontStyle: FontStyle.italic),
         ),
       ),
-      body: _buildBody(),
+      
+      body: TrashList(),
     );
   }
 
