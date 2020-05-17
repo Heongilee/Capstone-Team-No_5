@@ -76,7 +76,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
     );
   }
 
-  Widget _buildBody() {
+  Widget TrashList() {
     return SafeArea(
       child: SingleChildScrollView(
         child: Center(
