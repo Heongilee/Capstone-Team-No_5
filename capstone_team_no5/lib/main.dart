@@ -23,9 +23,14 @@ class MyApp extends StatelessWidget {
         // brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
-      home: RootPage(),
+      // home: EmailExample(),
+      // home: TrashListComfirmation(),
       // home: TakingPicture(),
       // home: NoticePage(),
+      home: RootPage(),
+      routes: <String, WidgetBuilder>{
+        '/TakingPicture': (BuildContext context) => new TakingPicture(),
+      },
     );
   }
 }
