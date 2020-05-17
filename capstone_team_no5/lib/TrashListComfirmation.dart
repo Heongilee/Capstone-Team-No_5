@@ -1,24 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-class signup_text_editing_controller{
-  final _id = TextEditingController();
-  final _pw = TextEditingController();
-  final _name = TextEditingController();
-  final _address = TextEditingController();
-  final _phoneNum = TextEditingController();
-  final _email = TextEditingController();
-  final _comfilm = TextEditingController();
-  // StreamController _checkboxController_agree = StreamController<bool>()
-  //   ..add(false);
-  bool agree = false;
-}
 
 
-
-class TrashListComfirmation extends StatefulWidget with signup_text_editing_controller{
-
-  TrashListComfirmation({Key key}) : super(key: key);
+class TrashListComfirmation extends StatefulWidget{
 
   @override
   _TrashListComfirmationState createState() => _TrashListComfirmationState();
@@ -79,6 +64,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
           ),
         ),
       ),
+      
       body: TrashList(),
     );
   }

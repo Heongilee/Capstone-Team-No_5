@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:recycle/ChangeMyInfo.dart';
 import 'package:recycle/ComplainPage.dart';
 import 'package:recycle/HelpPage.dart';
 import 'package:recycle/NoticePage.dart';
-import 'package:recycle/UserhelpPage.dart';
+import 'package:recycle/ChangeMyInfo.dart';
 
 class UserInfo {
   static final UserInfo _instance = UserInfo._internal();
@@ -103,6 +104,32 @@ class MyInfo extends StatelessWidget {
               SizedBox(
                 height: 35.0,
                 child: FloatingActionButton.extended(
+                  heroTag: 'Userhelp_key',
+                  tooltip: "Hi, This is extended button.",
+                  backgroundColor: Colors.grey[300],
+                  foregroundColor: Colors.black,
+                  icon: Icon(Icons.description),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChangeMyInfo(_currentAccount)));
+                  },
+                  label: Container(
+                      width: 200.0,
+                      child: Text(
+                        '내 정보 변경',
+                        textAlign: TextAlign.center,
+                      ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(15.0),
+              ),
+              SizedBox(
+                height: 35.0,
+                child: FloatingActionButton.extended(
                   heroTag: 'noticePage_key',
                   tooltip: "Hi, This is extended button.", //길게 누르면 설명 버튼이 뜸.
                   backgroundColor: Colors.grey[300],
@@ -141,31 +168,6 @@ class MyInfo extends StatelessWidget {
                       width: 200.0,
                       child: Text(
                         '1 : 1  문 의',
-                        textAlign: TextAlign.center,
-                      )),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(8.0),
-              ),
-              SizedBox(
-                height: 35.0,
-                child: FloatingActionButton.extended(
-                  heroTag: 'Userhelp_key',
-                  tooltip: "Hi, This is extended button.",
-                  backgroundColor: Colors.grey[300],
-                  foregroundColor: Colors.black,
-                  icon: Icon(Icons.description),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UserhelpPage()));
-                  },
-                  label: Container(
-                      width: 200.0,
-                      child: Text(
-                        '이 용 안 내',
                         textAlign: TextAlign.center,
                       )),
                 ),

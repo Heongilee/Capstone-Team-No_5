@@ -20,6 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
   page_transition: ^1.1.5
+  flutter_calendar_carousel: ^1.4.12
 
   # 카메라 모듈을 불러오기 위함.
   image_picker: ^0.6.5+3
