@@ -102,8 +102,8 @@ class _TakingPictureState extends State<TakingPicture> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  TrashListComfirmation(_listViewItem, 0)));
+                              builder: (context) => TrashListComfirmation()));
+                                  // TrashListComfirmation(_listViewItem, 0)));
                     }
                   }),
             ),

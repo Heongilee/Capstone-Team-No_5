@@ -54,7 +54,7 @@ class ChangeMyInfo extends StatelessWidget {
                   margin: EdgeInsets.only(left: 30, right: 30, top: 15),
                   padding: EdgeInsets.only(left: 20, right: 20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.grey[400],
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     border: Border.all(width: 1, color: Colors.black12),
                   ),
@@ -150,7 +150,7 @@ class ChangeMyInfo extends StatelessWidget {
                   margin: EdgeInsets.only(left: 30, right: 30, top: 15),
                   padding: EdgeInsets.only(left: 20, right: 20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.grey[400],
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     border: Border.all(width: 1, color: Colors.black12),
                   ),
@@ -340,7 +340,7 @@ class ChangeMyInfo extends StatelessWidget {
                   margin: EdgeInsets.only(left: 30, right: 30, top: 15),
                   padding: EdgeInsets.only(left: 20, right: 20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.grey[400],
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     border: Border.all(width: 1, color: Colors.black12),
                   ),
