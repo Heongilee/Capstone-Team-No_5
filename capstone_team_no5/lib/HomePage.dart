@@ -45,8 +45,10 @@ class HomePage extends StatelessWidget {
               child: MaterialButton(
                 // 대형 폐기물 수거 신청 처리 작동...
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => TakingPicture()));
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => MyAccount(_currentAccount)));
+                  Navigator.pushNamed(context, TakingPicture.routeName,
+                  arguments: MyAccountSnapshot(_currentAccount));
                 },
                 shape: CircleBorder(),
                 child: Stack(

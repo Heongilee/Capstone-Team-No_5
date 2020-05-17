@@ -1,11 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:recycle/TrashListComfirmation.dart';
 
+class MyAccountSnapshot {
+  final DocumentSnapshot _currentAccount;
+
+  MyAccountSnapshot(this._currentAccount);
+}
+
 class TakingPicture extends StatefulWidget {
+  static const routeName = '/TakingPicture';
+
   @override
   _TakingPictureState createState() => _TakingPictureState();
 }
@@ -16,10 +25,13 @@ class _TakingPictureState extends State<TakingPicture> {
 
   @override
   Widget build(BuildContext context) {
+    final MyAccountSnapshot args =
+        ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: _buildAppBar(),
-      body: _buildBody(),
+      body: _buildBody(args),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.grey[600],
         child: Icon(Icons.add_a_photo),
@@ -49,7 +61,7 @@ class _TakingPictureState extends State<TakingPicture> {
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(MyAccountSnapshot _currentAccount) {
     return SafeArea(
       child: Center(
         child: Column(
@@ -99,11 +111,15 @@ class _TakingPictureState extends State<TakingPicture> {
                         },
                       );
                     } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  TrashListComfirmation(_listViewItem, 0)));
+                      _loadMyDeepLearningModule().then((value) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TrashListComfirmation(
+                                    _listViewItem,
+                                    0,
+                                    _currentAccount._currentAccount)));
+                      });
                     }
                   }),
             ),
@@ -150,7 +166,7 @@ class _TakingPictureState extends State<TakingPicture> {
               Container(
                   padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
                   child: SimpleDialogOption(
-                      child: Text('갤러리에서 사진 선택.'),
+                      child: Text('갤러리에서 사진 선택'),
                       onPressed: () async {
                         Navigator.of(context).pop();
 
@@ -241,5 +257,30 @@ class _TakingPictureState extends State<TakingPicture> {
     _listViewItem.forEach((File element) {
       print(element.path);
     });
+  }
+
+  // 딥러닝 결과를 받아올 메소드
+  Future<void> _loadMyDeepLearningModule() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            '딥러닝 분석 결과가 나올 때 까지\n 잠시만 기다려 주세요...',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+          ),
+          content: CircularProgressIndicator(),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Confirm')),
+          ],
+        );
+      },
+    );
+    return;
   }
 }

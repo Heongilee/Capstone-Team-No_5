@@ -1,12 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'TakingPicture.dart';
+
 class TrashListComfirmation extends StatefulWidget {
+  final DocumentSnapshot _currentAccount; // 현재 계정 정보
   List<File> _listViewItem; // 이미지 파일 리스트
   List<String> _resultPicture = ['null', 'null']; // 외부 모듈 수행 결과를 받아와서 출력할 것.
   final current_Idx; // 현재 출력중인 페이지 번호 0 ~ [사진 갯수-1] 만큼
 
-  TrashListComfirmation(this._listViewItem, this.current_Idx);
+  TrashListComfirmation(
+      this._listViewItem, this.current_Idx, this._currentAccount);
 
   @override
   _TrashListComfirmationState createState() => _TrashListComfirmationState();
@@ -59,7 +64,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.popAndPushNamed(context, '/TakingPicture');
+              Navigator.popAndPushNamed(context, TakingPicture.routeName,
+                  arguments: MyAccountSnapshot(widget._currentAccount));
             }),
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -71,7 +77,6 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
               fontStyle: FontStyle.italic),
         ),
       ),
-      
       body: TrashList(),
     );
   }
@@ -120,7 +125,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   RaisedButton(
-                      child: Text( 
+                      child: Text(
                         '다시찍기',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20.0),

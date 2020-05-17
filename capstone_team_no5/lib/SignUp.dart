@@ -117,7 +117,7 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
                       ),
                     ),
                     onPressed: () {
-                      _checkInternetAccess(context).then((bool onValue) {
+                      _checkInternetAccess().then((bool onValue) {
                         if (onValue) {
                           checkmyId(context);
                         } else {
@@ -321,7 +321,7 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
                         ),
                       ),
                       onPressed: () async {
-                        _checkInternetAccess(context).then((bool onValue) {
+                        _checkInternetAccess().then((bool onValue) {
                           if (onValue) {
                             _loadMyAddress(context);
                           } else {
@@ -377,7 +377,7 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintStyle: TextStyle(color: Colors.grey[300]),
-                              hintText: "-빼고 입력",
+                              hintText: "\t\t\'-\' 빼고 입력",
                             ),
                             cursorColor: Colors.blue,
                           ),
@@ -441,7 +441,7 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
                         ),
                       ),
                       onPressed: () {
-                        _checkInternetAccess(context).then((bool onValue) {
+                        _checkInternetAccess().then((bool onValue) {
                           if (onValue) {
                             // Flutter email sender Library call
                             _emailSending();
@@ -520,7 +520,46 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
-                    onPressed: () => checkmyAuthCode(),
+                    onPressed: () async {
+                      checkmyAuthCode().then((onValue) {
+                        if (onValue) {
+                          valid_condition_List[1] = true;
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('SUCCESS'),
+                                content: Text('인증이 완료되었습니다!'),
+                                actions: <Widget>[
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Confirm')),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('ERROR'),
+                                content: Text('인증코드가 유효하지 않습니다.'),
+                                actions: <Widget>[
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Confirm')),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      });
+                    },
                   ),
                   Padding(padding: EdgeInsets.only(left: 35.0)),
                 ],
@@ -538,7 +577,122 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
                   ),
                 ),
                 onPressed: () {
-                  checkValidInput().then((value) => insertionUserDB());
+                  // checkValidInput().then((value) => insertionUserDB());
+                  var my_switch_value = checkValidInput();
+                  switch (my_switch_value) {
+                    // 전부 유효한 입력의 경우... (이 경우에만 회원가입을 진행한다.)
+                    case 0:
+                      _checkInternetAccess().then((onValue) {
+                        if (onValue) {
+                          var doc = _db.collection('user').document();
+
+                          doc.setData({
+                            "id": _id.text,
+                            "pw": _pw.text,
+                            "name": _name.text,
+                            "address":
+                                _address.text + " " + _remaining_address.text,
+                            "phoneNum": _phoneNum.text,
+                            "email": _email.text,
+                          }).then((value) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('SUCCESS'),
+                                  content: Text('회원가입이 완료되었습니다.'),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                        onPressed: () {
+                                          Navigator.popAndPushNamed(
+                                              context, '/MainPage');
+                                        },
+                                        child: Text('Confirm')),
+                                  ],
+                                );
+                              },
+                            );
+                          });
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('인터넷 연결 오류'),
+                                content: Text('인터넷 연결 상태를 확인 바랍니다.'),
+                                actions: <Widget>[
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Confirm')),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      });
+                      break;
+                    // 인증코드만 불 일치하는 경우...
+                    case 1:
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('ERROR'),
+                            content: Text('인증코드를 다시 확인해주세요.'),
+                            actions: <Widget>[
+                              FlatButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Confirm')),
+                            ],
+                          );
+                        },
+                      );
+                      break;
+                    // 아이디 검사가 이루어지지 않은 경우...
+                    case 2:
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('ERROR'),
+                            content: Text('아이디 중복을 체크 해주세요.'),
+                            actions: <Widget>[
+                              FlatButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Confirm')),
+                            ],
+                          );
+                        },
+                      );
+                      break;
+                    // 전부 이루어지지 않은 경우...
+                    case 3:
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('ERROR'),
+                            content: Text('아이디와 인증코드를 \n다시 확인해주세요.'),
+                            actions: <Widget>[
+                              FlatButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Confirm')),
+                            ],
+                          );
+                        },
+                      );
+                      break;
+                    default:
+                      break;
+                  }
                 },
               ),
             ],
@@ -557,8 +711,16 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
   }
 
   // 유효한 입력인지 검사하는 메소드
-  Future<void> checkValidInput() async {
-    return;
+  int checkValidInput() {
+    if (valid_condition_List[0] && valid_condition_List[1]) {
+      return 0;
+    } else if (valid_condition_List[0] && !valid_condition_List[1]) {
+      return 1;
+    } else if (!valid_condition_List[0] && valid_condition_List[1]) {
+      return 2;
+    } else if (!valid_condition_List[0] && !valid_condition_List[1]) {
+      return 3;
+    }
   }
 
   // User DTO를 Firestore 'user'컬렉션에 삽입하는 메소드.
@@ -611,6 +773,7 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
           },
         );
       } else {
+        valid_condition_List[0] = true;
         // 중복되는 아이디가 존재하지 않음.
         showDialog(
           context: context,
@@ -638,11 +801,12 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
   }
 
   // 인증코드가 맞는지 체크하는 메소드.
-  Future<void> checkmyAuthCode() async {
-    return;
+  Future<bool> checkmyAuthCode() async {
+    // 임시 방편으로 true를 리턴
+    return true;
   }
 
-  Future<bool> _checkInternetAccess(BuildContext context) async {
+  Future<bool> _checkInternetAccess() async {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
