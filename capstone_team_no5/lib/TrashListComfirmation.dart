@@ -8,7 +8,7 @@ class TrashListComfirmation extends StatefulWidget {
   final DocumentSnapshot _currentAccount; // 현재 계정 정보
   List<File> _listViewItem; // 이미지 파일 리스트
   List<String> _resultPicture = ['null', 'null']; // 외부 모듈 수행 결과를 받아와서 출력할 것.
-  final current_Idx; // 현재 출력중인 페이지 번호 0 ~ [사진 갯수-1] 만큼
+  // final current_Idx; // 현재 출력중인 페이지 번호 0 ~ [사진 갯수-1] 만큼
 
   TrashListComfirmation(
       this._listViewItem, this.current_Idx, this._currentAccount);
@@ -92,16 +92,35 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
               Container(
                 width: 300.0,
                 height: 300.0,
-                child: Center(
-                    child: Image.file(
-                        File(widget._listViewItem[widget.current_Idx].path))),
+                // child: Center(
+                //     child: Image.file(
+                //         File(widget._listViewItem[widget.current_Idx].path))),
               ),
               Padding(padding: EdgeInsets.all(2.0)),
-              Text(
-                '이 사진은 ' + widget._resultPicture[widget.current_Idx] + ' 입니다.',
+              Text('이사진',
+                // '이 사진은 ' + widget._resultPicture[widget.current_Idx] + ' 입니다.',
                 textScaleFactor: 2.0,
               ),
               Padding(padding: EdgeInsets.all(20.0)),
+              Text(
+                '제품 목록',
+                textScaleFactor: 1.5,
+              ),
+              Container(
+                // width: 250,
+                // color: Colors.grey[200],
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  border: Border.all(width: 1, style: BorderStyle.solid),
+                  color: Colors.grey[200],
+                ),
+                child: DropdownButton(
+                  value: _currentCity,
+                  items: _dropDownMenuItems,
+                  onChanged: changedDropDownItem,
+                ),
+              ),
+              Padding(padding: EdgeInsets.all(10.0)),
               Text(
                 '상세 목록',
                 textScaleFactor: 1.5,
