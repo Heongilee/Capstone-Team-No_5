@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/MainPage': (BuildContext context) => new MainPage(),
         TakingPicture.routeName: (context) => TakingPicture(),
+        TrashListComfirmation.routeName: (context) => TrashListComfirmation(),
       },
     );
   }

@@ -2,16 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'MyAccountSnapshot.dart';
 import 'TakingPicture.dart';
 
+// TODO : TrashListComfirmation 생성자 외부로 빼기. 
 class TrashListComfirmation extends StatefulWidget {
-  final DocumentSnapshot _currentAccount; // 현재 계정 정보
-  List<File> _listViewItem; // 이미지 파일 리스트
-  List<String> _resultPicture = ['null', 'null']; // 외부 모듈 수행 결과를 받아와서 출력할 것.
-  // final current_Idx; // 현재 출력중인 페이지 번호 0 ~ [사진 갯수-1] 만큼
+  static const routeName = '/TrashListComfirmation';
 
-  TrashListComfirmation(
-      this._listViewItem, this.current_Idx, this._currentAccount);
+  // List<File> _listViewItem; // 이미지 파일 리스트
+  // final current_Idx; // 현재 출력중인 페이지 번호 0 ~ [사진 갯수-1] 만큼
+  List<String> _resultPicture = ['null', 'null']; // 외부 모듈 수행 결과를 받아와서 출력할 것.
 
   @override
   _TrashListComfirmationState createState() => _TrashListComfirmationState();
@@ -55,6 +55,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
 
   @override
   Widget build(BuildContext context) {
+    final MyAccountSnapshot args = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -65,7 +67,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
             ),
             onPressed: () {
               Navigator.popAndPushNamed(context, TakingPicture.routeName,
-                  arguments: MyAccountSnapshot(widget._currentAccount));
+                  arguments: MyAccountSnapshot(args._currentAccount));
             }),
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -77,11 +79,11 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
               fontStyle: FontStyle.italic),
         ),
       ),
-      body: TrashList(),
+      body: _buildBody(args),
     );
   }
 
-  Widget TrashList() {
+  Widget _buildBody(MyAccountSnapshot _currentAccount) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Center(
@@ -97,7 +99,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 //         File(widget._listViewItem[widget.current_Idx].path))),
               ),
               Padding(padding: EdgeInsets.all(2.0)),
-              Text('이사진',
+              Text(
+                '이사진',
                 // '이 사진은 ' + widget._resultPicture[widget.current_Idx] + ' 입니다.',
                 textScaleFactor: 2.0,
               ),

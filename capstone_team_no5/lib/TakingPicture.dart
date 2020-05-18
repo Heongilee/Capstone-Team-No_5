@@ -6,11 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:recycle/TrashListComfirmation.dart';
 
-class MyAccountSnapshot {
-  final DocumentSnapshot _currentAccount;
-
-  MyAccountSnapshot(this._currentAccount);
-}
+import 'MyAccountSnapshot.dart';
 
 class TakingPicture extends StatefulWidget {
   static const routeName = '/TakingPicture';
@@ -25,8 +21,8 @@ class _TakingPictureState extends State<TakingPicture> {
 
   @override
   Widget build(BuildContext context) {
-    final MyAccountSnapshot args =
-        ModalRoute.of(context).settings.arguments;
+    // 인자가 있는 페이지의 전환을 위한 변수 args
+    final MyAccountSnapshot args = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -112,13 +108,16 @@ class _TakingPictureState extends State<TakingPicture> {
                       );
                     } else {
                       _loadMyDeepLearningModule().then((value) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => TrashListComfirmation(
-                                    _listViewItem,
-                                    0,
-                                    _currentAccount._currentAccount)));
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => TrashListComfirmation(
+                        //             _listViewItem,
+                        //             0,
+                        //             _currentAccount)));
+                        Navigator.pushNamed(
+                            context, TrashListComfirmation.routeName,
+                            arguments: MyAccountSnapshot(_currentAccount, _listViewItem, 0));
                       });
                     }
                   }),
