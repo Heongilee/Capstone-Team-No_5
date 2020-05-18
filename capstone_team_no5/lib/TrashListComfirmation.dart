@@ -1,17 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:recycle/AccountSnapshot.dart';
+import 'package:recycle/CustomerForm.dart';
 import 'dart:io';
 
 import 'TakingPicture.dart';
 
 class TrashListComfirmation extends StatefulWidget {
-  final DocumentSnapshot _currentAccount; // 현재 계정 정보
-  List<File> _listViewItem; // 이미지 파일 리스트
-  List<String> _resultPicture = ['null', 'null']; // 외부 모듈 수행 결과를 받아와서 출력할 것.
-  // final current_Idx; // 현재 출력중인 페이지 번호 0 ~ [사진 갯수-1] 만큼
+  static const routeName = '/TrashListComfirmation';
 
-  TrashListComfirmation(
-      this._listViewItem, this.current_Idx, this._currentAccount);
+  List<String> _resultPicture = ['의자', '가방']; // 외부 모듈 수행 결과를 받아와서 출력할 것.
+  List<String> _detailProduct = [
+    '의자',
+    '가방',
+    '1인용',
+    '장의자',
+    '바퀴달린의자(대형)',
+    '바퀴달린의자(소형)'
+  ]; // 외부 모듈 수행 결과를 받아와서 출력할 것.
 
   @override
   _TrashListComfirmationState createState() => _TrashListComfirmationState();
@@ -34,14 +40,15 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
 
   @override
   void initState() {
+    super.initState();
+
     _dropDownMenuItems = getDropDownMenuItems();
     _currentCity = _dropDownMenuItems[0].value;
-    super.initState();
   }
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = new List();
-    for (String city in _cities) {
+    for (String city in widget._detailProduct) {
       items.add(new DropdownMenuItem(value: city, child: new Text(city)));
     }
     return items;
@@ -55,6 +62,9 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
 
   @override
   Widget build(BuildContext context) {
+    final TrashListComfirmation_AccounSnapshot args =
+        ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -64,8 +74,10 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.popAndPushNamed(context, TakingPicture.routeName,
-                  arguments: MyAccountSnapshot(widget._currentAccount));
+              // Navigator.popAndPushNamed(context, TakingPicture.routeName,
+              //     arguments: TakingPicture_AccountSnapshot(_currentAccount));cm
+              Navigator.popUntil(
+                  context, ModalRoute.withName(TakingPicture.routeName));
             }),
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -77,11 +89,11 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
               fontStyle: FontStyle.italic),
         ),
       ),
-      body: TrashList(),
+      body: _buildBody(args),
     );
   }
 
-  Widget TrashList() {
+  Widget _buildBody(TrashListComfirmation_AccounSnapshot args) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Center(
@@ -92,16 +104,11 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
               Container(
                 width: 300.0,
                 height: 300.0,
-                // child: Center(
-                //     child: Image.file(
-                //         File(widget._listViewItem[widget.current_Idx].path))),
+                child: Center(
+                    child: Image.file(
+                        File(args.listViewItem[args.current_Idx].path))),
               ),
               Padding(padding: EdgeInsets.all(2.0)),
-              Text('이사진',
-                // '이 사진은 ' + widget._resultPicture[widget.current_Idx] + ' 입니다.',
-                textScaleFactor: 2.0,
-              ),
-              Padding(padding: EdgeInsets.all(20.0)),
               Text(
                 '제품 목록',
                 textScaleFactor: 1.5,
@@ -144,20 +151,19 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   RaisedButton(
-                      child: Text(
-                        '다시찍기',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20.0),
-                      ),
+                    child: Text('다시찍기', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
                       onPressed: () {}),
                   Padding(padding: EdgeInsets.only(left: 40.0, right: 30.0)),
                   RaisedButton(
-                      child: Text(
-                        ' 다 음 ',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20.0),
-                      ),
-                      onPressed: () {}),
+                      child: (args.current_Idx + 1 == args.listViewItem.length) ? Text(' 신청하기 ',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)) : Text(' 다 음 ',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                      onPressed: () {
+                        if(args.current_Idx + 1 == args.listViewItem.length){
+                          Navigator.pushNamed(context, CustomerForm.routeName, arguments: CustomerForm_AccountSnapshot(args.currentAccount));
+                        }
+                        else{
+                          Navigator.pushNamed(context, TrashListComfirmation.routeName, arguments: TrashListComfirmation_AccounSnapshot(args.currentAccount, args.listViewItem, args.current_Idx + 1));
+                        }
+                      }),
                 ],
               ),
             ],

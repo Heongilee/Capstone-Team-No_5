@@ -4,13 +4,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/TrashListComfirmation.dart';
-
-class MyAccountSnapshot {
-  final DocumentSnapshot _currentAccount;
-
-  MyAccountSnapshot(this._currentAccount);
-}
 
 class TakingPicture extends StatefulWidget {
   static const routeName = '/TakingPicture';
@@ -25,8 +20,7 @@ class _TakingPictureState extends State<TakingPicture> {
 
   @override
   Widget build(BuildContext context) {
-    final MyAccountSnapshot args =
-        ModalRoute.of(context).settings.arguments;
+    final TakingPicture_AccountSnapshot args = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -61,7 +55,7 @@ class _TakingPictureState extends State<TakingPicture> {
     );
   }
 
-  Widget _buildBody(MyAccountSnapshot _currentAccount) {
+  Widget _buildBody(AccountSnapshot args) {
     return SafeArea(
       child: Center(
         child: Column(
@@ -112,13 +106,10 @@ class _TakingPictureState extends State<TakingPicture> {
                       );
                     } else {
                       _loadMyDeepLearningModule().then((value) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => TrashListComfirmation(
-                                    _listViewItem,
-                                    0,
-                                    _currentAccount._currentAccount)));
+                        Navigator.pushNamed(
+                            context, TrashListComfirmation.routeName,
+                            arguments: TrashListComfirmation_AccounSnapshot(
+                                args.currentAccount, _listViewItem, 0));
                       });
                     }
                   }),
@@ -261,7 +252,7 @@ class _TakingPictureState extends State<TakingPicture> {
 
   // 딥러닝 결과를 받아올 메소드
   Future<void> _loadMyDeepLearningModule() async {
-    await showDialog(
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -271,16 +262,17 @@ class _TakingPictureState extends State<TakingPicture> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
           ),
           content: CircularProgressIndicator(),
-          actions: <Widget>[
-            FlatButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Confirm')),
-          ],
+          // actions: <Widget>[
+          //   FlatButton(
+          //       onPressed: () {
+          //         Navigator.of(context).pop();
+          //       },
+          //       child: Text('Confirm')),
+          // ],
         );
       },
     );
+    await Future.delayed(Duration(seconds: 2));
     return;
   }
 }

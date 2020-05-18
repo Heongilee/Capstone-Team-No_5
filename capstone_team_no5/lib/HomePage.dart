@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/TakingPicture.dart';
 
 class HomePage extends StatelessWidget {
@@ -48,7 +49,7 @@ class HomePage extends StatelessWidget {
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) => MyAccount(_currentAccount)));
                   Navigator.pushNamed(context, TakingPicture.routeName,
-                  arguments: MyAccountSnapshot(_currentAccount));
+                  arguments: TakingPicture_AccountSnapshot(_currentAccount));
                 },
                 shape: CircleBorder(),
                 child: Stack(
