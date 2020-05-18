@@ -20,7 +20,8 @@ class _TakingPictureState extends State<TakingPicture> {
 
   @override
   Widget build(BuildContext context) {
-    final TakingPicture_AccountSnapshot args = ModalRoute.of(context).settings.arguments;
+    final TakingPicture_AccountSnapshot args =
+        ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,

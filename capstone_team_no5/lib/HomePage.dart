@@ -49,7 +49,8 @@ class HomePage extends StatelessWidget {
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) => MyAccount(_currentAccount)));
                   Navigator.pushNamed(context, TakingPicture.routeName,
-                  arguments: TakingPicture_AccountSnapshot(_currentAccount));
+                      arguments:
+                          TakingPicture_AccountSnapshot(_currentAccount));
                 },
                 shape: CircleBorder(),
                 child: Stack(

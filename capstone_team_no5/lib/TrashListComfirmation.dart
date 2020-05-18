@@ -4,8 +4,10 @@ import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/CustomerForm.dart';
 import 'dart:io';
 
+import 'MyAccountSnapshot.dart';
 import 'TakingPicture.dart';
 
+// TODO : TrashListComfirmation 생성자 외부로 빼기.
 class TrashListComfirmation extends StatefulWidget {
   static const routeName = '/TrashListComfirmation';
 
@@ -151,17 +153,31 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   RaisedButton(
-                    child: Text('다시찍기', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                      child: Text('다시찍기',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20.0)),
                       onPressed: () {}),
                   Padding(padding: EdgeInsets.only(left: 40.0, right: 30.0)),
                   RaisedButton(
-                      child: (args.current_Idx + 1 == args.listViewItem.length) ? Text(' 신청하기 ',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)) : Text(' 다 음 ',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                      child: (args.current_Idx + 1 == args.listViewItem.length)
+                          ? Text(' 신청하기 ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20.0))
+                          : Text(' 다 음 ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20.0)),
                       onPressed: () {
-                        if(args.current_Idx + 1 == args.listViewItem.length){
-                          Navigator.pushNamed(context, CustomerForm.routeName, arguments: CustomerForm_AccountSnapshot(args.currentAccount));
-                        }
-                        else{
-                          Navigator.pushNamed(context, TrashListComfirmation.routeName, arguments: TrashListComfirmation_AccounSnapshot(args.currentAccount, args.listViewItem, args.current_Idx + 1));
+                        if (args.current_Idx + 1 == args.listViewItem.length) {
+                          Navigator.pushNamed(context, CustomerForm.routeName,
+                              arguments: CustomerForm_AccountSnapshot(
+                                  args.currentAccount));
+                        } else {
+                          Navigator.pushNamed(
+                              context, TrashListComfirmation.routeName,
+                              arguments: TrashListComfirmation_AccounSnapshot(
+                                  args.currentAccount,
+                                  args.listViewItem,
+                                  args.current_Idx + 1));
                         }
                       }),
                 ],
