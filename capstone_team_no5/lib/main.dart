@@ -29,11 +29,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // home: EmailExample(),
-      // home: TrashListComfirmation(),
+      home: TrashListComfirmation(),
       // home: TakingPicture(),
       // home: NoticePage(),
       // home: CustomerForm(),
-      home: Example(),
+      // home: Example(),
       routes: <String, WidgetBuilder>{
         '/MainPage': (BuildContext context) => new MainPage(),
         TakingPicture.routeName: (context) => TakingPicture(),
