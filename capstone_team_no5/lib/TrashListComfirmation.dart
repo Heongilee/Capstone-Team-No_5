@@ -37,17 +37,23 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   ];
 
   List<DropdownMenuItem<String>> _dropDownMenuItems;
+  List<DropdownMenuItem<String>> _dropDownMenuItems2;
 
   String _currentCity;
+  String _currentCity2;
 
+  //제품 목록
   @override
   void initState() {
     super.initState();
 
     _dropDownMenuItems = getDropDownMenuItems();
     _currentCity = _dropDownMenuItems[0].value;
+    _dropDownMenuItems2 = getDropDownMenuItems();
+    _currentCity2 = _dropDownMenuItems2[0].value;
   }
 
+  //제품 목록
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = new List();
     for (String city in widget._detailProduct) {
@@ -56,9 +62,26 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
     return items;
   }
 
+  //상세목록
+  List<DropdownMenuItem<String>> getDropDownMenuItems2() {
+    List<DropdownMenuItem<String>> items = new List();
+    for (String city in _cities) {
+      items.add(new DropdownMenuItem(value: city, child: new Text(city)));
+    }
+    return items;
+  }
+
+  //제목 목록
   void changedDropDownItem(String selectedCity) {
     setState(() {
       _currentCity = selectedCity;
+    });
+  }
+
+  //상세목록 변화
+  void changedDropDownItem1(String selectedCity) {
+    setState(() {
+      _currentCity2 = selectedCity;
     });
   }
 
@@ -143,9 +166,9 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                   color: Colors.grey[200],
                 ),
                 child: DropdownButton(
-                  value: _currentCity,
+                  value: _currentCity2,
                   items: _dropDownMenuItems,
-                  onChanged: changedDropDownItem,
+                  onChanged: changedDropDownItem1,
                 ),
               ),
               Padding(padding: EdgeInsets.all(10.0)),
