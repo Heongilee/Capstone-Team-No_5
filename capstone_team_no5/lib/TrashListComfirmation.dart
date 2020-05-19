@@ -9,17 +9,7 @@ import 'TakingPicture.dart';
 
 // TODO : TrashListComfirmation 생성자 외부로 빼기.
 class TrashListComfirmation extends StatefulWidget {
-  static const routeName = '/TrashListComfirmation';
-
-  List<String> _resultPicture = ['의자', '가방']; // 외부 모듈 수행 결과를 받아와서 출력할 것.
-  List<String> _detailProduct = [
-    '의자',
-    '가방',
-    '1인용',
-    '장의자',
-    '바퀴달린의자(대형)',
-    '바퀴달린의자(소형)'
-  ]; // 외부 모듈 수행 결과를 받아와서 출력할 것.
+  static const routeName = '/TrashListComfirmation';// 외부 모듈 수행 결과를 받아와서 출력할 것.
 
   @override
   _TrashListComfirmationState createState() => _TrashListComfirmationState();
@@ -28,12 +18,19 @@ class TrashListComfirmation extends StatefulWidget {
 class _TrashListComfirmationState extends State<TrashListComfirmation> {
   File _image;
 
-  List _cities = [
+  List _resultPicture = [
     "Cluj-Napoca",
     "Bucuresti",
     "Timisoara",
     "Brasov",
     "Constanta"
+  ];
+  List _detailProduct = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
   ];
 
   List<DropdownMenuItem<String>> _dropDownMenuItems;
@@ -45,19 +42,18 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   //제품 목록
   @override
   void initState() {
-    super.initState();
-
     _dropDownMenuItems = getDropDownMenuItems();
     _currentCity = _dropDownMenuItems[0].value;
-    _dropDownMenuItems2 = getDropDownMenuItems();
+    _dropDownMenuItems2 = getDropDownMenuItems2();
     _currentCity2 = _dropDownMenuItems2[0].value;
+    super.initState();
   }
 
   //제품 목록
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = new List();
-    for (String city in widget._detailProduct) {
-      items.add(new DropdownMenuItem(value: city, child: new Text(city)));
+    for (String city in _resultPicture) {
+      items.add(new DropdownMenuItem(value:city, child: new Text(city)));
     }
     return items;
   }
@@ -65,7 +61,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   //상세목록
   List<DropdownMenuItem<String>> getDropDownMenuItems2() {
     List<DropdownMenuItem<String>> items = new List();
-    for (String city in _cities) {
+    for (String city in _detailProduct) {
       items.add(new DropdownMenuItem(value: city, child: new Text(city)));
     }
     return items;
@@ -167,7 +163,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 ),
                 child: DropdownButton(
                   value: _currentCity2,
-                  items: _dropDownMenuItems,
+                  items: _dropDownMenuItems2,
                   onChanged: changedDropDownItem1,
                 ),
               ),

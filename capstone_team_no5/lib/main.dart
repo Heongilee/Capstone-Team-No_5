@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:recycle/Example.dart';
 import 'package:recycle/RootPage.dart'; // 원래 페이지
 import 'package:recycle/MainPage.dart';
 import 'package:recycle/TabPage.dart';
@@ -20,12 +21,12 @@ class MyApp extends StatelessWidget {
         // brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
-      // home: EmailExample(),
       // home: TrashListComfirmation(),
       // home: TakingPicture(),
       // home: NoticePage(),
       // home: CustomerForm(),
-      home: RootPage(),
+      // home: RootPage(),
+      home: Example(),
       routes: <String, WidgetBuilder>{
         '/MainPage': (BuildContext context) => new MainPage(),
         TakingPicture.routeName: (context) => TakingPicture(),
