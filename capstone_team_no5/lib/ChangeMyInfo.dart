@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:kopo/kopo.dart';
 
 class ChangeMyInfo extends StatelessWidget {
-
   final DocumentSnapshot _currentAccount;
   final _db = Firestore.instance;
   final _id = TextEditingController();
@@ -16,7 +15,7 @@ class ChangeMyInfo extends StatelessWidget {
   final _phoneNum = TextEditingController();
   final _email = TextEditingController();
   final _comfilm = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,13 +23,17 @@ class ChangeMyInfo extends StatelessWidget {
       body: _buildBody(context),
     );
   }
+
   ChangeMyInfo(this._currentAccount);
 
   Widget _buildAppBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
       backgroundColor: Colors.white,
-      title: Text('내 정보 변경', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+      title: Text(
+        '내 정보 변경',
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
       leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           color: Colors.black,
@@ -43,10 +46,13 @@ class ChangeMyInfo extends StatelessWidget {
   Widget _buildBody(BuildContext context) {
     return SafeArea(
       child: Center(
-        child: Column(
-          children: <Widget>[
-            Padding(padding: EdgeInsets.all(20.0)),
-            Flexible(
+          child: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: <Widget>[
+              Padding(padding: EdgeInsets.all(20.0)),
+              Flexible(
                 // ID
                 child: Container(
                   alignment: Alignment(0.0, 0.0),
@@ -71,29 +77,31 @@ class ChangeMyInfo extends StatelessWidget {
                         child: Container(
                           margin: EdgeInsets.only(right: 20),
                           child: StreamBuilder<DocumentSnapshot>(
-                            stream: _db.collection('user')
-                            .document(_currentAccount.documentID)
-                            .snapshots(),
-                            builder: (context, snapshot) {
-                              if(!snapshot.hasData){
-                                return Center(child: CircularProgressIndicator());
-                              }
-                              else{
-                                final DocumentSnapshot document = snapshot.data;
-                                _id.text = document['id'];
-                              return TextField(
-                                controller: _id,
-                                style: TextStyle(color: Colors.black),
-                                readOnly: true,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintStyle: TextStyle(color: Colors.grey[300]),
-                                ),
-                                cursorColor: Colors.blue,
-                              );
-                              }
-                            }
-                          ),
+                              stream: _db
+                                  .collection('user')
+                                  .document(_currentAccount.documentID)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else {
+                                  final DocumentSnapshot document =
+                                      snapshot.data;
+                                  _id.text = document['id'];
+                                  return TextField(
+                                    controller: _id,
+                                    style: TextStyle(color: Colors.black),
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle:
+                                          TextStyle(color: Colors.grey[300]),
+                                    ),
+                                    cursorColor: Colors.blue,
+                                  );
+                                }
+                              }),
                         ),
                       ),
                     ],
@@ -181,29 +189,31 @@ class ChangeMyInfo extends StatelessWidget {
                         child: Container(
                           margin: EdgeInsets.only(right: 20),
                           child: StreamBuilder<DocumentSnapshot>(
-                            stream: _db.collection('user')
-                            .document(_currentAccount.documentID)
-                            .snapshots(),
-                            builder: (context, snapshot) {
-                              if(!snapshot.hasData){
-                                return Center(child: CircularProgressIndicator());
-                              }
-                              else{
-                                  final DocumentSnapshot document = snapshot.data;
+                              stream: _db
+                                  .collection('user')
+                                  .document(_currentAccount.documentID)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else {
+                                  final DocumentSnapshot document =
+                                      snapshot.data;
                                   _name.text = document['name'];
-                                return TextField(
-                                  controller: _name,
-                                  style: TextStyle(color: Colors.black),
-                                  readOnly: true,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: TextStyle(color: Colors.grey[300]),
-                                  ),
-                                  cursorColor: Colors.blue,
-                                );
-                              }
-                            }
-                          ),
+                                  return TextField(
+                                    controller: _name,
+                                    style: TextStyle(color: Colors.black),
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle:
+                                          TextStyle(color: Colors.grey[300]),
+                                    ),
+                                    cursorColor: Colors.blue,
+                                  );
+                                }
+                              }),
                         ),
                       ),
                     ],
@@ -270,16 +280,16 @@ class ChangeMyInfo extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   RaisedButton(
-                    child: Container(
-                      // width: 100,
-                      // height: 30,
-                      // alignment: Alignment(0.0, 0.0),
-                      child: Text(
-                        '직접 입력',
-                        style: TextStyle(color: Colors.black),
+                      child: Container(
+                        // width: 100,
+                        // height: 30,
+                        // alignment: Alignment(0.0, 0.0),
+                        child: Text(
+                          '직접 입력',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
-                    ),
-                    onPressed: () async {
+                      onPressed: () async {
                         _checkInternetAccess(context).then((bool onValue) {
                           if (onValue) {
                             _loadMyAddress(context);
@@ -385,29 +395,31 @@ class ChangeMyInfo extends StatelessWidget {
                         child: Container(
                           margin: EdgeInsets.only(right: 20),
                           child: StreamBuilder<DocumentSnapshot>(
-                            stream: _db.collection('user')
-                            .document(_currentAccount.documentID)
-                            .snapshots(),
-                            builder: (context, snapshot) {
-                              if(!snapshot.hasData){
-                                return Center(child: CircularProgressIndicator());
-                              }
-                              else{
-                                  final DocumentSnapshot document = snapshot.data;
+                              stream: _db
+                                  .collection('user')
+                                  .document(_currentAccount.documentID)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else {
+                                  final DocumentSnapshot document =
+                                      snapshot.data;
                                   _email.text = document['email'];
-                                return TextField(
-                                  controller: _email,
-                                  style: TextStyle(color: Colors.black),
-                                  readOnly: true,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: TextStyle(color: Colors.grey[300]),
-                                  ),
-                                  cursorColor: Colors.blue,
-                                );
-                              }
-                            }
-                          ),
+                                  return TextField(
+                                    controller: _email,
+                                    style: TextStyle(color: Colors.black),
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle:
+                                          TextStyle(color: Colors.grey[300]),
+                                    ),
+                                    cursorColor: Colors.blue,
+                                  );
+                                }
+                              }),
                         ),
                       ),
                     ],
@@ -416,20 +428,21 @@ class ChangeMyInfo extends StatelessWidget {
               ),
               Padding(padding: EdgeInsets.all(50.0)),
               SizedBox(
-                    width: 300,
-                    child: RaisedButton(
-                      child: Text(
-                        '변 경',
-                        style: TextStyle(fontSize: 20.0),
-                      ),
-                      onPressed: null
+                width: 300,
+                child: RaisedButton(
+                    child: Text(
+                      '변 경',
+                      style: TextStyle(fontSize: 20.0),
                     ),
+                    onPressed: null),
               ),
-          ],
-        )
-      ),
+            ],
+          ),
+        ),
+      )),
     );
   }
+
   Future<void> checkmyAuthCode() async {
     return;
   }

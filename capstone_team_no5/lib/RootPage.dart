@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/MainPage.dart';
 import 'MyApp_config.dart';
 import 'TabPage.dart';
@@ -78,16 +79,22 @@ class _RootPageState extends State<RootPage> {
 
       if (_currentDoc != null && onValue.chkboxAUTO == true) {
         // Navigator.pushReplacement로 하면 뒤로 다시 돌아올 수 없다.
-        Navigator.push(
-          context,
-          PageTransition(
-            type: PageTransitionType.fade,
-            child: TabPage(_currentDoc),
-            duration: Duration(milliseconds: 900),
-          ),
-        ).whenComplete(() {
-          // There are multiple heroes that share the same tag within a subtree. 에러 뜨는데 걍 무시.
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+        // Navigator.push(
+        //   context,
+        //   PageTransition(
+        //     type: PageTransitionType.fade,
+        //     child: TabPage(_currentDoc),
+        //     duration: Duration(milliseconds: 900),
+        //   ),
+        // ).whenComplete(() {
+        //   // There are multiple heroes that share the same tag within a subtree. 에러 뜨는데 걍 무시.
+        //   Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+        // });
+        Navigator.pushNamed(context, TabPage.routeName,
+                arguments: TabPage_AccountSnapshot(_currentDoc))
+            .whenComplete(() {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => MainPage()));
         });
       } else {
         if (onValue.chkboxAUTO == false && _checkV1 == true) {

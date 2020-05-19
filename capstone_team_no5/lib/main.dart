@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:recycle/ChangeMyInfo.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:recycle/MyInfo.dart';
 import 'package:recycle/NoticePage.dart';
 import 'package:recycle/RootPage.dart'; // 원래 페이지
 import 'package:recycle/SignUp.dart';
 import 'package:recycle/MainPage.dart';
+import 'package:recycle/TabPage.dart';
 import 'package:recycle/TrashListComfirmation.dart';
 import 'package:recycle/TakingPicture.dart';
 import 'package:recycle/FindAccount.dart';
@@ -33,7 +35,22 @@ class MyApp extends StatelessWidget {
       // home: CustomerForm(),
       // home: Example(),
       routes: <String, WidgetBuilder>{
-        '/TakingPicture': (BuildContext context) => new TakingPicture(),
+        '/MainPage': (BuildContext context) => new MainPage(),
+        TakingPicture.routeName: (context) => TakingPicture(),
+        TrashListComfirmation.routeName: (context) => TrashListComfirmation(),
+        CustomerForm.routeName: (context) => CustomerForm(),
+        TabPage.routeName: (context) => TabPage(),
+      },
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case TabPage.routeName:
+            return PageTransition(
+                child: TabPage(), type: PageTransitionType.fade);
+            break;
+          default:
+            return null;
+            break;
+        }
       },
     );
   }
