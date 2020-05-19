@@ -444,7 +444,7 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
                         _checkInternetAccess().then((bool onValue) {
                           if (onValue) {
                             // Flutter email sender Library call
-                            _emailSending();
+                            _emailSending("gjsrl1@gmail.com", "title", "helloworld!!");
                           } else {
                             showDialog(
                               context: context,
@@ -834,13 +834,14 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
     return;
   }
 
-  Future<void> _emailSending() async {
-    const url = "mailto:gjsrl1@gmail.com?subject=test&body=hello";
-    if (await canLaunch(url)) {
+  Future<void> _emailSending(String recipients, String title, String content) async {
+    // const url = "mailto:gjsrl1@gmail.com?subject=$&body=$";
+    var url = "mailto:$recipients?subject=$title&body=$content";
+    if (await canLaunch(url))
       await launch(url);
-    } else {
+    else
       throw 'Could not launch $url';
-    }
+
     return;
   }
 }

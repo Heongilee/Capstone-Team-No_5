@@ -262,7 +262,7 @@ class _TakingPictureState extends State<TakingPicture> {
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
           ),
-          content: CircularProgressIndicator(),
+          content: CircularProgressIndicator(), // TODO : SizedBox로 감싸면 줄어듦.
           // actions: <Widget>[
           //   FlatButton(
           //       onPressed: () {

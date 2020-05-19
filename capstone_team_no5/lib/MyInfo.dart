@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:recycle/ChangeMyInfo.dart';
@@ -113,14 +111,15 @@ class MyInfo extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ChangeMyInfo(_currentAccount)));
+                            builder: (context) =>
+                                ChangeMyInfo(_currentAccount)));
                   },
                   label: Container(
-                      width: 200.0,
-                      child: Text(
-                        '내 정보 변경',
-                        textAlign: TextAlign.center,
-                      ),
+                    width: 200.0,
+                    child: Text(
+                      '내 정보 변경',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ),
