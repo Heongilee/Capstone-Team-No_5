@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/MyApp_config.dart';
 
 import 'package:flutter/material.dart';
@@ -209,7 +210,8 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                 color: Colors.grey[300],
                 onPressed: () {
                   _checkInternetAccess(context).then((bool onValue) {
-                    if (onValue) {  // 인터넷 연결이 원활한 상태
+                    if (onValue) {
+                      // 인터넷 연결이 원활한 상태
                       var doc;
                       doc = _db
                           .collection('user')
@@ -279,11 +281,14 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                                 }
                                 _pw.clear();
 
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            TabPage(_currentDoc)));
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) =>
+                                //             TabPage(_currentDoc)));
+                                Navigator.pushNamed(context, TabPage.routeName,
+                                    arguments:
+                                        TabPage_AccountSnapshot(_currentDoc));
                               } else {
                                 // 패스워드 틀림
                                 showDialog(
@@ -325,7 +330,8 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                           );
                         }
                       });
-                    } else { // 연결이 원활하지 못 한 경우.
+                    } else {
+                      // 연결이 원활하지 못 한 경우.
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
