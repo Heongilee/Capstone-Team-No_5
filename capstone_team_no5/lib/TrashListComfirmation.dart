@@ -15,12 +15,19 @@ class TrashListComfirmation extends StatefulWidget {
 class _TrashListComfirmationState extends State<TrashListComfirmation> {
   File _image;
 
-  List _cities = [
+  List _resultPicture = [
     "Cluj-Napoca",
     "Bucuresti",
     "Timisoara",
     "Brasov",
     "Constanta"
+  ];
+  List _detailProduct = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
   ];
 
   List<DropdownMenuItem<String>> _dropDownMenuItems;
@@ -34,7 +41,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _currentCity = _dropDownMenuItems[0].value;
-    _dropDownMenuItems2 = getDropDownMenuItems();
+    _dropDownMenuItems2 = getDropDownMenuItems2();
     _currentCity2 = _dropDownMenuItems2[0].value;
     super.initState();
   }
@@ -42,7 +49,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   //제품 목록
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = new List();
-    for (String city in _cities) {
+    for (String city in _resultPicture) {
       items.add(new DropdownMenuItem(value: city, child: new Text(city)));
     }
     return items;
@@ -51,7 +58,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   //상세목록
   List<DropdownMenuItem<String>> getDropDownMenuItems2() {
     List<DropdownMenuItem<String>> items = new List();
-    for (String city in _cities) {
+    for (String city in _detailProduct) {
       items.add(new DropdownMenuItem(value: city, child: new Text(city)));
     }
     return items;
@@ -153,7 +160,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 ),
                 child: DropdownButton(
                   value: _currentCity2,
-                  items: _dropDownMenuItems,
+                  items: _dropDownMenuItems2,
                   onChanged: changedDropDownItem1,
                 ),
               ),
