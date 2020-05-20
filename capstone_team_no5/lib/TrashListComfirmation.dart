@@ -5,11 +5,11 @@ import 'package:recycle/CustomerForm.dart';
 import 'package:recycle/WasteListAsset.dart';
 import 'package:recycle/AccountSnapshot.dart';
 
-// TODO : TrashListComfirmation 생성자 외부로 빼기.
 class TrashListComfirmation extends StatefulWidget {
   List<String> my_result;
   static const routeName = '/TrashListComfirmation'; // 외부 모듈 수행 결과를 받아와서 출력할 것.
 
+  // TODO : 새로고침 오류 고치기
   @override
   _TrashListComfirmationState createState() => _TrashListComfirmationState();
 }
@@ -19,13 +19,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
 
   File _image;
 
-  // List _resultPicture = [
-  //   "Cluj-Napoca",
-  //   "Bucuresti",
-  //   "Timisoara",
-  //   "Brasov",
-  //   "Constanta"
-  // ];
+  List _resultPicture = ["null"];
   List _detailProduct = ["null"];
 
   List<DropdownMenuItem<String>> _dropDownMenuItems_Product;
@@ -55,9 +49,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
 
     for (String i in myDeepLearningResults) {
       // 딥러닝 결과가 매칭된 폐기물 품목 리스트만 items에 add 시킬 것.
-      if (WasteListAsset().trashList.containsKey(i)) {
+      if (WasteListAsset().trashList.containsKey(i))
         items.add(DropdownMenuItem(value: i, child: Text(i)));
-      }
     }
     // WasteListAsset().trashList.forEach((key, value) {
     //   items.add(new DropdownMenuItem(value: key, child: new Text(key)));
@@ -224,7 +217,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
 
   Future<void> _myDeepLearningModule() async {
     // * 반드시 ','가 아닌 ', '으로 구분되어야 합니다. 분류 체계 이름중에 콤마(,)를 사용하는 문자열이 있기 때문이죠.
-    var module_result = "장롱, 비키니 옷장, 싱크대, 책상, 책장, 책꽃이";
+    var module_result = "장롱, 비키니 옷장, 싱크대, 책상, 책장, 책꽂이";
 
     widget.my_result = module_result.split(', ');
 

@@ -3,6 +3,7 @@ library flutter_calendar_dooboo;
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
@@ -17,6 +18,9 @@ class CustomerForm extends StatefulWidget {
 }
 
 class _CustomerForm extends State<CustomerForm> {
+  final _address = TextEditingController();
+  final _db = Firestore.instance;
+
   //현재 날짜 객체 생성후 년 월 일 삽입
   static var now = DateTime.now();
   DateTime _currentDate = DateTime(now.year, now.month, now.day);
@@ -44,12 +48,12 @@ class _CustomerForm extends State<CustomerForm> {
 
   List<DropdownMenuItem<String>> _dropDownMenuItems;
 
-  String _currentCity;
+  String _timeSet;
 
   @override
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
-    _currentCity = _dropDownMenuItems[0].value;
+    _timeSet = _dropDownMenuItems[0].value;
     super.initState();
   }
 
@@ -63,7 +67,7 @@ class _CustomerForm extends State<CustomerForm> {
 
   void changedDropDownItem(String selectedCity) {
     setState(() {
-      _currentCity = selectedCity;
+      _timeSet = selectedCity;
     });
   }
 
@@ -162,11 +166,10 @@ class _CustomerForm extends State<CustomerForm> {
       child: Center(
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height + 133,
-            // height: 2000.0,
+            height: MediaQuery.of(context).size.height + 193.0,
             child: Column(
               children: <Widget>[
-                Padding(padding: EdgeInsets.all(0.0)),
+                Padding(padding: EdgeInsets.all(10.0)),
                 Flexible(
                   // address
                   child: Container(
@@ -192,17 +195,33 @@ class _CustomerForm extends State<CustomerForm> {
                         Flexible(
                           child: Container(
                             margin: EdgeInsets.only(right: 20),
-                            child: TextField(
-                              readOnly: true,
-                              controller: TextEditingController(),
-                              style: TextStyle(color: Colors.black),
-                              decoration: InputDecoration(
-                                hintText: null,
-                                border: InputBorder.none,
-                                hintStyle: TextStyle(color: Colors.grey[300]),
-                              ),
-                              cursorColor: Colors.blue,
-                            ),
+                            child: StreamBuilder<DocumentSnapshot>(
+                                stream: _db
+                                    .collection('user')
+                                    .document(args.currentAccount.documentID)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                        child: CircularProgressIndicator());
+                                  } else {
+                                    final DocumentSnapshot document =
+                                        snapshot.data;
+                                    _address.text = document['address'];
+                                    return TextField(
+                                      readOnly: true,
+                                      controller: _address,
+                                      style: TextStyle(color: Colors.black),
+                                      decoration: InputDecoration(
+                                        hintText: null,
+                                        border: InputBorder.none,
+                                        hintStyle:
+                                            TextStyle(color: Colors.grey[300]),
+                                      ),
+                                      cursorColor: Colors.blue,
+                                    );
+                                  }
+                                }),
                           ),
                         ),
                       ],
@@ -267,7 +286,7 @@ class _CustomerForm extends State<CustomerForm> {
                   child: DropdownButtonHideUnderline(
                     child: ButtonTheme(
                       child: DropdownButton(
-                        value: _currentCity,
+                        value: _timeSet,
                         items: _dropDownMenuItems,
                         onChanged: changedDropDownItem,
                       ),
