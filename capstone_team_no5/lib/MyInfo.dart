@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:recycle/ChangeMyInfo.dart';
-import 'package:recycle/ComplainPage.dart';
 import 'package:recycle/HelpPage.dart';
 import 'package:recycle/NoticePage.dart';
 import 'package:recycle/ChangeMyInfo.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserInfo {
   static final UserInfo _instance = UserInfo._internal();
@@ -158,10 +158,7 @@ class MyInfo extends StatelessWidget {
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.question_answer),
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ComplainPage()));
+                    _emailSending("gjsrl1@gmail.com");
                   },
                   label: Container(
                       width: 200.0,
@@ -219,6 +216,20 @@ class MyInfo extends StatelessWidget {
           .updateData({'status': 1});
       print('status를 정상적으로 1으로 변경했습니다.');
     }
+
+    return;
+  }
+
+  Future<void> _emailSending(String s) async {
+    String _title = "";
+    String _content = "";
+
+    var url = "mailto:$s?subject=$_title&body=$_content";
+
+    if (await canLaunch(url))
+      await launch(url);
+    else
+      throw 'Could not launch $url';
 
     return;
   }
