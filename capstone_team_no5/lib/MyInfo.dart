@@ -1,11 +1,10 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:recycle/ComplainPage.dart';
+import 'package:recycle/ChangeMyInfo.dart';
 import 'package:recycle/HelpPage.dart';
 import 'package:recycle/NoticePage.dart';
-import 'package:recycle/UserhelpPage.dart';
+import 'package:recycle/ChangeMyInfo.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserInfo {
   static final UserInfo _instance = UserInfo._internal();
@@ -23,7 +22,7 @@ class MyInfo extends StatelessWidget {
   final _db = Firestore.instance;
   var myUser;
 
-  MyInfo(this._currentAccount) {}
+  MyInfo(this._currentAccount);
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +102,33 @@ class MyInfo extends StatelessWidget {
               SizedBox(
                 height: 35.0,
                 child: FloatingActionButton.extended(
+                  heroTag: 'Userhelp_key',
+                  tooltip: "Hi, This is extended button.",
+                  backgroundColor: Colors.grey[300],
+                  foregroundColor: Colors.black,
+                  icon: Icon(Icons.description),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ChangeMyInfo(_currentAccount)));
+                  },
+                  label: Container(
+                    width: 200.0,
+                    child: Text(
+                      '내 정보 변경',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(15.0),
+              ),
+              SizedBox(
+                height: 35.0,
+                child: FloatingActionButton.extended(
                   heroTag: 'noticePage_key',
                   tooltip: "Hi, This is extended button.", //길게 누르면 설명 버튼이 뜸.
                   backgroundColor: Colors.grey[300],
@@ -132,40 +158,12 @@ class MyInfo extends StatelessWidget {
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.question_answer),
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ComplainPage()));
+                    _emailSending("gjsrl1@gmail.com");
                   },
                   label: Container(
                       width: 200.0,
                       child: Text(
                         '1 : 1  문 의',
-                        textAlign: TextAlign.center,
-                      )),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(8.0),
-              ),
-              SizedBox(
-                height: 35.0,
-                child: FloatingActionButton.extended(
-                  heroTag: 'Userhelp_key',
-                  tooltip: "Hi, This is extended button.",
-                  backgroundColor: Colors.grey[300],
-                  foregroundColor: Colors.black,
-                  icon: Icon(Icons.description),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UserhelpPage()));
-                  },
-                  label: Container(
-                      width: 200.0,
-                      child: Text(
-                        '이 용 안 내',
                         textAlign: TextAlign.center,
                       )),
                 ),
@@ -218,6 +216,20 @@ class MyInfo extends StatelessWidget {
           .updateData({'status': 1});
       print('status를 정상적으로 1으로 변경했습니다.');
     }
+
+    return;
+  }
+
+  Future<void> _emailSending(String s) async {
+    String _title = "";
+    String _content = "";
+
+    var url = "mailto:$s?subject=$_title&body=$_content";
+
+    if (await canLaunch(url))
+      await launch(url);
+    else
+      throw 'Could not launch $url';
 
     return;
   }

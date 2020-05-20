@@ -3,10 +3,15 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:recycle/AccountSnapshot.dart';
+import 'package:recycle/TrashListComfirmation.dart';
 
 class TakingPicture extends StatefulWidget {
+  static const routeName = '/TakingPicture';
+
   @override
   _TakingPictureState createState() => _TakingPictureState();
 
@@ -15,15 +20,17 @@ class TakingPicture extends StatefulWidget {
 class _TakingPictureState extends State<TakingPicture> {
   String serverResponse;
   File _image;
-  // List<Widget> _listViewItem = [];
   List<File> _listViewItem = [];
 
   @override
   Widget build(BuildContext context) {
+    final TakingPicture_AccountSnapshot args =
+        ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: _buildAppBar(),
-      body: _buildBody(),
+      body: _buildBody(args),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.grey[600],
         child: Icon(Icons.add_a_photo),
@@ -53,7 +60,7 @@ class _TakingPictureState extends State<TakingPicture> {
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(AccountSnapshot args) {
     return SafeArea(
       child: Center(
         child: Column(
@@ -103,6 +110,13 @@ class _TakingPictureState extends State<TakingPicture> {
                           );
                         },
                       );
+                    } else {
+                      _loadMyDeepLearningModule().then((value) {
+                        Navigator.pushNamed(
+                            context, TrashListComfirmation.routeName,
+                            arguments: TrashListComfirmation_AccounSnapshot(
+                                args.currentAccount, _listViewItem, 0));
+                      });
                     }
                     else{
                       _listViewItem.forEach((File element) {
@@ -147,18 +161,63 @@ class _TakingPictureState extends State<TakingPicture> {
   }
 
   Future _getImage() async {
-    // 사진 앱 불러옴
-    File image = await ImagePicker.pickImage(source: ImageSource.camera);
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          File image;
+          return SimpleDialog(
+            title: Text(
+              '이미지를 불러올 방식을 선택하세요.',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                child: SimpleDialogOption(
+                    child: Text('카메라 어플 실행'),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
 
-    setState(() {
-      // 이미지 스트림이 들어오면 리스트가 repaint되는 식으로 작성!!
-      _image = image;
+                      // 사진 앱 불러옴
+                      image = await ImagePicker.pickImage(
+                          source: ImageSource.camera);
 
-      print(image.toString());
-      // 중간에 이미지 촬영을 안 하고 바로 넘어갔을 경우... 처리
-      if (_image != null) _addlistViewItem(_image);
-      _image = null;
-    });
+                      setState(() {
+                        // 이미지 스트림이 들어오면 리스트가 repaint되는 식으로 작성!!
+                        _image = image;
+
+                        print(image.toString());
+                        // 중간에 이미지 촬영을 안 하고 바로 넘어갔을 경우... 처리
+                        if (_image != null) _addlistViewItem(_image);
+                        _image = null;
+                      });
+                    }),
+              ),
+              Container(
+                  padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                  child: SimpleDialogOption(
+                      child: Text('갤러리에서 사진 선택'),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+
+                        // 사진 앱 불러옴
+                        image = await ImagePicker.pickImage(
+                            source: ImageSource.gallery);
+
+                        setState(() {
+                          // 이미지 스트림이 들어오면 리스트가 repaint되는 식으로 작성!!
+                          _image = image;
+
+                          print(image.toString());
+                          // 중간에 이미지 촬영을 안 하고 바로 넘어갔을 경우... 처리
+                          if (_image != null) _addlistViewItem(_image);
+                          _image = null;
+                        });
+                      })),
+            ],
+          );
+        });
   }
 
 
@@ -180,21 +239,30 @@ class _TakingPictureState extends State<TakingPicture> {
                     barrierDismissible: true,
                     builder: (BuildContext context) {
                       return SimpleDialog(
-                        title: Text('삭제하시겠습니까?'),
+                        title: Text(
+                          '삭제하시겠습니까?',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         children: <Widget>[
-                          SimpleDialogOption(
-                              child: Text('예'),
-                              onPressed: () {
-                                setState(() {
-                                  _listViewItem.remove(_listViewItem[idx]);
-                                });
-                                Navigator.of(context).pop();
-                              }),
-                          SimpleDialogOption(
-                              child: Text('아니오'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              }),
+                          Container(
+                            padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                            child: SimpleDialogOption(
+                                child: Text('예'),
+                                onPressed: () {
+                                  setState(() {
+                                    _listViewItem.remove(_listViewItem[idx]);
+                                  });
+                                  Navigator.of(context).pop();
+                                }),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                            child: SimpleDialogOption(
+                                child: Text('아니오'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                }),
+                          ),
                         ],
                       );
                     });
@@ -224,6 +292,28 @@ class _TakingPictureState extends State<TakingPicture> {
 
   void _addlistViewItem(File image) {
     _listViewItem.add(image);
+    _listViewItem.forEach((File element) {
+      print(element.path);
+    });
+  }
+
+  // 딥러닝 결과를 받아올 메소드
+  Future<void> _loadMyDeepLearningModule() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            '딥러닝 분석 결과가 나올 때 까지\n 잠시만 기다려 주세요...',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+          ),
+          content: CircularProgressIndicator(), // TODO : SizedBox로 감싸면 줄어듦.
+        );
+      },
+    );
+    await Future.delayed(Duration(seconds: 2));
+    return;
   }
   _makeGetRequest() async {
     final response = await http.get(_localhost());
