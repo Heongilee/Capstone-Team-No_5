@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         // brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
-      home: TrashListComfirmation(),
+      home: TakingPicture(),
       // home: TakingPicture(),
       // home: NoticePage(),
     );

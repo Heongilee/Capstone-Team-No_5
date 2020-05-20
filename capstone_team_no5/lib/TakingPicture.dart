@@ -1,17 +1,22 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class TakingPicture extends StatefulWidget {
   @override
   _TakingPictureState createState() => _TakingPictureState();
+
 }
 
 class _TakingPictureState extends State<TakingPicture> {
+  String serverResponse;
   File _image;
-  List<Widget> _listViewItem = [];
+  // List<Widget> _listViewItem = [];
+  List<File> _listViewItem = [];
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +65,15 @@ class _TakingPictureState extends State<TakingPicture> {
               height: 300.0,
               child: (_listViewItem.length == 0)
                   ? Center(
-                      child: Image(
-                          image: AssetImage('assets/images/pictureGuide.png')))
+                  child: Image(
+                      image: AssetImage('assets/images/pictureGuide.png')))
                   : _buildListView(),
             ),
             Padding(padding: EdgeInsets.all(2.0)),
-            Text('● TIP : 이미지를 길게 누르면 사진을 목록에서 삭제 시킬 수 있어요!', textScaleFactor: 0.65,),
+            Text(
+              '● TIP : 이미지를 길게 누르면 사진을 목록에서 삭제 시킬 수 있어요!',
+              textScaleFactor: 0.65,
+            ),
             Padding(padding: EdgeInsets.all(14.0)),
             SizedBox(
               width: 250.0,
@@ -73,9 +81,10 @@ class _TakingPictureState extends State<TakingPicture> {
                   child: Text(
                     '다 음',
                     style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                   ),
                   onPressed: () {
+
                     // 사진 촬영이 하나도 안 됐을 경우, 에러 메시지 출력.
                     if (_listViewItem.length == 0) {
                       showDialog(
@@ -94,6 +103,40 @@ class _TakingPictureState extends State<TakingPicture> {
                           );
                         },
                       );
+                    }
+                    else{
+                      _listViewItem.forEach((File element) {
+                        final String nodeEndPoint = 'http://172.30.1.45:3000/image';
+
+                        if (element == null) {
+                          print("어 파일인식 안됨");
+                          return;
+                        }
+                        String base64Image = base64Encode(element.readAsBytesSync());
+                        String fileName = element.path.split("/").last;
+
+                        print("파일이름 : " + fileName);
+                        //print(base64Image);
+                        http.post(nodeEndPoint, body: {
+                          "image": base64Image,
+                          "name": fileName,
+                        }).then((res) {
+                          print(res.body);
+                          print("상태코드 : ");
+                          print(res.statusCode);
+
+                          String tmp=res.body;
+                          //처리해주기
+
+                        }).catchError((err) {
+                          print(err);
+                        });
+
+                        print(33);
+                        print(_makeGetRequest()); //Instance of 'Future<dynamic>' 출력이 됨
+
+
+                      });
                     }
                   }),
             ),
@@ -118,7 +161,10 @@ class _TakingPictureState extends State<TakingPicture> {
     });
   }
 
+
+
   Widget _buildListView() {
+
     return ListView.builder(
       padding: const EdgeInsets.all(8.0),
       itemCount: _listViewItem.length,
@@ -145,7 +191,8 @@ class _TakingPictureState extends State<TakingPicture> {
                                 Navigator.of(context).pop();
                               }),
                           SimpleDialogOption(
-                              child: Text('아니오'), onPressed: () {
+                              child: Text('아니오'),
+                              onPressed: () {
                                 Navigator.of(context).pop();
                               }),
                         ],
@@ -159,16 +206,41 @@ class _TakingPictureState extends State<TakingPicture> {
                 padding: EdgeInsets.only(right: 10.0),
                 width: 300.0,
                 height: 300.0,
-                child: _listViewItem[idx],
+                child: Image.file(
+                  _listViewItem[idx],
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
         );
       },
     );
+
+
+
   }
 
+
   void _addlistViewItem(File image) {
-    _listViewItem.add(Image.file(image, fit: BoxFit.cover));
+    _listViewItem.add(image);
   }
+  _makeGetRequest() async {
+    final response = await http.get(_localhost());
+
+    if (response.statusCode == 200) {
+      serverResponse = response.body;
+      //print("서버 응답부분");print(serverResponse);
+    return 1;
+  }
+  }
+
+  String _localhost() {
+    if (Platform.isAndroid)
+      return 'http://172.30.1.45:3000/';
+    else // for iOS simulator
+      return 'http://172.30.1.45:3000/';
+  }
+
+
 }
