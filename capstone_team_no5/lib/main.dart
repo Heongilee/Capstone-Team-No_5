@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
       // home: TakingPicture(),
       // home: NoticePage(),
       // home: CustomerForm(),
-      home: RootPage(),
       // home: Example(),
+      home: RootPage(),
       routes: <String, WidgetBuilder>{
         '/MainPage': (BuildContext context) => new MainPage(),
         TakingPicture.routeName: (context) => TakingPicture(),
