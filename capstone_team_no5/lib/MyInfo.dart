@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:recycle/ChangeMyInfo.dart';
@@ -113,14 +111,15 @@ class MyInfo extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ChangeMyInfo(_currentAccount)));
+                            builder: (context) =>
+                                ChangeMyInfo(_currentAccount)));
                   },
                   label: Container(
-                      width: 200.0,
-                      child: Text(
-                        '내 정보 변경',
-                        textAlign: TextAlign.center,
-                      ),
+                    width: 200.0,
+                    child: Text(
+                      '내 정보 변경',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ),
@@ -159,77 +158,79 @@ class MyInfo extends StatelessWidget {
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.question_answer),
                   onPressed: () {
-                    emailSending("gus7518@naver.com");
-                                      },
-                                      label: Container(
-                                          width: 200.0,
-                                          child: Text(
-                                            '1 : 1  문 의',
-                                            textAlign: TextAlign.center,
-                                          )),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                  ),
-                                  SizedBox(
-                                    height: 35.0,
-                                    child: FloatingActionButton.extended(
-                                      heroTag: 'help_key',
-                                      tooltip: "Hi, This is extended button.",
-                                      backgroundColor: Colors.grey[300],
-                                      foregroundColor: Colors.black,
-                                      icon: Icon(Icons.help_outline),
-                                      onPressed: () {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(builder: (context) => HelpPage()));
-                                      },
-                                      label: Container(
-                                          width: 200.0,
-                                          child: Text(
-                                            '도 움 말',
-                                            textAlign: TextAlign.center,
-                                          )),
-                                    ),
-                                  ),
-                                  Padding(padding: EdgeInsets.only()),
-                                ],
-                              ),
-                            ),
-                            //bottomNavigationBar: BottomNavigationBar(items: null),
-                          ),
-                        );
-                      }
-                    
-                      void _updateStatus(int v) async {
-                        // status 0이 들어오면 로그인 -> 로그아웃
-                        // status 1이 들어오면 로그아웃 -> 로그인
-                        if (v == 0) {
-                          await _db
-                              .collection('user')
-                              .document(_currentAccount.documentID)
-                              .updateData({'status': 0});
-                          print('status를 정상적으로 0으로 변경했습니다.');
-                        } else {
-                          await _db
-                              .collection('user')
-                              .document(_currentAccount.documentID)
-                              .updateData({'status': 1});
-                          print('status를 정상적으로 1으로 변경했습니다.');
-                        }
-                    
-                        return;
-                      }
-                    
-                    Future<void> emailSending(String s) async{
-                      String content = "";
-                      String title = "";
-                      var url = "mailto:$s?subject=$title&body=$content";
+                    _emailSending("gjsrl1@gmail.com");
+                  },
+                  label: Container(
+                      width: 200.0,
+                      child: Text(
+                        '1 : 1  문 의',
+                        textAlign: TextAlign.center,
+                      )),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8.0),
+              ),
+              SizedBox(
+                height: 35.0,
+                child: FloatingActionButton.extended(
+                  heroTag: 'help_key',
+                  tooltip: "Hi, This is extended button.",
+                  backgroundColor: Colors.grey[300],
+                  foregroundColor: Colors.black,
+                  icon: Icon(Icons.help_outline),
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HelpPage()));
+                  },
+                  label: Container(
+                      width: 200.0,
+                      child: Text(
+                        '도 움 말',
+                        textAlign: TextAlign.center,
+                      )),
+                ),
+              ),
+              Padding(padding: EdgeInsets.only()),
+            ],
+          ),
+        ),
+        //bottomNavigationBar: BottomNavigationBar(items: null),
+      ),
+    );
+  }
 
-                      if(await canLaunch(url))
-                        await launch(url);
-                      else
-                        throw 'Could not launch $url';
-                      return;
-                    }
+  void _updateStatus(int v) async {
+    // status 0이 들어오면 로그인 -> 로그아웃
+    // status 1이 들어오면 로그아웃 -> 로그인
+    if (v == 0) {
+      await _db
+          .collection('user')
+          .document(_currentAccount.documentID)
+          .updateData({'status': 0});
+      print('status를 정상적으로 0으로 변경했습니다.');
+    } else {
+      await _db
+          .collection('user')
+          .document(_currentAccount.documentID)
+          .updateData({'status': 1});
+      print('status를 정상적으로 1으로 변경했습니다.');
+    }
+
+    return;
+  }
+
+  Future<void> _emailSending(String s) async {
+    String _title = "";
+    String _content = "";
+
+    var url = "mailto:$s?subject=$_title&body=$_content";
+
+    if (await canLaunch(url))
+      await launch(url);
+    else
+      throw 'Could not launch $url';
+
+    return;
+  }
 }

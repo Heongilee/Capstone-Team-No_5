@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/MyApp_config.dart';
 
@@ -379,6 +380,15 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                         MaterialPageRoute(builder: (context) => SignUp()));
                   }),
             ),
+            Padding(padding: EdgeInsets.only(top:24.0)),
+            InkWell(
+              child: Text('개발자 옵션 : 모든 계정 로그아웃.', style: TextStyle(decoration: TextDecoration.underline)),
+              onTap: () {
+                _allOfUserAccountSetSignOut().then((value) {
+                  _showMyToastAlertMsg("모든 유저를 로그아웃 시켰습니다.");
+                });
+              },
+            ),
           ],
         ),
       ),
@@ -415,5 +425,27 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
     } on SocketException catch (_) {
       return false;
     }
+  }
+
+  Future<void> _allOfUserAccountSetSignOut() async {
+    QuerySnapshot qs = await _db.collection('user').getDocuments();
+    // 모든 유저 문서에 대해 순회하면서...
+    qs.documents.forEach((DocumentSnapshot user_doc) {
+      // user_doc 유저의 status를 0(로그아웃 상태)으로 바꾼다.
+      var doc = _db
+          .collection('user')
+          .document(user_doc.documentID)
+          .updateData({'status': 0});
+    });
+
+    return;
+  }
+
+  void _showMyToastAlertMsg(String my_msg) {
+    Fluttertoast.showToast(
+      toastLength: Toast.LENGTH_LONG,
+      webBgColor: "#e74c3c",
+      timeInSecForIosWeb: 3,
+      msg: my_msg);
   }
 }
