@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // home: EmailExample(),
-      home: TrashListComfirmation(),
+      home: RootPage(),
       // home: TakingPicture(),
       // home: NoticePage(),
       // home: CustomerForm(),

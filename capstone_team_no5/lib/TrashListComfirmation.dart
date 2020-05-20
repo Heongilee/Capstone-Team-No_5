@@ -127,7 +127,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 height: 300.0,
                 child: Center(
                     child: Image.file(
-                        File(args.listViewItem[args.current_Idx].path))),
+                        File(args.listViewItem[args.current_Idx].path)),
+                        ),
               ),
               Padding(padding: EdgeInsets.all(2.0)),
               Text(
