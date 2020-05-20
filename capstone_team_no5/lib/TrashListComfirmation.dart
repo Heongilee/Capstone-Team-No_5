@@ -39,7 +39,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   String _currentCity;
   String _currentCity2;
 
-  //제품 목록
+  //초기화
   @override
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
