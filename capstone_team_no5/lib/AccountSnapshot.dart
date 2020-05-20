@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
     [페이지명].routeName: (context) => [페이지명](),
 
   
-  6. 전달받은 인자를 사용할 때는 args. ~~ 로 접근할 것.
+  6. 전달받은 인자를 사용할 때는 args.~~ 로 접근할 것.
 ---------------------------------------------------------------------------- */
 class AccountSnapshot {
   final DocumentSnapshot _currentAccount;

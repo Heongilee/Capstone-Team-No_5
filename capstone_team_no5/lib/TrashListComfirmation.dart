@@ -1,83 +1,96 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:recycle/AccountSnapshot.dart';
-import 'package:recycle/CustomerForm.dart';
 import 'dart:io';
-
-import 'MyAccountSnapshot.dart';
 import 'TakingPicture.dart';
+import 'package:flutter/material.dart';
+import 'package:recycle/CustomerForm.dart';
+import 'package:recycle/WasteListAsset.dart';
+import 'package:recycle/AccountSnapshot.dart';
 
 // TODO : TrashListComfirmation 생성자 외부로 빼기.
 class TrashListComfirmation extends StatefulWidget {
-  static const routeName = '/TrashListComfirmation';// 외부 모듈 수행 결과를 받아와서 출력할 것.
+  List<String> my_result;
+  static const routeName = '/TrashListComfirmation'; // 외부 모듈 수행 결과를 받아와서 출력할 것.
 
   @override
   _TrashListComfirmationState createState() => _TrashListComfirmationState();
 }
 
 class _TrashListComfirmationState extends State<TrashListComfirmation> {
+  WasteListAsset obj;
+
   File _image;
 
-  List _resultPicture = [
-    "Cluj-Napoca",
-    "Bucuresti",
-    "Timisoara",
-    "Brasov",
-    "Constanta"
-  ];
-  List _detailProduct = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5"
-  ];
+  // List _resultPicture = [
+  //   "Cluj-Napoca",
+  //   "Bucuresti",
+  //   "Timisoara",
+  //   "Brasov",
+  //   "Constanta"
+  // ];
+  List _detailProduct = ["null"];
 
-  List<DropdownMenuItem<String>> _dropDownMenuItems;
-  List<DropdownMenuItem<String>> _dropDownMenuItems2;
+  List<DropdownMenuItem<String>> _dropDownMenuItems_Product;
+  List<DropdownMenuItem<String>> _dropDownMenuItems_Detail;
 
-  String _currentCity;
-  String _currentCity2;
+  String _currentProduct;
+  String _currentDetail;
 
-  //제품 목록
   @override
   void initState() {
-    _dropDownMenuItems = getDropDownMenuItems();
-    _currentCity = _dropDownMenuItems[0].value;
-    _dropDownMenuItems2 = getDropDownMenuItems2();
-    _currentCity2 = _dropDownMenuItems2[0].value;
+    obj = new WasteListAsset();
+
+    // TODO : 외부 딥러닝 모델 호출(_myDeepLearningModule).
+    _myDeepLearningModule().whenComplete(() {
+      _dropDownMenuItems_Product =
+          getDropDownMenuItems_Product(widget.my_result);
+      _currentProduct = _dropDownMenuItems_Product[0].value;
+    });
+
     super.initState();
   }
 
   //제품 목록
-  List<DropdownMenuItem<String>> getDropDownMenuItems() {
+  List<DropdownMenuItem<String>> getDropDownMenuItems_Product(
+      List<String> myDeepLearningResults) {
     List<DropdownMenuItem<String>> items = new List();
-    for (String city in _resultPicture) {
-      items.add(new DropdownMenuItem(value:city, child: new Text(city)));
+
+    for (String i in myDeepLearningResults) {
+      // 딥러닝 결과가 매칭된 폐기물 품목 리스트만 items에 add 시킬 것.
+      if (WasteListAsset().trashList.containsKey(i)) {
+        items.add(DropdownMenuItem(value: i, child: Text(i)));
+      }
     }
+    // WasteListAsset().trashList.forEach((key, value) {
+    //   items.add(new DropdownMenuItem(value: key, child: new Text(key)));
+    // });
     return items;
   }
 
   //상세목록
-  List<DropdownMenuItem<String>> getDropDownMenuItems2() {
+  List<DropdownMenuItem<String>> getDropDownMenuItems_Detail(
+      String selectedItem) {
     List<DropdownMenuItem<String>> items = new List();
-    for (String city in _detailProduct) {
-      items.add(new DropdownMenuItem(value: city, child: new Text(city)));
+
+    for (String i in WasteListAsset().trashList[selectedItem].detailWaste) {
+      items.add(new DropdownMenuItem(value: i, child: new Text(i)));
     }
     return items;
   }
 
-  //제목 목록
-  void changedDropDownItem(String selectedCity) {
+  //제품 목록
+  void changedDropDownItem(String selectedItem) {
     setState(() {
-      _currentCity = selectedCity;
+      _currentProduct = selectedItem;
+
+      //상세 목록 동적 생성
+      _dropDownMenuItems_Detail = getDropDownMenuItems_Detail(selectedItem);
+      _currentDetail = _dropDownMenuItems_Detail[0].value;
     });
   }
 
   //상세목록 변화
-  void changedDropDownItem1(String selectedCity) {
+  void changedDropDownItem1(String selectedItem) {
     setState(() {
-      _currentCity2 = selectedCity;
+      _currentDetail = selectedItem;
     });
   }
 
@@ -126,9 +139,9 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 width: 300.0,
                 height: 300.0,
                 child: Center(
-                    child: Image.file(
-                        File(args.listViewItem[args.current_Idx].path)),
-                        ),
+                  child: Image.file(
+                      File(args.listViewItem[args.current_Idx].path)),
+                ),
               ),
               Padding(padding: EdgeInsets.all(2.0)),
               Text(
@@ -144,8 +157,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                   color: Colors.grey[200],
                 ),
                 child: DropdownButton(
-                  value: _currentCity,
-                  items: _dropDownMenuItems,
+                  value: _currentProduct,
+                  items: _dropDownMenuItems_Product,
                   onChanged: changedDropDownItem,
                 ),
               ),
@@ -163,8 +176,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                   color: Colors.grey[200],
                 ),
                 child: DropdownButton(
-                  value: _currentCity2,
-                  items: _dropDownMenuItems2,
+                  value: _currentDetail,
+                  items: _dropDownMenuItems_Detail,
                   onChanged: changedDropDownItem1,
                 ),
               ),
@@ -207,5 +220,14 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
         ),
       ),
     );
+  }
+
+  Future<void> _myDeepLearningModule() async {
+    // * 반드시 ','가 아닌 ', '으로 구분되어야 합니다. 분류 체계 이름중에 콤마(,)를 사용하는 문자열이 있기 때문이죠.
+    var module_result = "장롱, 비키니 옷장, 싱크대, 책상, 책장, 책꽃이";
+
+    widget.my_result = module_result.split(', ');
+
+    return;
   }
 }

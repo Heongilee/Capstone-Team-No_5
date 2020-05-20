@@ -12,6 +12,17 @@ class WastePriceInfo {
 }
 
 class WasteListAsset {
+  // ------------------------------- 싱글톤 로직 ---------------------------------------
+  static final WasteListAsset _instance = new WasteListAsset._internal();
+  
+  factory WasteListAsset() {
+    return _instance;
+  }
+
+  WasteListAsset._internal(){
+
+  }
+  // -----------------------------------------------------------------------------------
   final Map<String, WastePriceInfo> _trashList = {
     "장롱": WastePriceInfo(['100cm이상 1쪽', '100cm미만 1쪽'], [15000, 10000]),
     "비키니 옷장": WastePriceInfo(['모든 규격'], [2000]),

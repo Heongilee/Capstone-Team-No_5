@@ -10,11 +10,17 @@ class NoticeDTO with NoticeDAO {
   // ---------------- 싱글톤 패턴 코드 -------------------------
   static final NoticeDTO _instance = NoticeDTO._internal();
 
+  NoticeDTO get instance => _instance;
+
   factory NoticeDTO() {
     return _instance;
   }
 
-  NoticeDTO._internal() {}
+  NoticeDTO._internal() {
+    // 리스트를 초기화 하고 다시 읽어 들인다.
+    _noticeList.clear();
+    loadMyNotice();
+  }
   // ---------------------------------------------------------
   String _noticeTitle;
   String _noticeContent;
@@ -22,9 +28,6 @@ class NoticeDTO with NoticeDAO {
 
   // 공지사항 개수만큼 이 곳에 쌓인다.
   List<NoticeDTO> _noticeList = [];
-
-  //getter
-  List<NoticeDTO> get noticeList => _noticeList;
 
   // 공지사항을 전부 읽어들임.
   Future<void> loadMyNotice() async {
@@ -56,8 +59,6 @@ class _NoticePageState extends State<NoticePage> {
     super.initState();
 
     myNotice = new NoticeDTO();
-    myNotice._noticeList.clear();
-    myNotice.loadMyNotice();
   }
 
   @override
@@ -80,7 +81,7 @@ class _NoticePageState extends State<NoticePage> {
           icon: Icon(Icons.arrow_back_ios),
           color: Colors.black,
           onPressed: () {
-            myNotice._noticeList.clear();
+            myNotice.instance._noticeList.clear();
             Navigator.pop(context);
           }),
     );
@@ -95,10 +96,10 @@ class _NoticePageState extends State<NoticePage> {
             height: MediaQuery.of(context).size.height,
             child: ListView.separated(
               // padding: const EdgeInsets.all(16),
-              itemCount: myNotice.noticeList.length,
+              itemCount: myNotice.instance._noticeList.length,
               itemBuilder: (BuildContext cont, int idx) {
-                print('현재 ${myNotice.noticeList.length} 까지 읽어들였습니다.');
-                return _buildRow(myNotice.noticeList[idx], cont);
+                print('현재 ${myNotice._noticeList.length} 까지 읽어들였습니다.');
+                return _buildRow(myNotice.instance._noticeList[idx], cont);
 
                 // if (idx.isOdd) {
                 //   return Divider();

@@ -162,10 +162,11 @@ class _CustomerForm extends State<CustomerForm> {
       child: Center(
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height,
+            height: MediaQuery.of(context).size.height + 133,
+            // height: 2000.0,
             child: Column(
               children: <Widget>[
-                Padding(padding: EdgeInsets.all(30.0)),
+                Padding(padding: EdgeInsets.all(0.0)),
                 Flexible(
                   // address
                   child: Container(
