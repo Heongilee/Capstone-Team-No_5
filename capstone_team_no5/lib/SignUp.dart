@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kopo/kopo.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class signup_text_editing_controller {
   final _id = TextEditingController();
@@ -443,8 +442,8 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
                       onPressed: () {
                         _checkInternetAccess().then((bool onValue) {
                           if (onValue) {
-                            // Flutter email sender Library call
-                            _emailSending("gjsrl1@gmail.com", "title", "helloworld!!");
+                            // node emailer(External Library) call
+                            _emailSending(_email.text);
                           } else {
                             showDialog(
                               context: context,
@@ -834,14 +833,7 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
     return;
   }
 
-  Future<void> _emailSending(String recipients, String title, String content) async {
-    // const url = "mailto:gjsrl1@gmail.com?subject=$&body=$";
-    var url = "mailto:$recipients?subject=$title&body=$content";
-    if (await canLaunch(url))
-      await launch(url);
-    else
-      throw 'Could not launch $url';
-
+  Future<void> _emailSending(String my_email) async {
     return;
   }
 }

@@ -14,7 +14,6 @@ class TakingPicture extends StatefulWidget {
 
   @override
   _TakingPictureState createState() => _TakingPictureState();
-
 }
 
 class _TakingPictureState extends State<TakingPicture> {
@@ -72,8 +71,8 @@ class _TakingPictureState extends State<TakingPicture> {
               height: 300.0,
               child: (_listViewItem.length == 0)
                   ? Center(
-                  child: Image(
-                      image: AssetImage('assets/images/pictureGuide.png')))
+                      child: Image(
+                          image: AssetImage('assets/images/pictureGuide.png')))
                   : _buildListView(),
             ),
             Padding(padding: EdgeInsets.all(2.0)),
@@ -88,10 +87,9 @@ class _TakingPictureState extends State<TakingPicture> {
                   child: Text(
                     '다 음',
                     style:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                   ),
                   onPressed: () {
-
                     // 사진 촬영이 하나도 안 됐을 경우, 에러 메시지 출력.
                     if (_listViewItem.length == 0) {
                       showDialog(
@@ -118,40 +116,41 @@ class _TakingPictureState extends State<TakingPicture> {
                                 args.currentAccount, _listViewItem, 0));
                       });
                     }
-                    else{
-                      _listViewItem.forEach((File element) {
-                        final String nodeEndPoint = 'http://172.30.1.45:3000/image';
+                    // ! -------------------------- 재웅이형 코드 ----------------------------------
+                    //else{
+                    //   _listViewItem.forEach((File element) {
+                    //     final String nodeEndPoint = 'http://172.30.1.45:3000/image';
 
-                        if (element == null) {
-                          print("어 파일인식 안됨");
-                          return;
-                        }
-                        String base64Image = base64Encode(element.readAsBytesSync());
-                        String fileName = element.path.split("/").last;
+                    //     if (element == null) {
+                    //       print("어 파일인식 안됨");
+                    //       return;
+                    //     }
+                    //     String base64Image = base64Encode(element.readAsBytesSync());
+                    //     String fileName = element.path.split("/").last;
 
-                        print("파일이름 : " + fileName);
-                        //print(base64Image);
-                        http.post(nodeEndPoint, body: {
-                          "image": base64Image,
-                          "name": fileName,
-                        }).then((res) {
-                          print(res.body);
-                          print("상태코드 : ");
-                          print(res.statusCode);
+                    //     print("파일이름 : " + fileName);
+                    //     //print(base64Image);
+                    //     http.post(nodeEndPoint, body: {
+                    //       "image": base64Image,
+                    //       "name": fileName,
+                    //     }).then((res) {
+                    //       print(res.body);
+                    //       print("상태코드 : ");
+                    //       print(res.statusCode);
 
-                          String tmp=res.body;
-                          //처리해주기
+                    //       String tmp=res.body;
+                    //       //처리해주기
 
-                        }).catchError((err) {
-                          print(err);
-                        });
+                    //     }).catchError((err) {
+                    //       print(err);
+                    //     });
 
-                        print(33);
-                        print(_makeGetRequest()); //Instance of 'Future<dynamic>' 출력이 됨
+                    //     print(33);
+                    //     print(_makeGetRequest()); //Instance of 'Future<dynamic>' 출력이 됨
 
-
-                      });
-                    }
+                    //   });
+                    // }
+                    // ! ----------------------------------------------------------------------------
                   }),
             ),
           ],
@@ -220,10 +219,7 @@ class _TakingPictureState extends State<TakingPicture> {
         });
   }
 
-
-
   Widget _buildListView() {
-
     return ListView.builder(
       padding: const EdgeInsets.all(8.0),
       itemCount: _listViewItem.length,
@@ -284,11 +280,7 @@ class _TakingPictureState extends State<TakingPicture> {
         );
       },
     );
-
-
-
   }
-
 
   void _addlistViewItem(File image) {
     _listViewItem.add(image);
@@ -315,14 +307,15 @@ class _TakingPictureState extends State<TakingPicture> {
     await Future.delayed(Duration(seconds: 2));
     return;
   }
+
   _makeGetRequest() async {
     final response = await http.get(_localhost());
 
     if (response.statusCode == 200) {
       serverResponse = response.body;
       //print("서버 응답부분");print(serverResponse);
-    return 1;
-  }
+      return 1;
+    }
   }
 
   String _localhost() {
@@ -331,6 +324,4 @@ class _TakingPictureState extends State<TakingPicture> {
     else // for iOS simulator
       return 'http://172.30.1.45:3000/';
   }
-
-
 }

@@ -10,8 +10,6 @@ class NoticeDTO with NoticeDAO {
   // ---------------- 싱글톤 패턴 코드 -------------------------
   static final NoticeDTO _instance = NoticeDTO._internal();
 
-  NoticeDTO get instance => _instance;
-
   factory NoticeDTO() {
     return _instance;
   }
@@ -19,7 +17,7 @@ class NoticeDTO with NoticeDAO {
   NoticeDTO._internal() {
     // 리스트를 초기화 하고 다시 읽어 들인다.
     _noticeList.clear();
-    loadMyNotice();
+    // loadMyNotice();
   }
   // ---------------------------------------------------------
   String _noticeTitle;
@@ -27,25 +25,10 @@ class NoticeDTO with NoticeDAO {
   dynamic _noticeDate;
 
   // 공지사항 개수만큼 이 곳에 쌓인다.
-  List<NoticeDTO> _noticeList = [];
-
-  // 공지사항을 전부 읽어들임.
-  Future<void> loadMyNotice() async {
-    _qs = await _db.collection('notice').getDocuments();
-    _qs.documents.forEach((DocumentSnapshot notice_doc) {
-      NoticeDTO obj = new NoticeDTO();
-      obj._noticeTitle = notice_doc['noticeTitle'];
-      obj._noticeContent = notice_doc['noticeContent'];
-      obj._noticeDate = notice_doc['noticeDate'];
-
-      _noticeList.add(obj);
-    });
-
-    return;
-  }
+  List<NoticeDTO> _noticeList = new List();
 }
 
-class NoticePage extends StatefulWidget {
+class NoticePage extends StatefulWidget with NoticeDAO {
   @override
   _NoticePageState createState() => _NoticePageState();
 }
@@ -81,7 +64,7 @@ class _NoticePageState extends State<NoticePage> {
           icon: Icon(Icons.arrow_back_ios),
           color: Colors.black,
           onPressed: () {
-            myNotice.instance._noticeList.clear();
+            NoticeDTO()._noticeList.clear();
             Navigator.pop(context);
           }),
     );
@@ -91,31 +74,37 @@ class _NoticePageState extends State<NoticePage> {
     return SafeArea(
       child: Center(
         child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: ListView.separated(
-              // padding: const EdgeInsets.all(16),
-              itemCount: myNotice.instance._noticeList.length,
-              itemBuilder: (BuildContext cont, int idx) {
-                print('현재 ${myNotice._noticeList.length} 까지 읽어들였습니다.');
-                return _buildRow(myNotice.instance._noticeList[idx], cont);
-
-                // if (idx.isOdd) {
-                //   return Divider();
-                // } else {
-                //   var _realIdx = idx ~/ 2;
-
-                //   return _buildRow(myNotice.noticeList[_realIdx], context);
-                // }
-              },
-              separatorBuilder: (context, index) {
-                return Divider();
-              },
-            ),
-          ),
+          child: StreamBuilder<QuerySnapshot>(
+              stream: widget._db.collection('notice').snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData)
+                  return _myCircularProgressIndicator();
+                else
+                  return _buildList(context, snapshot.data.documents);
+              }),
         ),
       ),
+    );
+  }
+
+  Widget _myCircularProgressIndicator() {
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) {
+        if (index.isOdd)
+          return Divider();
+        else {
+          var realIndex = index ~/ 2;
+
+          return _buildRow(NoticeDTO()._noticeList[realIndex], context);
+        }
+      },
     );
   }
 
@@ -133,7 +122,10 @@ class _NoticePageState extends State<NoticePage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text(noticeList._noticeTitle, style: TextStyle()),
+              title: Text(noticeList._noticeTitle,
+                  style: TextStyle(),
+                  textAlign: TextAlign.center,
+                  textScaleFactor: 1.2),
               content: Text(noticeList._noticeContent, style: TextStyle()),
               actions: <Widget>[
                 FlatButton(

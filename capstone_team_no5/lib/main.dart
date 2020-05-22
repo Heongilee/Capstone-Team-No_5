@@ -21,11 +21,8 @@ class MyApp extends StatelessWidget {
         // brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
-      // home: TakingPicture(),
-      // home: NoticePage(),
-      // home: CustomerForm(),
-      // home: Example(),
-      home: RootPage(),
+      // home: RootPage(),
+      home: Example(),
       routes: <String, WidgetBuilder>{
         '/MainPage': (BuildContext context) => new MainPage(),
         TakingPicture.routeName: (context) => TakingPicture(),
@@ -34,6 +31,7 @@ class MyApp extends StatelessWidget {
         TabPage.routeName: (context) => TabPage(),
       },
       onGenerateRoute: (settings) {
+        // * 페이지 전환 효과를 주고 싶으면 이 영역에 추가시키면 됩니다.
         switch (settings.name) {
           case TabPage.routeName:
             return PageTransition(
