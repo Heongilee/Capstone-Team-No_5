@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
         // brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
-      // home: RootPage(),
-      home: Example(),
+      home: RootPage(),
+      // home: Example(),
       routes: <String, WidgetBuilder>{
         '/MainPage': (BuildContext context) => new MainPage(),
         TakingPicture.routeName: (context) => TakingPicture(),
