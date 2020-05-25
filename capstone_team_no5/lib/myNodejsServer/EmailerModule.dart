@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:async';
-import 'package:dio/dio.dart'; //dio plugin.
 
-const PROTOCOL = "https";
+const PROTOCOL = "http";
 const HOST = "localhost";
+const PORT = "8080";
 const ROUTE = "create-mailer";
-const _API_PREFIX = "$PROTOCOL://$HOST/$ROUTE";
-// https://localhost/create-mailer
+const API_PREFIX = "$PROTOCOL://$HOST:$PORT/$ROUTE";
 
 class EmailerDAO {
   static final EmailerDAO _instance = EmailerDAO._internal();
@@ -15,30 +14,30 @@ class EmailerDAO {
   factory EmailerDAO() => _instance;
 
   Future<EmailerDTO> getReq() async {
-    Response response; //dio에서 사용하는 것을 가져온 것.
-    Dio dio = new Dio();
-    // get request를 함.
-    response = await dio.get("$_API_PREFIX/1");
-    print(response.data.toString());
+    // Response response; //dio에서 사용하는 것을 가져온 것.
+    // Dio dio = new Dio();
+    // // get request를 함.
+    // response = await dio.get("$API_PREFIX/1");
+    // print(response.data.toString());
 
     // ! 조건문을 줘야 하지 않을까...?
-    Map jsonObj = jsonDecode(response.data);
-    jsonObj.putIfAbsent("ok", () => true);
+    // Map jsonObj = jsonDecode(response.data);
+    // jsonObj.putIfAbsent("ok", () => true);
 
     // response.data로 jsonObject를 들어오게 할 것임.
-    return new EmailerDTO.fromJson(jsonObj);
+    // return new EmailerDTO.fromJson(jsonObj);
   }
 
   Future<void> postReq(EmailerDTO obj) async {
-    Response response; //dio에서 사용하는 것을 가져온 것.
-    Dio dio = new Dio();
+    // Response response; //dio에서 사용하는 것을 가져온 것.
+    // Dio dio = new Dio();
 
     // data는 Map으로 받아서 http 웹 서버로 데이터를 보냄.
     Map jsonObj = obj.toJson();
 
     // my_data.putIfAbsent("userId", () => 189);
-    response = await dio.post(_API_PREFIX, data: jsonObj);
-    print(response.data.toString());
+    // response = await dio.post(API_PREFIX, data: jsonObj);
+    // print(response.data.toString());
 
     return;
   }
@@ -48,13 +47,12 @@ class EmailerDAO {
   // https://jsonplaceholder.typicode.com/posts?userId=1&id=3  <-을 보낼것임.
   // userId 가 1이고, id가 3인 데이터 들을 JsonArray 형태로 받아올 것임.
   Future<void> getReqWzQuery(EmailerDTO obj) async {
-    Response response; //dio에서 사용하는 것을 가져온 것.
-    Dio dio = new Dio();
+    // Response response; //dio에서 사용하는 것을 가져온 것.
+    // Dio dio = new Dio();
 
     Map jsonObj = obj.toJson();
-
-    response = await dio.get(_API_PREFIX, queryParameters: jsonObj);
-    print(response.data.toString());
+    // response = await dio.get(API_PREFIX, queryParameters: jsonObj);
+    // print(response.data.toString());
   }
 }
 
