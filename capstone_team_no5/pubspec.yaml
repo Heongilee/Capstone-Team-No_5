@@ -19,12 +19,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  # 이메일 인증 코드를 발급하기 위한 random code generator library
+  random_string: ^2.0.1
+
+  # 페이지 전환 효과 라이브러리
   page_transition: ^1.1.5
+
   # 캘린더
   flutter_calendar_carousel: ^1.4.12
 
   # http 통신에 필요한 라이브러리
-  dio: ^3.0.9
+  http: ^0.12.1
 
   # mailer SMTP
   mailer: ^3.0.4

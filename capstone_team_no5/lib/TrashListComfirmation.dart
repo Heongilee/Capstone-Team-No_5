@@ -13,6 +13,14 @@ class TrashListComfirmation extends StatefulWidget {
 }
 
 class _TrashListComfirmationState extends State<TrashListComfirmation> {
+  // K : 제품목록, V : 상세목록
+  List<Map<String, String>> _strListItems;
+
+  bool subInitState_flag;
+  // * 딥러닝 분석 결과를 리스트형태로 가져올 것임.
+  List<String> _currentResult;
+
+  // 강남구청 폐기물 분류 클래스
   WasteListAsset obj;
 
   File _image;
@@ -31,16 +39,9 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
 
   @override
   void initState() {
+    subInitState_flag = false;
     obj = new WasteListAsset();
-    // TODO : 외부 딥러닝 모델 호출(_myDeepLearningModule)
-    // _myDeepLearningModule().whenComplete(() {
-    //   _dropDownMenuItems_Product =
-    //       getDropDownMenuItems_Product(widget.my_result);
-    //   _currentProduct = _dropDownMenuItems_Product[0].value;
-    // });
-    List<String> result = _myDeepLearningModule();
-    _dropDownMenuItems_Product = getDropDownMenuItems_Product(result);
-    _currentProduct = _dropDownMenuItems_Product[0].value;
+
     _dropDownMenuItems_Detail = new List();
     _dropDownMenuItems_Detail.add(new DropdownMenuItem(
         value: _detailProduct[0], child: Text(_detailProduct[0])));
@@ -102,6 +103,15 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
     final TrashListComfirmation_AccounSnapshot args =
         ModalRoute.of(context).settings.arguments;
 
+    // subInitState : route를 통해 arguments 들이 들어오고 나서 콤보박스 리스트를 활성화 시킬 것임.
+    if (subInitState_flag == false) {
+      subInitState_flag = true;
+
+      _dropDownMenuItems_Product = getDropDownMenuItems_Product(
+          args.myDeepLearningResultStr[args.current_Idx]);
+      _currentProduct = _dropDownMenuItems_Product[0].value;
+    }
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -111,8 +121,6 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
               color: Colors.black,
             ),
             onPressed: () {
-              // Navigator.popAndPushNamed(context, TakingPicture.routeName,
-              //     arguments: TakingPicture_AccountSnapshot(_currentAccount));cm
               Navigator.popUntil(
                   context, ModalRoute.withName(TakingPicture.routeName));
             }),
@@ -152,8 +160,6 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 textScaleFactor: 1.5,
               ),
               Container(
-                // width: 250,
-                // color: Colors.grey[200],
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(4.0)),
                   border: Border.all(width: 1, style: BorderStyle.solid),
@@ -171,8 +177,6 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 textScaleFactor: 1.5,
               ),
               Container(
-                // width: 250,
-                // color: Colors.grey[200],
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(4.0)),
                   border: Border.all(width: 1, style: BorderStyle.solid),
@@ -206,14 +210,16 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                         if (args.current_Idx + 1 == args.listViewItem.length) {
                           Navigator.pushNamed(context, CustomerForm.routeName,
                               arguments: CustomerForm_AccountSnapshot(
-                                  args.currentAccount));
+                                  args.currentAccount, _strListItems));
                         } else {
+                          _strListItems.add({_currentProduct: _currentDetail});
                           Navigator.pushNamed(
                               context, TrashListComfirmation.routeName,
                               arguments: TrashListComfirmation_AccounSnapshot(
                                   args.currentAccount,
                                   args.listViewItem,
-                                  args.current_Idx + 1));
+                                  args.current_Idx + 1,
+                                  args.myDeepLearningResultStr));
                         }
                       }),
                 ],
@@ -223,16 +229,5 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
         ),
       ),
     );
-  }
-
-  // Future<void> _myDeepLearningModule() async {
-  List<String> _myDeepLearningModule() {
-    List<String> my_result;
-    // * 반드시 ','가 아닌 ', '으로 구분되어야 합니다. 분류 체계 이름중에 콤마(,)를 사용하는 문자열이 있기 때문이죠.
-    var module_result = "장롱, 비키니 옷장, 싱크대, 책상, 책장, 책꽂이";
-
-    my_result = module_result.split(', ');
-
-    return my_result;
   }
 }

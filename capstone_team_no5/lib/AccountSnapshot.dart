@@ -37,17 +37,24 @@ class TakingPicture_AccountSnapshot extends AccountSnapshot {
 
 class TrashListComfirmation_AccounSnapshot extends AccountSnapshot {
   List<File> _listViewItem; // 이미지 파일 리스트
-  final current_Idx;
+  final current_Idx; // 현재 페이지 인덱스
+  Map<int, List<String>>
+      _myDeepLearningResultStr; // int번째 인덱스의 딥러닝 다중 검출 결과 List<String>
 
   List<File> get listViewItem => _listViewItem;
+  Map<int, List<String>> get myDeepLearningResultStr =>
+      _myDeepLearningResultStr;
 
-  TrashListComfirmation_AccounSnapshot(
-      DocumentSnapshot currentAccount, this._listViewItem, this.current_Idx)
+  TrashListComfirmation_AccounSnapshot(DocumentSnapshot currentAccount,
+      this._listViewItem, this.current_Idx, this._myDeepLearningResultStr)
       : super(currentAccount); // 현재 출력중인 페이지 번호 0 ~ [사진 갯수-1] 만큼
 }
 
 class CustomerForm_AccountSnapshot extends AccountSnapshot {
-  CustomerForm_AccountSnapshot(DocumentSnapshot currentAccount)
+  List<Map<String, String>> _listItem;
+  List<Map<String, String>> get listItem => _listItem;
+
+  CustomerForm_AccountSnapshot(DocumentSnapshot currentAccount, this._listItem)
       : super(currentAccount);
 }
 
