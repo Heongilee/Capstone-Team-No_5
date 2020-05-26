@@ -10,6 +10,7 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/TakingPicture.dart';
 import 'package:recycle/model/WasteListAsset.dart';
+import 'package:recycle/ReservationDTO.dart';
 
 class CustomerForm extends StatefulWidget {
   static const routeName = '/CustomerForm';
@@ -49,7 +50,9 @@ class _CustomerForm extends State<CustomerForm> {
 
   List<DropdownMenuItem<String>> _dropDownMenuItems;
 
-  String _timeSet;
+  String _timeSet;//시간을 담는 변수
+  DateTime selectedDate;//선택한 날짜
+
 
   WasteListAsset waste_obj;
 
@@ -83,8 +86,10 @@ class _CustomerForm extends State<CustomerForm> {
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
       todayBorderColor: Colors.green,
       onDayPressed: (DateTime date, List<Event> events) {
-        this.setState(() => _currentDate2 = date);
+        this.setState(() { _currentDate2 = date;});
         events.forEach((event) => print(event.title));
+        
+        selectedDate = date;
       },
       daysHaveCircularBorder: true,
       showOnlyCurrentMonthDate: false,
@@ -109,13 +114,6 @@ class _CustomerForm extends State<CustomerForm> {
       todayTextStyle: TextStyle(
         color: Colors.blue,
       ),
-      // markedDateShowIcon: true,
-      // markedDateIconMaxShown: 2,
-      // markedDateIconBuilder: (event) {
-      //   return event.icon;
-      // },
-      // markedDateMoreShowTotal:
-      //     true,
       todayButtonColor: Colors.yellow,
       selectedDayTextStyle: TextStyle(
         color: Colors.yellow,
@@ -328,7 +326,10 @@ class _CustomerForm extends State<CustomerForm> {
                         '제 출',
                         style: TextStyle(fontSize: 20.0),
                       ),
-                      onPressed: null),
+                      onPressed: () async{
+                        myReservation.myJsonObjects = ReservationDTO(reserveId: args.currentAccount.data['id'], reserveDate: DateTime.now(), reserveAddress: args.currentAccount.data['address'], reserveState: "접수 완료", reserveVisitDate: selectedDate, reserveVisitTime: _timeSet, reserveItems: ['어항', '가방류']).toJson();
+                        myReservation.accessMyFirestore();
+                      }),
                 ),
               ],
             ),
