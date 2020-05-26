@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:recycle/model/NoticeModel.dart';
 
-class NoticePage extends StatefulWidget{
+class NoticePage extends StatefulWidget {
   @override
   _NoticePageState createState() => _NoticePageState();
 }
@@ -35,19 +36,18 @@ class _NoticePageState extends State<NoticePage> {
   Widget _buildBody(BuildContext context) {
     return SafeArea(
       child: Center(
-        child: SingleChildScrollView(
-          // child: StreamBuilder<QuerySnapshot>(
-          //     stream: myNotice.db.collection('notice').snapshots(),
-          //     builder: (context, snapshot) {
-          //       if (!snapshot.hasData)
-          //         return _myCircularProgressIndicator();
-          //       else
-          //         return _buildList(context);
-          //     }),
-          child: RefreshIndicator(
-            onRefresh: () => myNotice.loadmyNotice,
-            child: _buildList(context), 
-          ),
+        child: RefreshIndicator(
+          onRefresh: () async{
+            myNotice.myNoticeList.clear();
+
+            myNotice.qs = await myNotice.db.collection('notice').getDocuments();
+            setState(() {
+              myNotice.qs.documents.forEach((DocumentSnapshot onValue) {
+                myNotice.myNoticeList.add(new NoticeDTO.fromJson(onValue.data));
+              });
+            });
+          },
+          child: _buildList(context),
         ),
       ),
     );

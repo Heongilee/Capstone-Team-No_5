@@ -16,14 +16,20 @@ class NoticeDAO {
   // *-------------------------------------------------------------
   final _db = Firestore.instance;
   QuerySnapshot _qs;
-  List<NoticeDTO> _myNoticeList;
+  List<NoticeDTO> _myNoticeList = [
+    NoticeDTO(
+        noticeTitle: "Dummy-Title",
+        noticeContent: "Dummy-Content",
+        noticeDate: DateTime.now())
+  ];
   // getter
   Firestore get db => _db;
   QuerySnapshot get qs => _qs;
+  set qs(QuerySnapshot _qs) => this._qs = _qs;
   List<NoticeDTO> get myNoticeList => _myNoticeList;
-  dynamic get loadmyNotice => _loadmyNotice();
+  // dynamic get loadmyNotice => _loadmyNotice();
 
-  Future<void> _loadmyNotice() async {
+  Future<Null> _loadmyNotice() async {
     _myNoticeList.clear();
 
     _qs = await _db.collection('notice').getDocuments();
@@ -31,7 +37,6 @@ class NoticeDAO {
       _myNoticeList.add(new NoticeDTO.fromJson(onValue.data));
     });
 
-    return;
   }
 }
 

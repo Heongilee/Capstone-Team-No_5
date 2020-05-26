@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kopo/kopo.dart';
 import 'package:random_string/random_string.dart';
-import 'package:recycle/myNodejsServer/EmailerModule.dart';
+import 'package:recycle/model/EmailerModule.dart';
 
 class signup_text_editing_controller {
   final _id = TextEditingController();

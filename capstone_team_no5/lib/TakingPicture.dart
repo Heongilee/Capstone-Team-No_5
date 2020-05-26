@@ -109,14 +109,17 @@ class _TakingPictureState extends State<TakingPicture> {
                         },
                       );
                     } else {
-                      await _loadMyDeepLearningModule(context).then((Map<int, List<String>> myResultStrList) {
+                      await _loadMyDeepLearningModule(context)
+                          .then((Map<int, List<String>> myResultStrList) {
                         Navigator.pushNamed(
                             context, TrashListComfirmation.routeName,
                             arguments: TrashListComfirmation_AccounSnapshot(
                                 args.currentAccount,
                                 _listViewItem,
                                 0,
-                                myResultStrList));
+                                myResultStrList,
+                                {},
+                                0));
                       });
                     }
                     // ! -------------------------- 재웅이형 코드 ----------------------------------
@@ -293,7 +296,8 @@ class _TakingPictureState extends State<TakingPicture> {
   }
 
   // 딥러닝 결과를 받아올 메소드
-  Future<Map<int, List<String>>> _loadMyDeepLearningModule(BuildContext context) async {
+  Future<Map<int, List<String>>> _loadMyDeepLearningModule(
+      BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -308,10 +312,16 @@ class _TakingPictureState extends State<TakingPicture> {
       },
     );
 
-    Map<int, List<String>> _myDeepLearningResults = 
-    {
-      0 : ["어항", "이불", "화분", "자전거", "항아리"], // 0번째 사진에서 검출된 객체들은 어항, 이불, 화분, 자전거, 항아리가 있다.
-      1 : ["가방류", "고무통", "러닝머신", "옥매트"],   // 1번째 사진에서 검출된 객체들은 다음과 같다.
+    Map<int, List<String>> _myDeepLearningResults = {
+      0: [
+        "어항",
+        "이불",
+        "화분",
+        "자전거",
+        "항아리"
+      ], // 0번째 사진에서 검출된 객체들은 어항, 이불, 화분, 자전거, 항아리가 있다.
+      1: ["가방류", "고무통", "러닝머신", "옥매트"], // 1번째 사진에서 검출된 객체들은 다음과 같다.
+      2: ["유리(거울,판유리)", "재봉틀", "화일캐비넷", "피아노", "환풍기", "카페트"]
     };
     // ! -------------------- Not working... ------------------------
     // _listViewItem.forEach((File element) {

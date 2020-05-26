@@ -2,7 +2,7 @@ import 'dart:io';
 import 'TakingPicture.dart';
 import 'package:flutter/material.dart';
 import 'package:recycle/CustomerForm.dart';
-import 'package:recycle/WasteListAsset.dart';
+import 'package:recycle/model/WasteListAsset.dart';
 import 'package:recycle/AccountSnapshot.dart';
 
 class TrashListComfirmation extends StatefulWidget {
@@ -13,21 +13,17 @@ class TrashListComfirmation extends StatefulWidget {
 }
 
 class _TrashListComfirmationState extends State<TrashListComfirmation> {
-  // K : 제품목록, V : 상세목록
-  List<Map<String, String>> _strListItems;
-
+  // 이전 페이지 인자를 불러오고나서 초기화 하기위한 변수.
   bool subInitState_flag;
-  // * 딥러닝 분석 결과를 리스트형태로 가져올 것임.
-  List<String> _currentResult;
 
   // 강남구청 폐기물 분류 클래스
-  WasteListAsset obj;
+  WasteListAsset waste_obj;
 
   File _image;
 
-  // _myDeepLearningModule()을 호출하기 전 까지 띄울
-  List<String> _resultPicture = ["로딩 중..."];
-  List<String> _detailProduct = ["제품 목록을 선택하세요."];
+  // * 딥러닝 분석 결과를 리스트형태로 가져올 것임.
+  List<String> _currentResult = ["제품 목록을 선택하세요."]; // 제품 목록
+  List<String> _detailProduct = ["상세 목록을 선택하세요."]; // 상세 목록
 
   // DropdownMenu에 들어갈 아이템들이 DropdownMenuItem<String>타입으로 담긴 리스트.
   List<DropdownMenuItem<String>> _dropDownMenuItems_Product;
@@ -40,7 +36,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   @override
   void initState() {
     subInitState_flag = false;
-    obj = new WasteListAsset();
+    waste_obj = new WasteListAsset();
 
     _dropDownMenuItems_Detail = new List();
     _dropDownMenuItems_Detail.add(new DropdownMenuItem(
@@ -59,6 +55,9 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
     for (String i in myDeepLearningResults) {
       // 딥러닝 결과와 매칭된 폐기물 품목 리스트만 items에 add 시킬 것.
       if (WasteListAsset().trashList.containsKey(i))
+        items.add(new DropdownMenuItem(value: i, child: Text(i)));
+      // end user가 제품 목록을 선택하기 전에 띄울 콤보박스 아이템
+      if (i == "제품 목록을 선택하세요.")
         items.add(new DropdownMenuItem(value: i, child: Text(i)));
     }
 
@@ -107,8 +106,11 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
     if (subInitState_flag == false) {
       subInitState_flag = true;
 
-      _dropDownMenuItems_Product = getDropDownMenuItems_Product(
-          args.myDeepLearningResultStr[args.current_Idx]);
+      // 현재 인덱스의 딥러닝 분석 결과를(List<String>) 가져오고,
+      _currentResult.addAll(args.myDeepLearningResultStr[args.current_Idx]);
+      // 제품 목록 콤보박스에 추가시킨다.
+      _dropDownMenuItems_Product = getDropDownMenuItems_Product(_currentResult);
+      // 현재 제품목록 인덱스를 0번으로 셋팅한다.
       _currentProduct = _dropDownMenuItems_Product[0].value;
     }
 
@@ -208,18 +210,45 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                                   fontWeight: FontWeight.bold, fontSize: 20.0)),
                       onPressed: () {
                         if (args.current_Idx + 1 == args.listViewItem.length) {
+                          // TrashListConfirmation.dart -> CustomerForm.dart
+                          args.selectedListItem
+                              .add({_currentProduct: _currentDetail});
+
+                          // 최종 가격 합산
+                          int temp_idx = waste_obj
+                              .trashList[_currentProduct].detailWaste
+                              .indexOf(_currentDetail);
+                          args.totalPrice += waste_obj
+                              .trashList[_currentProduct].wastePrice
+                              .elementAt(temp_idx);
+
                           Navigator.pushNamed(context, CustomerForm.routeName,
                               arguments: CustomerForm_AccountSnapshot(
-                                  args.currentAccount, _strListItems));
+                                  args.currentAccount,
+                                  args.selectedListItem,
+                                  args.totalPrice));
                         } else {
-                          _strListItems.add({_currentProduct: _currentDetail});
+                          // TrashListConfirmation.dart(현재 인덱스) -> TrashListConfirmation.dart(다음 인덱스)
+                          args.selectedListItem
+                              .add({_currentProduct: _currentDetail});
+
+                          // 최종 가격 합산
+                          int temp_idx = waste_obj
+                              .trashList[_currentProduct].detailWaste
+                              .indexOf(_currentDetail);
+                          args.totalPrice += waste_obj
+                              .trashList[_currentProduct].wastePrice
+                              .elementAt(temp_idx);
+
                           Navigator.pushNamed(
                               context, TrashListComfirmation.routeName,
                               arguments: TrashListComfirmation_AccounSnapshot(
                                   args.currentAccount,
                                   args.listViewItem,
                                   args.current_Idx + 1,
-                                  args.myDeepLearningResultStr));
+                                  args.myDeepLearningResultStr,
+                                  args.selectedListItem,
+                                  args.totalPrice));
                         }
                       }),
                 ],

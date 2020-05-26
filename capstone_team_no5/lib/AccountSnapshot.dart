@@ -40,21 +40,38 @@ class TrashListComfirmation_AccounSnapshot extends AccountSnapshot {
   final current_Idx; // 현재 페이지 인덱스
   Map<int, List<String>>
       _myDeepLearningResultStr; // int번째 인덱스의 딥러닝 다중 검출 결과 List<String>
+  Set<Map<String, String>> _selectedListItem; // 사용자가 선택한 _selectedListItem
+  int _totalPrice; // 사용자가 선택한 폐기물 토탈 처리 비용.
 
+  // getter
+  Set<Map<String, String>> get selectedListItem => _selectedListItem;
   List<File> get listViewItem => _listViewItem;
   Map<int, List<String>> get myDeepLearningResultStr =>
       _myDeepLearningResultStr;
+  int get totalPrice => _totalPrice;
+  set totalPrice(int totalPrice) => this._totalPrice = totalPrice;
 
-  TrashListComfirmation_AccounSnapshot(DocumentSnapshot currentAccount,
-      this._listViewItem, this.current_Idx, this._myDeepLearningResultStr)
+  TrashListComfirmation_AccounSnapshot(
+      DocumentSnapshot currentAccount,
+      this._listViewItem,
+      this.current_Idx,
+      this._myDeepLearningResultStr,
+      this._selectedListItem,
+      this._totalPrice)
       : super(currentAccount); // 현재 출력중인 페이지 번호 0 ~ [사진 갯수-1] 만큼
 }
 
 class CustomerForm_AccountSnapshot extends AccountSnapshot {
-  List<Map<String, String>> _listItem;
-  List<Map<String, String>> get listItem => _listItem;
+  Set<Map<String, String>> _selectedListItem;
+  int _totalPrice; // 사용자가 선택한 폐기물 토탈 처리 비용.
 
-  CustomerForm_AccountSnapshot(DocumentSnapshot currentAccount, this._listItem)
+  // getter
+  Set<Map<String, String>> get selectedListItem => _selectedListItem;
+  int get totalPrice => _totalPrice;
+  set totalPrice(int totalPrice) => this._totalPrice = totalPrice;
+
+  CustomerForm_AccountSnapshot(
+      DocumentSnapshot currentAccount, this._selectedListItem, this._totalPrice)
       : super(currentAccount);
 }
 
