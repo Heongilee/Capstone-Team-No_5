@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kopo/kopo.dart';
+import 'package:random_string/random_string.dart';
+import 'package:recycle/model/EmailerModule.dart';
 
 class signup_text_editing_controller {
   final _id = TextEditingController();
@@ -13,6 +15,7 @@ class signup_text_editing_controller {
   final _phoneNum = TextEditingController();
   final _email = TextEditingController();
   final _comfilm = TextEditingController();
+  String _authcode;
 
   // 0 : id,  1 : authentication code
   List<bool> valid_condition_List = [false, false];
@@ -443,7 +446,7 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
                         _checkInternetAccess().then((bool onValue) {
                           if (onValue) {
                             // node emailer(External Library) call
-                            _emailSending(_email.text);
+                            _emailSending();
                           } else {
                             showDialog(
                               context: context,
@@ -833,7 +836,16 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
     return;
   }
 
-  Future<void> _emailSending(String my_email) async {
-    return;
+  Future<bool> _emailSending() async {
+    _authcode = randomAlpha(6);
+    EmailerDTO eObj = new EmailerDTO(authenticationCode: _authcode, receipent: _email.text, ok: false);
+
+    return eObj.ok;
+  }
+
+  String _authCodeGenerator() {
+    String result = "345678";
+
+    return result;
   }
 }

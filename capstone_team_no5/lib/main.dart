@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:recycle/Example.dart';
-import 'package:recycle/RootPage.dart'; // 원래 페이지
 import 'package:recycle/MainPage.dart';
+import 'package:recycle/RootPage.dart';
 import 'package:recycle/TabPage.dart';
 import 'package:recycle/TrashListComfirmation.dart';
 import 'package:recycle/TakingPicture.dart';
@@ -21,9 +21,8 @@ class MyApp extends StatelessWidget {
         // brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
-       home: RootPage(),
-      //home: Example(),
-      //home: TakingPicture(),
+      home: RootPage(),
+      // home: ExamplePage(),
       routes: <String, WidgetBuilder>{
         '/MainPage': (BuildContext context) => new MainPage(),
         TakingPicture.routeName: (context) => TakingPicture(),

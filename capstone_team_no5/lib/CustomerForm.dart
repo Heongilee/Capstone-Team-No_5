@@ -9,6 +9,8 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/TakingPicture.dart';
+import 'package:recycle/model/WasteListAsset.dart';
+import 'package:recycle/ReservationDTO.dart';
 
 class CustomerForm extends StatefulWidget {
   static const routeName = '/CustomerForm';
@@ -48,12 +50,18 @@ class _CustomerForm extends State<CustomerForm> {
 
   List<DropdownMenuItem<String>> _dropDownMenuItems;
 
-  String _timeSet;
+  String _timeSet;//시간을 담는 변수
+  DateTime selectedDate;//선택한 날짜
+
+
+  WasteListAsset waste_obj;
 
   @override
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _timeSet = _dropDownMenuItems[0].value;
+
+    waste_obj = new WasteListAsset();
     super.initState();
   }
 
@@ -78,8 +86,10 @@ class _CustomerForm extends State<CustomerForm> {
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
       todayBorderColor: Colors.green,
       onDayPressed: (DateTime date, List<Event> events) {
-        this.setState(() => _currentDate2 = date);
+        this.setState(() { _currentDate2 = date;});
         events.forEach((event) => print(event.title));
+        
+        selectedDate = date;
       },
       daysHaveCircularBorder: true,
       showOnlyCurrentMonthDate: false,
@@ -104,13 +114,6 @@ class _CustomerForm extends State<CustomerForm> {
       todayTextStyle: TextStyle(
         color: Colors.blue,
       ),
-      // markedDateShowIcon: true,
-      // markedDateIconMaxShown: 2,
-      // markedDateIconBuilder: (event) {
-      //   return event.icon;
-      // },
-      // markedDateMoreShowTotal:
-      //     true,
       todayButtonColor: Colors.yellow,
       selectedDayTextStyle: TextStyle(
         color: Colors.yellow,
@@ -166,10 +169,27 @@ class _CustomerForm extends State<CustomerForm> {
       child: Center(
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height + 193.0,
+            height: MediaQuery.of(context).size.height + 385.0,
             child: Column(
               children: <Widget>[
                 Padding(padding: EdgeInsets.all(10.0)),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(padding: const EdgeInsets.all(10.0)),
+                    Text('폐기물 신청 목록',
+                        textScaleFactor: 1.2,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic)),
+                  ],
+                ),
+                Padding(padding: const EdgeInsets.all(5.0)),
+                Container(
+                  width: 300.0,
+                  height: 300.0,
+                  child: Scrollbar(child: _buildListView(args)),
+                ),
                 Flexible(
                   // address
                   child: Container(
@@ -295,7 +315,7 @@ class _CustomerForm extends State<CustomerForm> {
                 ),
                 Padding(padding: EdgeInsets.all(10.0)),
                 Text(
-                  'Total : XXXX 원',
+                  'Total : ${args.totalPrice} 원',
                   style: TextStyle(fontSize: 20),
                 ),
                 Padding(padding: EdgeInsets.all(10.0)),
@@ -306,12 +326,56 @@ class _CustomerForm extends State<CustomerForm> {
                         '제 출',
                         style: TextStyle(fontSize: 20.0),
                       ),
-                      onPressed: null),
+                      onPressed: () async{
+                        myReservation.myJsonObjects = ReservationDTO(reserveId: args.currentAccount.data['id'], reserveDate: DateTime.now(), reserveAddress: args.currentAccount.data['address'], reserveState: "접수 완료", reserveVisitDate: selectedDate, reserveVisitTime: _timeSet, reserveItems: ['어항', '가방류']).toJson();
+                        myReservation.accessMyFirestore();
+                      }),
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+  Widget _buildListView(CustomerForm_AccountSnapshot args) {
+    return ListView.builder(
+      // scrollDirection: Axis.vertical,
+      itemCount: args.selectedListItem.toList().length * 2,
+      itemBuilder: (context, index) {
+        if (index.isOdd) {
+          return Divider();
+        } else {
+          var realIdx = index ~/ 2;
+
+          return _buildListItem(args, realIdx);
+        }
+      },
+    );
+  }
+
+  Widget _buildListItem(CustomerForm_AccountSnapshot args, int realIdx) {
+    Map listItemMap = args.selectedListItem.toList()[realIdx];
+
+    return Card(
+      child: ListTile(
+        title: Text(listItemMap.keys.first, textScaleFactor: 1.5),
+        subtitle: Text(listItemMap.values.first, textScaleFactor: 1.1),
+        trailing: IconButton(
+            color: Colors.pinkAccent,
+            icon: Icon(Icons.remove_circle),
+            onPressed: () {
+              setState(() {
+                args.selectedListItem.remove(listItemMap);
+                int temp_index = waste_obj
+                    .trashList[listItemMap.keys.first].detailWaste
+                    .indexOf(listItemMap.values.first);
+                args.totalPrice -= waste_obj
+                    .trashList[listItemMap.keys.first].wastePrice
+                    .elementAt(temp_index);
+                // TODO : 신청 목록에서 삭제 시키면 가격 -
+              });
+            }),
       ),
     );
   }
