@@ -28,6 +28,7 @@ class _NoticePageState extends State<NoticePage> {
           icon: Icon(Icons.arrow_back_ios),
           color: Colors.black,
           onPressed: () {
+            NoticeDTO()._noticeList.clear();
             Navigator.pop(context);
           }),
     );
