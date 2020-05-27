@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/MyApp_config.dart';
 
 import 'package:flutter/material.dart';
@@ -202,47 +205,30 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
               width: 300.0,
               child: RaisedButton(
                 child: Text(
-                  'CONTINUE',
+                  'SIGN IN',
                   style: TextStyle(fontSize: 20.0),
                 ),
                 color: Colors.grey[300],
                 onPressed: () {
-                  var doc;
-                  doc = _db
-                      .collection('user')
-                      .where("id", isEqualTo: _id.text)
-                      .getDocuments()
-                      .then((QuerySnapshot qs) {
-                    _currentDoc =
-                        (qs.documents.isEmpty) ? null : qs.documents.single;
+                  _checkInternetAccess(context).then((bool onValue) {
+                    if (onValue) {
+                      // 인터넷 연결이 원활한 상태
+                      var doc;
+                      doc = _db
+                          .collection('user')
+                          .where("id", isEqualTo: _id.text)
+                          .getDocuments()
+                          .then((QuerySnapshot qs) {
+                        _currentDoc =
+                            (qs.documents.isEmpty) ? null : qs.documents.single;
 
-                    if (_id.text.isEmpty || _pw.text.isEmpty) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('ERROR'),
-                            content: Text('필드는 전부 입력되어야 합니다.'),
-                            actions: <Widget>[
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Confirm')),
-                            ],
-                          );
-                        },
-                      );
-                    } else if (_currentDoc != null) {
-                      // print("나의 현재 문서는 : "+ _currentDoc?.documentID);
-                      qs.documents.forEach((f) {
-                        if (f['status'] == 1) {
+                        if (_id.text.isEmpty || _pw.text.isEmpty) {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: Text('ERROR'),
-                                content: Text('이미 로그인중인 아이디 입니다.'),
+                                content: Text('필드는 전부 입력되어야 합니다.'),
                                 actions: <Widget>[
                                   FlatButton(
                                       onPressed: () {
@@ -253,63 +239,106 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                               );
                             },
                           );
-                        } else {
-                          //if(f['status'] == 1){...}
-                          if (f['pw'] == _pw.text) {
-                            // 패스워드 맞음
-                            _updateStatus(1); // 로그인 상태로 전환.
+                        } else if (_currentDoc != null) {
+                          // print("나의 현재 문서는 : "+ _currentDoc?.documentID);
+                          qs.documents.forEach((f) {
+                            if (f['status'] == 1) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('ERROR'),
+                                    content: Text('이미 로그인중인 아이디 입니다.'),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('Confirm')),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              //if(f['status'] == 1){...}
+                              if (f['pw'] == _pw.text) {
+                                // 패스워드 맞음
+                                _updateStatus(1); // 로그인 상태로 전환.
 
-                            // dispose();  // Stream close
-                            MyApp_config().chkboxID = remember_my_id;
-                            MyApp_config().chkboxAUTO = auto_login;
-                            MyApp_config().receiveID =
-                                (MyApp_config().chkboxID ||
-                                        MyApp_config().chkboxAUTO)
-                                    ? _id.text
-                                    : "";
-                            MyApp_config()
-                                .writeMyconfig(MyApp_config().toJson());
+                                // dispose();  // Stream close
+                                MyApp_config().chkboxID = remember_my_id;
+                                MyApp_config().chkboxAUTO = auto_login;
+                                MyApp_config().receiveID =
+                                    (MyApp_config().chkboxID ||
+                                            MyApp_config().chkboxAUTO)
+                                        ? _id.text
+                                        : "";
+                                MyApp_config()
+                                    .writeMyconfig(MyApp_config().toJson());
 
-                            // 페이지 전환으로 인한 텍스트 필드값 초기화
-                            if (!remember_my_id) {
-                              _id.clear();
-                            }
-                            _pw.clear();
+                                // 페이지 전환으로 인한 텍스트 필드값 초기화
+                                if (!remember_my_id) {
+                                  _id.clear();
+                                }
+                                _pw.clear();
 
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        TabPage(_currentDoc)));
-                          } else {
-                            // 패스워드 틀림
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('ERROR'),
-                                  content: Text('비밀번호가 틀렸습니다.'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('Confirm')),
-                                  ],
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) =>
+                                //             TabPage(_currentDoc)));
+                                Navigator.pushNamed(context, TabPage.routeName,
+                                    arguments:
+                                        TabPage_AccountSnapshot(_currentDoc));
+                              } else {
+                                // 패스워드 틀림
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('ERROR'),
+                                      content: Text('비밀번호가 틀렸습니다.'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('Confirm')),
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          }
+                              }
+                            }
+                          });
+                        } else {
+                          // if(_currentDoc != null){...}
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('ERROR'),
+                                content: Text('존재하지 않는 아이디 입니다.'),
+                                actions: <Widget>[
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Confirm')),
+                                ],
+                              );
+                            },
+                          );
                         }
                       });
                     } else {
-                      // if(_currentDoc != null){...}
+                      // 연결이 원활하지 못 한 경우.
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text('ERROR'),
-                            content: Text('존재하지 않는 아이디 입니다.'),
+                            title: Text('인터넷 연결 오류'),
+                            content: Text('인터넷 연결 상태를 확인 바랍니다.'),
                             actions: <Widget>[
                               FlatButton(
                                   onPressed: () {
@@ -322,7 +351,7 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                       );
                     }
                   });
-                },
+                }, // onPressed()
               ),
             ),
             Container(
@@ -351,6 +380,15 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                         MaterialPageRoute(builder: (context) => SignUp()));
                   }),
             ),
+            Padding(padding: EdgeInsets.only(top:24.0)),
+            InkWell(
+              child: Text('개발자 옵션 : 모든 계정 로그아웃.', style: TextStyle(decoration: TextDecoration.underline)),
+              onTap: () {
+                _allOfUserAccountSetSignOut().then((value) {
+                  _showMyToastAlertMsg("모든 유저를 로그아웃 시켰습니다.");
+                });
+              },
+            ),
           ],
         ),
       ),
@@ -375,5 +413,39 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
     }
 
     return;
+  }
+
+  Future<bool> _checkInternetAccess(BuildContext context) async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('Connected');
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
+
+  Future<void> _allOfUserAccountSetSignOut() async {
+    QuerySnapshot qs = await _db.collection('user').getDocuments();
+    // 모든 유저 문서에 대해 순회하면서...
+    qs.documents.forEach((DocumentSnapshot user_doc) {
+      // user_doc 유저의 status를 0(로그아웃 상태)으로 바꾼다.
+      var doc = _db
+          .collection('user')
+          .document(user_doc.documentID)
+          .updateData({'status': 0});
+    });
+
+    return;
+  }
+
+  void _showMyToastAlertMsg(String my_msg) {
+    Fluttertoast.showToast(
+      toastLength: Toast.LENGTH_LONG,
+      webBgColor: "#e74c3c",
+      timeInSecForIosWeb: 3,
+      msg: my_msg);
   }
 }

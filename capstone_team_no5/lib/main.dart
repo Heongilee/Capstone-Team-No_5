@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:recycle/NoticePage.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:recycle/Example.dart';
 import 'package:recycle/RootPage.dart'; // 원래 페이지
-import 'package:recycle/SignUp.dart';
 import 'package:recycle/MainPage.dart';
+import 'package:recycle/TabPage.dart';
 import 'package:recycle/TrashListComfirmation.dart';
 import 'package:recycle/TakingPicture.dart';
+import 'package:recycle/CustomerForm.dart';
 
 // 2020-05-07
 void main() => runApp(MyApp());
@@ -19,9 +21,28 @@ class MyApp extends StatelessWidget {
         // brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
-      home: TakingPicture(),
-      // home: TakingPicture(),
-      // home: NoticePage(),
+       home: RootPage(),
+      //home: Example(),
+      //home: TakingPicture(),
+      routes: <String, WidgetBuilder>{
+        '/MainPage': (BuildContext context) => new MainPage(),
+        TakingPicture.routeName: (context) => TakingPicture(),
+        TrashListComfirmation.routeName: (context) => TrashListComfirmation(),
+        CustomerForm.routeName: (context) => CustomerForm(),
+        TabPage.routeName: (context) => TabPage(),
+      },
+      onGenerateRoute: (settings) {
+        // * 페이지 전환 효과를 주고 싶으면 이 영역에 추가시키면 됩니다.
+        switch (settings.name) {
+          case TabPage.routeName:
+            return PageTransition(
+                child: TabPage(), type: PageTransitionType.fade);
+            break;
+          default:
+            return null;
+            break;
+        }
+      },
     );
   }
 }
