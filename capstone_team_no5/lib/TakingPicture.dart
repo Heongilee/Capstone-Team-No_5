@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -89,7 +90,7 @@ class _TakingPictureState extends State<TakingPicture> {
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     // 사진 촬영이 하나도 안 됐을 경우, 에러 메시지 출력.
                     if (_listViewItem.length == 0) {
                       showDialog(
@@ -109,11 +110,17 @@ class _TakingPictureState extends State<TakingPicture> {
                         },
                       );
                     } else {
-                      _loadMyDeepLearningModule().then((value) {
+                      await _loadMyDeepLearningModule(context)
+                          .then((Map<int, List<String>> myResultStrList) {
                         Navigator.pushNamed(
                             context, TrashListComfirmation.routeName,
                             arguments: TrashListComfirmation_AccounSnapshot(
-                                args.currentAccount, _listViewItem, 0));
+                                args.currentAccount,
+                                _listViewItem,
+                                0,
+                                myResultStrList,
+                                {},
+                                0));
                       });
                     }
                     // ! -------------------------- 재웅이형 코드 ----------------------------------
@@ -290,7 +297,8 @@ class _TakingPictureState extends State<TakingPicture> {
   }
 
   // 딥러닝 결과를 받아올 메소드
-  Future<void> _loadMyDeepLearningModule() async {
+  Future<Map<int, List<String>>> _loadMyDeepLearningModule(
+      BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -304,8 +312,51 @@ class _TakingPictureState extends State<TakingPicture> {
         );
       },
     );
-    await Future.delayed(Duration(seconds: 2));
-    return;
+
+    Map<int, List<String>> _myDeepLearningResults = {
+      0: [
+        "어항",
+        "이불",
+        "화분",
+        "자전거",
+        "항아리"
+      ], // 0번째 사진에서 검출된 객체들은 어항, 이불, 화분, 자전거, 항아리가 있다.
+      1: ["가방류", "고무통", "러닝머신", "옥매트"], // 1번째 사진에서 검출된 객체들은 다음과 같다.
+      2: ["유리(거울,판유리)", "재봉틀", "화일캐비넷", "피아노", "환풍기", "카페트"]
+    };
+    // ! -------------------- Not working... ------------------------
+    // _listViewItem.forEach((File element) {
+    //   final String nodeEndPoint = 'http://172.30.1.45:3000/image';
+
+    //   if (element == null) {
+    //     print("어 파일인식 안됨");
+    //     return;
+    //   }
+    //   String base64Image = base64Encode(element.readAsBytesSync());
+    //   String fileName = element.path.split("/").last;
+
+    //   print("파일이름 : " + fileName);
+
+    //   http.post(nodeEndPoint, body: {
+    //     "image": base64Image,
+    //     "name": fileName,
+    //   }).then((res) {
+    //     print(res.body);
+    //     print("상태코드 : ");
+    //     print(res.statusCode);
+
+    //     tmp=res.body;
+    //     //처리해주기
+    //     print("tmp 값은 : "+tmp);
+    //     String test_tmp="clock,sofa";
+    //     return test_tmp;
+    //   }).catchError((err) {
+    //     print(err);
+    //   });
+    // });
+    // ! ----------------------------------------------------------
+
+    return _myDeepLearningResults;
   }
 
   _makeGetRequest() async {
