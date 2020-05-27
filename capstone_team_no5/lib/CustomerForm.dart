@@ -338,7 +338,6 @@ class _CustomerForm extends State<CustomerForm> {
       ),
     );
   }
-
   Widget _buildListView(CustomerForm_AccountSnapshot args) {
     return ListView.builder(
       // scrollDirection: Axis.vertical,
