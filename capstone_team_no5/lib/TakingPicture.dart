@@ -323,37 +323,36 @@ class _TakingPictureState extends State<TakingPicture> {
       1: ["가방류", "고무통", "러닝머신", "옥매트"], // 1번째 사진에서 검출된 객체들은 다음과 같다.
       2: ["유리(거울,판유리)", "재봉틀", "화일캐비넷", "피아노", "환풍기", "카페트"]
     };
-    // ! -------------------- Not working... ------------------------
-    // _listViewItem.forEach((File element) {
-    //   final String nodeEndPoint = 'http://172.30.1.45:3000/image';
+    // ! ----------------------- test ... ---------------------------------
+    _listViewItem.forEach((File element) {
+      final String nodeEndPoint = 'http://172.30.1.45:3000/image';
 
-    //   if (element == null) {
-    //     print("어 파일인식 안됨");
-    //     return;
-    //   }
-    //   String base64Image = base64Encode(element.readAsBytesSync());
-    //   String fileName = element.path.split("/").last;
+      if (element == null) {
+        print("어 파일인식 안됨");
+        return;
+      }
+      String base64Image = base64Encode(element.readAsBytesSync());
+      String fileName = element.path.split("/").last;
 
-    //   print("파일이름 : " + fileName);
+      print("파일이름 : " + fileName);
 
-    //   http.post(nodeEndPoint, body: {
-    //     "image": base64Image,
-    //     "name": fileName,
-    //   }).then((res) {
-    //     print(res.body);
-    //     print("상태코드 : ");
-    //     print(res.statusCode);
+      http.post(nodeEndPoint, body: {
+        "image": base64Image,
+        "name": fileName,
+      }).then((res) {
+        print(res.body);
+        print("상태코드 : ");
+        print(res.statusCode);
 
-    //     tmp=res.body;
-    //     //처리해주기
-    //     print("tmp 값은 : "+tmp);
-    //     String test_tmp="clock,sofa";
-    //     return test_tmp;
-    //   }).catchError((err) {
-    //     print(err);
-    //   });
-    // });
-    // ! ----------------------------------------------------------
+        tmp = res.body;
+        //처리해주기
+        print("tmp 값은 : " + tmp);
+        String test_tmp = "clock,sofa";
+        return test_tmp;
+      }).catchError((err) {
+        print(err);
+      });
+    });
 
     return _myDeepLearningResults;
   }
