@@ -328,7 +328,7 @@ class _CustomerForm extends State<CustomerForm> {
                       ),
                       onPressed: () async{
                         myReservation.myJsonObjects = ReservationDTO(reserveId: args.currentAccount.data['id'], reserveDate: DateTime.now(), reserveAddress: args.currentAccount.data['address'], reserveState: "접수 완료", reserveVisitDate: selectedDate, reserveVisitTime: _timeSet, reserveItems: ['어항', '가방류']).toJson();
-                        myReservation.accessMyFirestore();
+                        await myReservation.accessMyFirestore();
                       }),
                 ),
               ],

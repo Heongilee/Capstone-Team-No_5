@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:recycle/model/NoticeModel.dart';
@@ -8,6 +10,14 @@ class NoticePage extends StatefulWidget {
 }
 
 class _NoticePageState extends State<NoticePage> {
+  @override
+  void initState() {
+    super.initState();
+    // * 중요! : 스트림 컨트롤러를 싱글톤 클래스 안에 넣고, initState에서 초기화 시킨 다음에 불러오고 true로 바꿀 것.
+    myNotice.noticeObserver = StreamController<bool>()..add(false);
+    myNotice.loadmyNotice;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +38,7 @@ class _NoticePageState extends State<NoticePage> {
           icon: Icon(Icons.arrow_back_ios),
           color: Colors.black,
           onPressed: () {
-            NoticeDTO()._noticeList.clear();
+            myNotice.noticeObserver.add(false);
             Navigator.pop(context);
           }),
     );
@@ -37,19 +47,16 @@ class _NoticePageState extends State<NoticePage> {
   Widget _buildBody(BuildContext context) {
     return SafeArea(
       child: Center(
-        child: RefreshIndicator(
-          onRefresh: () async{
-            myNotice.myNoticeList.clear();
-
-            myNotice.qs = await myNotice.db.collection('notice').getDocuments();
-            setState(() {
-              myNotice.qs.documents.forEach((DocumentSnapshot onValue) {
-                myNotice.myNoticeList.add(new NoticeDTO.fromJson(onValue.data));
-              });
-            });
-          },
-          child: _buildList(context),
-        ),
+        child: StreamBuilder<bool>(
+            stream: myNotice.noticeObserver.stream,
+            builder: (context, snapshot) {
+              if (snapshot.data) {
+                // 로드 완료
+                return _buildMyRefreshIndicator();
+              } else {
+                return _myCircularProgressIndicator();
+              }
+            }),
       ),
     );
   }
@@ -86,6 +93,8 @@ class _NoticePageState extends State<NoticePage> {
           style: TextStyle()),
       dense: true,
       onTap: () {
+        // 제목 : noticeList.noticeTitle
+        // 내용 : noticeList.noticeContent
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -106,6 +115,22 @@ class _NoticePageState extends State<NoticePage> {
           },
         );
       },
+    );
+  }
+
+  Widget _buildMyRefreshIndicator() {
+    return RefreshIndicator(
+      onRefresh: () async {
+        myNotice.myNoticeList.clear();
+
+        myNotice.qs = await myNotice.db.collection('notice').getDocuments();
+        setState(() {
+          myNotice.qs.documents.forEach((DocumentSnapshot onValue) {
+            myNotice.myNoticeList.add(new NoticeDTO.fromJson(onValue.data));
+          });
+        });
+      },
+      child: _buildList(context),
     );
   }
 }

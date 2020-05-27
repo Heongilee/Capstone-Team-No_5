@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:recycle/Example.dart';
 import 'package:recycle/MainPage.dart';
 import 'package:recycle/RootPage.dart';
 import 'package:recycle/TabPage.dart';

@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NoticeDAO {
+  var noticeObserver = StreamController<bool>.broadcast();
   // * ------------------------ 싱글톤  로직 ------------------------
   static final NoticeDAO _instance = NoticeDAO._internal();
 
@@ -8,11 +11,7 @@ class NoticeDAO {
     return _instance;
   }
 
-  NoticeDAO._internal() {
-    // Initialize...
-    print('Loading my Notice DTO...');
-    _loadmyNotice();
-  }
+  NoticeDAO._internal() {}
   // *-------------------------------------------------------------
   final _db = Firestore.instance;
   QuerySnapshot _qs;
@@ -27,7 +26,7 @@ class NoticeDAO {
   QuerySnapshot get qs => _qs;
   set qs(QuerySnapshot _qs) => this._qs = _qs;
   List<NoticeDTO> get myNoticeList => _myNoticeList;
-  // dynamic get loadmyNotice => _loadmyNotice();
+  Future<Null> get loadmyNotice => _loadmyNotice();
 
   Future<Null> _loadmyNotice() async {
     _myNoticeList.clear();
@@ -36,7 +35,7 @@ class NoticeDAO {
     _qs.documents.forEach((DocumentSnapshot onValue) {
       _myNoticeList.add(new NoticeDTO.fromJson(onValue.data));
     });
-
+    noticeObserver.add(true);
   }
 }
 
