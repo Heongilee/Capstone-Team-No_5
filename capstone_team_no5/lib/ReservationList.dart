@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:recycle/ReservationDTO.dart';
 
 class ReservationList extends StatelessWidget {
+  final _db = Firestore.instance;
+  QuerySnapshot _qs;
   final DocumentSnapshot _currentAccount;
   // 로그인 세션
   ReservationList(this._currentAccount);
@@ -41,7 +46,20 @@ class ReservationList extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: _getDataTable(),
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _db.collection('reservation').snapshots(),
+              builder: (context, snapshot) {
+                  List<DataCell> myreturnList = [];
+                  final students = snapshot.data.documents;
+                    students.forEach((element) {
+                     myreturnList.add(DataCell(Text('${element['reserveVisitDate']}')));
+                     myreturnList.add(DataCell(Text('${element['reserveVisitTime']}')));
+                     myreturnList.add(DataCell(Text('${element['reserveState']}')));
+                  });
+                  dataRow.add(DataRow(cells: myreturnList));
+                return _getDataTable();
+              }
+            ),
           ),
         ),
       ),
@@ -58,7 +76,7 @@ class ReservationList extends StatelessWidget {
       sortColumnIndex: 0,
       sortAscending: true,
       horizontalMargin: 12.0,
-      columnSpacing: 28.0,
+      columnSpacing: 24.0,
       columns: _getDataColumns(),
       rows: _getDataRows(_itemsize),
     );
@@ -68,7 +86,7 @@ class ReservationList extends StatelessWidget {
     dataColumn.add(DataColumn(
         numeric: true,
         label: Text(
-          'Date',
+          '예약 날짜',
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic,
@@ -77,7 +95,7 @@ class ReservationList extends StatelessWidget {
         )));
     dataColumn.add(DataColumn(
         label: Text(
-      'Status',
+      '상태',
       style: TextStyle(
           fontWeight: FontWeight.bold,
           fontStyle: FontStyle.italic,
@@ -85,24 +103,46 @@ class ReservationList extends StatelessWidget {
       textAlign: TextAlign.center,
     )));
 
+    dataColumn.add(DataColumn(
+        label: Text(
+      '방문 날짜',
+      style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontStyle: FontStyle.italic,
+          fontSize: 16.0),
+      textAlign: TextAlign.center,
+    )));
+
+    //     dataColumn.add(DataColumn(
+    //     label: Text(
+    //   '방문 시간',
+    //   style: TextStyle(
+    //       fontWeight: FontWeight.bold,
+    //       fontStyle: FontStyle.italic,
+    //       fontSize: 16.0),
+    //   textAlign: TextAlign.center,
+    // )));
+
     print(dataColumn.length);
     return dataColumn;
   }
 
   List<DataRow> _getDataRows(int row_number) {
-    var _year = 2000;
-    var tmp;
-
-    for (int i = 0; i < row_number; i++) {
-      List<DataCell> cellList = [];
-      cellList.add(DataCell(Text('$_year-01-01')));
-      cellList.add(DataCell(Text(_statusList[i % 3])));
-
-      dataRow.add(DataRow(cells: cellList));
-      _year++;
-    }
-
-    print(dataRow.length);
+    _accessMyReservationList(); 
     return dataRow;
   }
+
+  Future<List<DataCell>>_accessMyReservationList() async{
+    List<DataCell> myreturnList = [];
+    _qs = await _db.collection('reservation').where("reserveId", isEqualTo: _currentAccount['id'])
+    .getDocuments();
+    _qs.documents.forEach((element) {
+      myreturnList.add(DataCell(Text('${element['reserveVisitDate']}')));
+      myreturnList.add(DataCell(Text('${element['reserveVisitTime']}')));
+      myreturnList.add(DataCell(Text('${element['reserveState']}')));
+     });
+     dataRow.add(DataRow(cells: myreturnList));
+  }
+
+  
 }
