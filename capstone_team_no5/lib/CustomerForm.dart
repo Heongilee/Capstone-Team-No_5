@@ -1,5 +1,7 @@
 library flutter_calendar_dooboo;
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
@@ -52,9 +54,8 @@ class _CustomerForm extends State<CustomerForm> {
 
   List<DropdownMenuItem<String>> _dropDownMenuItems;
 
-  String _timeSet;//시간을 담는 변수
-  DateTime selectedDate;//선택한 날짜
-
+  String _timeSet; //시간을 담는 변수
+  DateTime selectedDate; //선택한 날짜
 
   WasteListAsset waste_obj;
 
@@ -88,9 +89,11 @@ class _CustomerForm extends State<CustomerForm> {
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
       todayBorderColor: Colors.green,
       onDayPressed: (DateTime date, List<Event> events) {
-        this.setState(() { _currentDate2 = date;});
+        this.setState(() {
+          _currentDate2 = date;
+        });
         events.forEach((event) => print(event.title));
-        
+
         selectedDate = date;
       },
       daysHaveCircularBorder: true,
@@ -149,7 +152,8 @@ class _CustomerForm extends State<CustomerForm> {
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.popUntil(context, ModalRoute.withName(TakingPicture.routeName));
+              Navigator.popUntil(
+                  context, ModalRoute.withName(TakingPicture.routeName));
             }),
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -327,10 +331,60 @@ class _CustomerForm extends State<CustomerForm> {
                         '제 출',
                         style: TextStyle(fontSize: 20.0),
                       ),
-                      onPressed: () async{
-                        myReservation.myJsonObjects = ReservationDTO(reserveId: args.currentAccount.data['id'], reserveDate: DateTime.now(), reserveAddress: args.currentAccount.data['address'], reserveState: "접수 완료", reserveVisitDate: selectedDate, reserveVisitTime: _timeSet, reserveItems: ['어항', '가방류']).toJson();
-                        await myReservation.accessMyFirestore();
-                        Navigator.popUntil(context, ModalRoute.withName(TabPage.routeName));
+                      onPressed: () {
+                        _checkInternetAccess().then((bool onValue) async {
+                          if (onValue) {
+                            // 인터넷 정상 연결..
+                            myReservation.myJsonObjects = ReservationDTO(
+                                reserveId: args.currentAccount.data['id'],
+                                reserveDate: DateTime.now(),
+                                reserveAddress:
+                                    args.currentAccount.data['address'],
+                                reserveState: "접수 완료",
+                                reserveVisitDate: selectedDate,
+                                reserveVisitTime: _timeSet,
+                                reserveItems: ['어항', '가방류']).toJson();
+                            await _db.collection('reservation').document().setData(myReservation.myJsonObjects);
+
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('SUCCESS'),
+                                  content: Text('예약이 완료되었습니다.'),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          Navigator.popUntil(
+                                              context,
+                                              ModalRoute.withName(
+                                                  TabPage.routeName));
+                                        },
+                                        child: Text('Confirm')),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('인터넷 연결 오류'),
+                                  content: Text('인터넷 연결 상태를 확인 바랍니다.'),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Confirm')),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        });
                       }),
                 ),
               ],
@@ -340,6 +394,7 @@ class _CustomerForm extends State<CustomerForm> {
       ),
     );
   }
+
   Widget _buildListView(CustomerForm_AccountSnapshot args) {
     return ListView.builder(
       // scrollDirection: Axis.vertical,
@@ -380,5 +435,17 @@ class _CustomerForm extends State<CustomerForm> {
             }),
       ),
     );
+  }
+
+  Future<bool> _checkInternetAccess() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('Connected');
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
   }
 }

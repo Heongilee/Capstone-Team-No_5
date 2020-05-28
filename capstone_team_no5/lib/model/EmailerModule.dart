@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 
 const PROTOCOL = "http";
-const HOST = "localhost";
+// const HOST = "localhost";
+const HOST = "192.168.0.7";
 const PORT = "8080";
 const ROUTE = "create-mailer";
 const EMAILER_API_PREFIX = "$PROTOCOL://$HOST:$PORT/$ROUTE";

@@ -11,7 +11,9 @@ class NoticeDAO {
     return _instance;
   }
 
-  NoticeDAO._internal() {}
+  NoticeDAO._internal() {
+    print('33333333333333333333333333333333333333333333');
+  }
   // *-------------------------------------------------------------
   final _db = Firestore.instance;
   QuerySnapshot _qs;
@@ -35,6 +37,8 @@ class NoticeDAO {
     _qs.documents.forEach((DocumentSnapshot onValue) {
       _myNoticeList.add(new NoticeDTO.fromJson(onValue.data));
     });
+
+    print('222222222222222222222222222222222');
     noticeObserver.add(true);
   }
 }
