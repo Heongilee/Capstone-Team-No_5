@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:recycle/ReservationDTO.dart';
 
 class ReservationList extends StatefulWidget {
   final DocumentSnapshot _currentAccount;
@@ -79,7 +80,7 @@ class _ReservationListState extends State<ReservationList> {
       sortColumnIndex: 0,
       sortAscending: true,
       horizontalMargin: 12.0,
-      columnSpacing: 28.0,
+      columnSpacing: 24.0,
       columns: _getDataColumns(),
       rows: _getDataRows(myQ),
     );
