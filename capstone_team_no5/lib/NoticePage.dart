@@ -14,6 +14,7 @@ class _NoticePageState extends State<NoticePage> {
   void initState() {
     super.initState();
     // * 중요! : 스트림 컨트롤러를 싱글톤 클래스 안에 넣고, initState에서 초기화 시킨 다음에 불러오고 true로 바꿀 것.
+    print('11111111111111111111111111111111111');
     myNotice.noticeObserver = StreamController<bool>()..add(false);
     myNotice.loadmyNotice;
   }

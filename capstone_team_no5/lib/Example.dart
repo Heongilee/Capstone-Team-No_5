@@ -1,6 +1,7 @@
-// import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:random_string/random_string.dart';
+import 'package:recycle/model/EmailerModule.dart';
 
 const PROTOCOL = "http";
 const ANDROID_HOST = "192.168.2.204";
@@ -44,7 +45,8 @@ class _ExamplePageState extends State<ExamplePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 RaisedButton(
-                  onPressed: () => _makeGetResponse(),
+                  // onPressed: () => _makeGetResponse(),
+                  onPressed: () => my_emailer.postReq(new EmailerDTO(authenticationCode: randomAlpha(6), receipent: "gjsrl1@gmail.com", ok: false)),
                   child: Text('Send request to Server.'),
                 ),
                 Padding(
@@ -66,7 +68,7 @@ class _ExamplePageState extends State<ExamplePage> {
     await for (var httpRequest in server) {
       httpRequest.response.write('Hello World!');
 
-       await httpRequest.response.close();
+      await httpRequest.response.close();
     }
   }
 

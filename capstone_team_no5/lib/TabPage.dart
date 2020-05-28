@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/HomePage.dart';
@@ -17,8 +19,6 @@ class TabPage extends StatefulWidget {
 }
 
 class _TabPageState extends State<TabPage> {
-  
-
   int _selectedIdx = 0;
   List _pages;
 
@@ -35,9 +35,14 @@ class _TabPageState extends State<TabPage> {
 
   @override
   Widget build(BuildContext context) {
-    final TabPage_AccountSnapshot args = ModalRoute.of(context).settings.arguments;
+    final TabPage_AccountSnapshot args =
+        ModalRoute.of(context).settings.arguments;
 
-     _pages = [HomePage(args.currentAccount), ReservationList(args.currentAccount), MyInfo(args.currentAccount)];
+    _pages = [
+      HomePage(args.currentAccount),
+      ReservationList(args.currentAccount),
+      MyInfo(args.currentAccount)
+    ];
     return Scaffold(
       // appBar: AppBar(),
       body: Center(
