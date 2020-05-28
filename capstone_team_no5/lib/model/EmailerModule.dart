@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'package:http/http.dart' as http;
 
 const PROTOCOL = "http";
 const HOST = "localhost";
 const PORT = "8080";
 const ROUTE = "create-mailer";
-const API_PREFIX = "$PROTOCOL://$HOST:$PORT/$ROUTE";
+const EMAILER_API_PREFIX = "$PROTOCOL://$HOST:$PORT/$ROUTE";
 
 class EmailerDAO {
   static final EmailerDAO _instance = EmailerDAO._internal();
@@ -37,6 +38,13 @@ class EmailerDAO {
     // my_data.putIfAbsent("userId", () => 189);
     // response = await dio.post(API_PREFIX, data: jsonObj);
     // print(response.data.toString());
+    // --------------------------------------------------------
+    http.Response response;
+
+    Map jsonObj = obj.toJson();
+
+    response = await http.get(EMAILER_API_PREFIX);
+    print("HTTP TEST_OUTPUT\n" + response.body);
 
     return;
   }

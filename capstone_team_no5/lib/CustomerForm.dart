@@ -147,8 +147,7 @@ class _CustomerForm extends State<CustomerForm> {
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.popUntil(
-                  context, ModalRoute.withName(TakingPicture.routeName));
+              Navigator.popUntil(context, ModalRoute.withName(TakingPicture.routeName));
             }),
         backgroundColor: Colors.white,
         centerTitle: true,

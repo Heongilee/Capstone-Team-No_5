@@ -1,6 +1,6 @@
-// import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:recycle/model/EmailerModule.dart';
 
 const PROTOCOL = "http";
 const ANDROID_HOST = "192.168.2.204";
@@ -44,7 +44,8 @@ class _ExamplePageState extends State<ExamplePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 RaisedButton(
-                  onPressed: () => _makeGetResponse(),
+                  // onPressed: () => _makeGetResponse(),
+                  onPressed: () => my_emailer.getPost(),
                   child: Text('Send request to Server.'),
                 ),
                 Padding(
