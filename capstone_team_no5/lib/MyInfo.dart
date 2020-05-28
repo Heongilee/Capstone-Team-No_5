@@ -6,6 +6,13 @@ import 'package:recycle/NoticePage.dart';
 import 'package:recycle/ChangeMyInfo.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+class Consts {
+  Consts._();
+
+  static const double padding = 16.0;
+  static const double avatarRadius = 66.0;
+}
+
 class UserInfo {
   static final UserInfo _instance = UserInfo._internal();
   String _currentMyID;
@@ -180,8 +187,19 @@ class MyInfo extends StatelessWidget {
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.help_outline),
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HelpPage()));
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                          ),
+                          elevation: 0.0,
+                          backgroundColor: Colors.transparent,
+                          child: dialogContent(context),
+                        );
+                      },
+                    );
                   },
                   label: Container(
                       width: 200.0,
@@ -232,5 +250,90 @@ class MyInfo extends StatelessWidget {
       throw 'Could not launch $url';
 
     return;
+  }
+
+  dialogContent(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(
+            top: Consts.avatarRadius + Consts.padding,
+            bottom: Consts.padding,
+            left: Consts.padding,
+            right: Consts.padding,
+          ),
+          margin: EdgeInsets.only(top: Consts.avatarRadius),
+          decoration: new BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(Consts.padding),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10.0,
+                offset: const Offset(0.0, 10.0),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Text(
+                "2020 캡스톤 디자인",
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: 10.0),
+              Text(
+                '캡스톤 01반 5조',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
+              Text(
+                '외 유 내 강',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10.0),
+              Text(
+                '앱 버전: V1.0',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 10.0,
+                ),
+              ),
+              SizedBox(height: 10.0),
+              Align(
+                alignment: Alignment.center,
+                child: FlatButton(
+                  color: Colors.grey[200],
+                  onPressed: () {
+                    Navigator.of(context).pop(); // To close the dialog
+                  },
+                  child: Text("닫 기"),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          left: Consts.padding,
+          right: Consts.padding,
+          child: CircleAvatar(
+            backgroundColor: Colors.white,
+            radius: Consts.avatarRadius,
+            child: Image(image: AssetImage('assets/images/Logo.png')),
+          ),
+        ),
+      ],
+    );
   }
 }

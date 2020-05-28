@@ -12,6 +12,8 @@ import 'package:recycle/TakingPicture.dart';
 import 'package:recycle/model/WasteListAsset.dart';
 import 'package:recycle/ReservationDTO.dart';
 
+import 'TabPage.dart';
+
 class CustomerForm extends StatefulWidget {
   static const routeName = '/CustomerForm';
 
@@ -169,7 +171,7 @@ class _CustomerForm extends State<CustomerForm> {
       child: Center(
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height + 385.0,
+            height: MediaQuery.of(context).size.height + 1000,
             child: Column(
               children: <Widget>[
                 Padding(padding: EdgeInsets.all(10.0)),
@@ -328,7 +330,8 @@ class _CustomerForm extends State<CustomerForm> {
                       ),
                       onPressed: () async{
                         myReservation.myJsonObjects = ReservationDTO(reserveId: args.currentAccount.data['id'], reserveDate: DateTime.now(), reserveAddress: args.currentAccount.data['address'], reserveState: "접수 완료", reserveVisitDate: selectedDate, reserveVisitTime: _timeSet, reserveItems: ['어항', '가방류']).toJson();
-                        myReservation.accessMyFirestore();
+                        await myReservation.accessMyFirestore();
+                        Navigator.popUntil(context, ModalRoute.withName(TabPage.routeName));
                       }),
                 ),
               ],

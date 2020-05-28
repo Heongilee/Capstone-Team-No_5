@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+
 import 'TakingPicture.dart';
 import 'package:flutter/material.dart';
 import 'package:recycle/CustomerForm.dart';
@@ -53,6 +55,11 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
     List<DropdownMenuItem<String>> items = new List();
 
     for (String i in myDeepLearningResults) {
+      // TODO : 만약 "noDetected" 결과라면...?
+      if (i == "noDetected") {
+        items.add(new DropdownMenuItem(value: i, child: Text(i)));
+        break;
+      }
       // 딥러닝 결과와 매칭된 폐기물 품목 리스트만 items에 add 시킬 것.
       if (WasteListAsset().trashList.containsKey(i))
         items.add(new DropdownMenuItem(value: i, child: Text(i)));
@@ -69,22 +76,26 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
       String selectedItem) {
     List<DropdownMenuItem<String>> items = new List();
 
-    // selectedItem(제품 목록)의 상세 목록(detailWaste)을 for문으로 순회하면서...
-    for (String i in WasteListAsset().trashList[selectedItem].detailWaste) {
-      // DropdownMenuItem에 추가시킨다.
-      items.add(new DropdownMenuItem(value: i, child: new Text(i)));
+    if (_currentProduct == "noDetected") {
+      items.add(new DropdownMenuItem(
+          value: "noDetected", child: new Text("noDetected")));
+    } else {
+      // selectedItem(제품 목록)의 상세 목록(detailWaste)을 for문으로 순회하면서...
+      for (String i in WasteListAsset().trashList[selectedItem].detailWaste) {
+        // DropdownMenuItem에 추가시킨다.
+        items.add(new DropdownMenuItem(value: i, child: new Text(i)));
+      }
     }
     return items;
   }
 
   //제품 목록 변화
   void changedDropDownProductItem(String selectedItem) {
-    // _dropDownMenuItems_Detail.clear();
     setState(() {
       //제품 목록이 선택 되면 ...
       _currentProduct = selectedItem;
 
-      //상세 목록을 동적 생성 한다.
+      //상세 목록 콤보박스 아이템을 동적 생성 한다.
       _dropDownMenuItems_Detail = getDropDownMenuItems_Detail(selectedItem);
       _currentDetail = _dropDownMenuItems_Detail[0].value;
     });
@@ -195,10 +206,13 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   RaisedButton(
-                      child: Text('다시찍기',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20.0)),
-                      onPressed: () {}),
+                    child: Text('다시찍기',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20.0)),
+                    onPressed: () {
+                      _getImage(args);
+                    },
+                  ),
                   Padding(padding: EdgeInsets.only(left: 40.0, right: 30.0)),
                   RaisedButton(
                       child: (args.current_Idx + 1 == args.listViewItem.length)
@@ -209,46 +223,78 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20.0)),
                       onPressed: () {
-                        if (args.current_Idx + 1 == args.listViewItem.length) {
-                          // TrashListConfirmation.dart -> CustomerForm.dart
-                          args.selectedListItem
-                              .add({_currentProduct: _currentDetail});
-
-                          // 최종 가격 합산
-                          int temp_idx = waste_obj
-                              .trashList[_currentProduct].detailWaste
-                              .indexOf(_currentDetail);
-                          args.totalPrice += waste_obj
-                              .trashList[_currentProduct].wastePrice
-                              .elementAt(temp_idx);
-
-                          Navigator.pushNamed(context, CustomerForm.routeName,
-                              arguments: CustomerForm_AccountSnapshot(
-                                  args.currentAccount,
-                                  args.selectedListItem,
-                                  args.totalPrice));
+                        // TODO : 제품목록이나 상세목록을 선택하지 않았을 경우 에러메시지 출력하기.
+                        if (_currentProduct == "제품 목록을 선택하세요." ||
+                            _currentDetail == "상세 목록을 선택하세요.") {
+                          // * 제품 목록을 다시 선택하세요.
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('ERROR'),
+                                content: Text('제품 목록이나 상세 목록을 선택하시기 바랍니다.'),
+                                actions: <Widget>[
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Confirm')),
+                                ],
+                              );
+                            },
+                          );
                         } else {
-                          // TrashListConfirmation.dart(현재 인덱스) -> TrashListConfirmation.dart(다음 인덱스)
-                          args.selectedListItem
-                              .add({_currentProduct: _currentDetail});
+                          // * 다음 페이지로...
+                          if (args.current_Idx + 1 ==
+                              args.listViewItem.length) {
+                            // TrashListConfirmation.dart -> CustomerForm.dart
+                            args.selectedListItem
+                                .add({_currentProduct: _currentDetail});
 
-                          // 최종 가격 합산
-                          int temp_idx = waste_obj
-                              .trashList[_currentProduct].detailWaste
-                              .indexOf(_currentDetail);
-                          args.totalPrice += waste_obj
-                              .trashList[_currentProduct].wastePrice
-                              .elementAt(temp_idx);
+                            if (!waste_obj.trashList.containsKey(_currentProduct)) {
+                              args.totalPrice += 0;
+                            } else {
+                              // 최종 가격 합산
+                              int temp_idx = waste_obj
+                                  .trashList[_currentProduct].detailWaste
+                                  .indexOf(_currentDetail);
+                              args.totalPrice += waste_obj
+                                  .trashList[_currentProduct].wastePrice
+                                  .elementAt(temp_idx);
+                            }
 
-                          Navigator.pushNamed(
-                              context, TrashListComfirmation.routeName,
-                              arguments: TrashListComfirmation_AccounSnapshot(
-                                  args.currentAccount,
-                                  args.listViewItem,
-                                  args.current_Idx + 1,
-                                  args.myDeepLearningResultStr,
-                                  args.selectedListItem,
-                                  args.totalPrice));
+                            Navigator.pushNamed(context, CustomerForm.routeName,
+                                arguments: CustomerForm_AccountSnapshot(
+                                    args.currentAccount,
+                                    args.selectedListItem,
+                                    args.totalPrice));
+                          } else {
+                            // TrashListConfirmation.dart(현재 인덱스) -> TrashListConfirmation.dart(다음 인덱스)
+                            args.selectedListItem
+                                .add({_currentProduct: _currentDetail});
+
+                            if (!waste_obj.trashList.containsKey(_currentProduct)) {
+                              args.totalPrice += 0;
+                            } else {
+                              // 최종 가격 합산
+                              int temp_idx = waste_obj
+                                  .trashList[_currentProduct].detailWaste
+                                  .indexOf(_currentDetail);
+                              args.totalPrice += waste_obj
+                                  .trashList[_currentProduct].wastePrice
+                                  .elementAt(temp_idx);
+                            }
+
+                            Navigator.pushNamed(
+                                context, TrashListComfirmation.routeName,
+                                arguments: TrashListComfirmation_AccounSnapshot(
+                                    args.currentAccount,
+                                    args.listViewItem,
+                                    args.current_Idx + 1,
+                                    args.myDeepLearningResultStr,
+                                    args.selectedListItem,
+                                    args.totalPrice));
+                          }
                         }
                       }),
                 ],
@@ -258,5 +304,59 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
         ),
       ),
     );
+  }
+
+  Future _getImage(TrashListComfirmation_AccounSnapshot args) async {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          File image;
+          return SimpleDialog(
+            title: Text(
+              '이미지를 불러올 방식을 선택하세요.',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                child: SimpleDialogOption(
+                    child: Text('카메라 어플 실행'),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+
+                      // 사진 앱 불러옴
+                      image = await ImagePicker.pickImage(
+                          source: ImageSource.camera);
+
+                      setState(() {
+                        // 중간에 이미지 촬영을 안 하고 바로 넘어갔을 경우... 처리
+                        if (image != null)
+                          args.listViewItem[args.current_Idx] = image;
+                        image = null;
+                      });
+                    }),
+              ),
+              Container(
+                  padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                  child: SimpleDialogOption(
+                      child: Text('갤러리에서 사진 선택'),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+
+                        // 사진 앱 불러옴
+                        image = await ImagePicker.pickImage(
+                            source: ImageSource.gallery);
+
+                        setState(() {
+                          // 중간에 이미지 촬영을 안 하고 바로 넘어갔을 경우... 처리
+                          if (image != null)
+                            args.listViewItem[args.current_Idx] = image;
+                          image = null;
+                        });
+                      })),
+            ],
+          );
+        });
   }
 }

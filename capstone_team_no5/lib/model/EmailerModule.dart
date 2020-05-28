@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:async';
 
 const PROTOCOL = "http";
@@ -33,7 +32,7 @@ class EmailerDAO {
     // Dio dio = new Dio();
 
     // data는 Map으로 받아서 http 웹 서버로 데이터를 보냄.
-    Map jsonObj = obj.toJson();
+    // Map jsonObj = obj.toJson();
 
     // my_data.putIfAbsent("userId", () => 189);
     // response = await dio.post(API_PREFIX, data: jsonObj);
@@ -50,7 +49,7 @@ class EmailerDAO {
     // Response response; //dio에서 사용하는 것을 가져온 것.
     // Dio dio = new Dio();
 
-    Map jsonObj = obj.toJson();
+    // Map jsonObj = obj.toJson();
     // response = await dio.get(API_PREFIX, queryParameters: jsonObj);
     // print(response.data.toString());
   }
