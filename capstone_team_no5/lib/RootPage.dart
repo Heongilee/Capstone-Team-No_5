@@ -15,7 +15,8 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
   final _db = Firestore.instance;
   DocumentSnapshot _currentDoc;
-  bool _checkV1 = false;
+  // 로그인 환경 설정에서 불러온 계정이 이미 로그인중인지 체크할 변수
+  bool _isAlreadyLogined = false;
 
   @override
   void initState() {
@@ -70,26 +71,16 @@ class _RootPageState extends State<RootPage> {
 
   Future<void> _delaying(BuildContext context) async {
     await Future.delayed(Duration(milliseconds: 1500));
-
-    MyApp_config().readMyconfig().then((MyApp_config onValue) async {
+  
+    // 디바이스에 있는 로그인 환경설정 정보를 불러옴.
+    myapp_config_instance.readMyconfig().then((MyApp_config onValue) async {
       // TEST OUTPUT
       print("TEST OUTPUT 1 : " + onValue.toString()); // { admin, false, false }
 
       await accessMyFirestore(onValue.receiveID);
 
+      // 계정 정보가 있으면서, 자동 로그인 상태라면 바로 
       if (_currentDoc != null && onValue.chkboxAUTO == true) {
-        // Navigator.pushReplacement로 하면 뒤로 다시 돌아올 수 없다.
-        // Navigator.push(
-        //   context,
-        //   PageTransition(
-        //     type: PageTransitionType.fade,
-        //     child: TabPage(_currentDoc),
-        //     duration: Duration(milliseconds: 900),
-        //   ),
-        // ).whenComplete(() {
-        //   // There are multiple heroes that share the same tag within a subtree. 에러 뜨는데 걍 무시.
-        //   Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
-        // });
         Navigator.pushNamed(context, TabPage.routeName,
                 arguments: TabPage_AccountSnapshot(_currentDoc))
             .whenComplete(() {
@@ -97,9 +88,7 @@ class _RootPageState extends State<RootPage> {
               context, MaterialPageRoute(builder: (context) => MainPage()));
         });
       } else {
-        if (onValue.chkboxAUTO == false && _checkV1 == true) {
-          _updateStatus(0); // 로그아웃 상태로 전환
-        }
+        if (onValue.chkboxAUTO == false && _isAlreadyLogined == true) _updateStatus(0); // 로그아웃 상태로 전환
         // Navigator.pushReplacement로 하면 뒤로 다시 돌아올 수 없다.
         Navigator.pushReplacement(
           context,
@@ -116,13 +105,12 @@ class _RootPageState extends State<RootPage> {
 
   // * 계정 정보가 있으면 qs.documents.single을 반환, 계정 정보를 찾지 못하면 null반환.
   Future<void> accessMyFirestore(String chkID) async {
-    Future<dynamic> doc =
-        _db.collection('user').where('id', isEqualTo: chkID).getDocuments();
+    Future<dynamic> doc = _db.collection('user').where('id', isEqualTo: chkID).getDocuments();
     await doc.then((qs) {
       _currentDoc = (qs.documents.isEmpty) ? null : qs.documents.single;
 
       qs.documents.forEach((f) {
-        if (f['status'] == 1) _checkV1 = true;
+        if (f['status'] == 1) _isAlreadyLogined = true;
       });
     });
 
