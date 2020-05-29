@@ -1,17 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/TrashListComfirmation.dart';
-
-const PROTOCOL = "http";
-const IP_ADDRESS = "15.164.123.37";
-const PORT = "3000";
-const ROUTE = "image";
-const API_PREFIX = "$PROTOCOL://$IP_ADDRESS:$PORT/$ROUTE";
 
 class TakingPicture extends StatefulWidget {
   static const routeName = '/TakingPicture';
@@ -93,7 +89,7 @@ class _TakingPictureState extends State<TakingPicture> {
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                   ),
-                  onPressed: () async {
+                  onPressed: () {
                     // 사진 촬영이 하나도 안 됐을 경우, 에러 메시지 출력.
                     if (_listViewItem.length == 0) {
                       showDialog(
@@ -112,19 +108,49 @@ class _TakingPictureState extends State<TakingPicture> {
                           );
                         },
                       );
-                    } else { // 사진이 촬영됐을 경우.
-                      await _loadMyDeepLearningModule(context).then((Map<int, List<String>> myResultStrList) {
+                    } else {
+                      _loadMyDeepLearningModule().then((value) {
                         Navigator.pushNamed(
                             context, TrashListComfirmation.routeName,
                             arguments: TrashListComfirmation_AccounSnapshot(
-                                args.currentAccount,
-                                _listViewItem,
-                                0,
-                                myResultStrList,
-                                {},
-                                0));
+                                args.currentAccount, _listViewItem, 0));
                       });
                     }
+                    // ! -------------------------- 재웅이형 코드 ----------------------------------
+                    //else{
+                    //   _listViewItem.forEach((File element) {
+                    //     final String nodeEndPoint = 'http://172.30.1.45:3000/image';
+
+                    //     if (element == null) {
+                    //       print("어 파일인식 안됨");
+                    //       return;
+                    //     }
+                    //     String base64Image = base64Encode(element.readAsBytesSync());
+                    //     String fileName = element.path.split("/").last;
+
+                    //     print("파일이름 : " + fileName);
+                    //     //print(base64Image);
+                    //     http.post(nodeEndPoint, body: {
+                    //       "image": base64Image,
+                    //       "name": fileName,
+                    //     }).then((res) {
+                    //       print(res.body);
+                    //       print("상태코드 : ");
+                    //       print(res.statusCode);
+
+                    //       String tmp=res.body;
+                    //       //처리해주기
+
+                    //     }).catchError((err) {
+                    //       print(err);
+                    //     });
+
+                    //     print(33);
+                    //     print(_makeGetRequest()); //Instance of 'Future<dynamic>' 출력이 됨
+
+                    //   });
+                    // }
+                    // ! ----------------------------------------------------------------------------
                   }),
             ),
           ],
@@ -264,7 +290,8 @@ class _TakingPictureState extends State<TakingPicture> {
   }
 
   // 딥러닝 결과를 받아올 메소드
-  Future<Map<int, List<String>>> _loadMyDeepLearningModule(BuildContext context) async {showDialog(
+  Future<void> _loadMyDeepLearningModule() async {
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -277,67 +304,26 @@ class _TakingPictureState extends State<TakingPicture> {
         );
       },
     );
-
-    Map<int, List<String>> _myDeepLearningResults = {
-      0: ["시계"], // 0번째 사진에서 검출된 객체들은 어항, 이불, 화분, 자전거, 항아리가 있다.
-      // 1: ["가방류", "고무통", "러닝머신", "옥매트"], // 1번째 사진에서 검출된 객체들은 다음과 같다.
-      // 2: ["유리(거울,판유리)", "재봉틀", "화일캐비넷", "피아노", "환풍기", "카페트"],
-      // 3: ["어항", "이불", "화분", "자전거", "항아리"], // 0번째 사진에서 검출된 객체들은 어항, 이불, 화분, 자전거, 항아리가 있다.
-      // 4: ["가방류", "고무통", "러닝머신", "옥매트"], // 1번째 사진에서 검출된 객체들은 다음과 같다.
-      // 5: ["유리(거울,판유리)", "재봉틀", "화일캐비넷", "피아노", "환풍기", "카페트"]
-    };
-
-    // !-------------------- AWS EC2 서버 가동중일때만 가능. ---------------------
-    // for (File element in _listViewItem) {
-    //   String tmp; // res.body를 받아올 임시 변수
-    //   final String nodeEndPoint = API_PREFIX;
-
-    //   if (element == null) {
-    //     print("어 파일인식 안됨");
-    //     break;
-    //   }
-    //   String base64Image = base64Encode(element.readAsBytesSync());
-    //   String fileName = element.path.split("/").last;
-
-    //   print("파일이름 : " + fileName);
-
-    //   await http.post(nodeEndPoint, body: {
-    //     "image": base64Image,
-    //     "name": fileName,
-    //   }).then((res) {
-    //     print(res.body);
-    //     print("상태코드 : ");
-    //     print(res.statusCode);
-
-    //     tmp = res.body;
-    //     int tmp_idx = _myDeepLearningResults.length;
-    //     List<String> response_list = tmp.split(", ");
-    //     _myDeepLearningResults.addAll({tmp_idx: response_list});
-    //   }).catchError((err) {
-    //     print(err);
-    //   });
-    // }
-    // !------------------------------------------------------------------------
-
-    return _myDeepLearningResults;
+    await Future.delayed(Duration(seconds: 2));
+    return;
   }
 
-  // _makeGetRequest() async {
-  //   final response = await http.get(_localhost());
+  _makeGetRequest() async {
+    final response = await http.get(_localhost());
 
-  //   if (response.statusCode == 200) {
-  //     serverResponse = response.body;
-  //     //print("서버 응답부분");print(serverResponse);
-  //     return 1;
-  //   }
-  // }
+    if (response.statusCode == 200) {
+      serverResponse = response.body;
+      //print("서버 응답부분");print(serverResponse);
+      return 1;
+    }
+  }
 
-  // String _localhost() {
-  //   if (Platform.isAndroid)
-  //     return API_PREFIX;
-  //   else // for iOS simulator
-  //     return API_PREFIX;
-  // }
+  String _localhost() {
+    if (Platform.isAndroid)
+      return 'http://172.30.1.45:3000/';
+    else // for iOS simulator
+      return 'http://172.30.1.45:3000/';
+  }
 }
 
 // import 'dart:async';
