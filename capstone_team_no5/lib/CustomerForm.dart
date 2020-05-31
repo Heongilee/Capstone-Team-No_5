@@ -1,7 +1,5 @@
 library flutter_calendar_dooboo;
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
@@ -11,10 +9,7 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/TakingPicture.dart';
-import 'package:recycle/model/WasteListAsset.dart';
 import 'package:recycle/ReservationDTO.dart';
-
-import 'TabPage.dart';
 
 class CustomerForm extends StatefulWidget {
   static const routeName = '/CustomerForm';
@@ -54,17 +49,14 @@ class _CustomerForm extends State<CustomerForm> {
 
   List<DropdownMenuItem<String>> _dropDownMenuItems;
 
-  String _timeSet; //시간을 담는 변수
-  DateTime selectedDate; //선택한 날짜
+  String _timeSet;//시간을 담는 변수
+  DateTime selectedDate;//선택한 날짜
 
-  WasteListAsset waste_obj;
 
   @override
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _timeSet = _dropDownMenuItems[0].value;
-
-    waste_obj = new WasteListAsset();
     super.initState();
   }
 
@@ -89,11 +81,9 @@ class _CustomerForm extends State<CustomerForm> {
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
       todayBorderColor: Colors.green,
       onDayPressed: (DateTime date, List<Event> events) {
-        this.setState(() {
-          _currentDate2 = date;
-        });
+        this.setState(() { _currentDate2 = date;});
         events.forEach((event) => print(event.title));
-
+        
         selectedDate = date;
       },
       daysHaveCircularBorder: true,
@@ -174,27 +164,10 @@ class _CustomerForm extends State<CustomerForm> {
       child: Center(
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height + 1000,
+            height: MediaQuery.of(context).size.height + 193.0,
             child: Column(
               children: <Widget>[
                 Padding(padding: EdgeInsets.all(10.0)),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(padding: const EdgeInsets.all(10.0)),
-                    Text('폐기물 신청 목록',
-                        textScaleFactor: 1.2,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic)),
-                  ],
-                ),
-                Padding(padding: const EdgeInsets.all(5.0)),
-                Container(
-                  width: 300.0,
-                  height: 300.0,
-                  child: Scrollbar(child: _buildListView(args)),
-                ),
                 Flexible(
                   // address
                   child: Container(
@@ -320,7 +293,7 @@ class _CustomerForm extends State<CustomerForm> {
                 ),
                 Padding(padding: EdgeInsets.all(10.0)),
                 Text(
-                  'Total : ${args.totalPrice} 원',
+                  'Total : XXXX 원',
                   style: TextStyle(fontSize: 20),
                 ),
                 Padding(padding: EdgeInsets.all(10.0)),
@@ -331,60 +304,9 @@ class _CustomerForm extends State<CustomerForm> {
                         '제 출',
                         style: TextStyle(fontSize: 20.0),
                       ),
-                      onPressed: () {
-                        _checkInternetAccess().then((bool onValue) async {
-                          if (onValue) {
-                            // 인터넷 정상 연결..
-                            myReservation.myJsonObjects = ReservationDTO(
-                                reserveId: args.currentAccount.data['id'],
-                                reserveDate: DateTime.now(),
-                                reserveAddress:
-                                    args.currentAccount.data['address'],
-                                reserveState: "접수 완료",
-                                reserveVisitDate: selectedDate,
-                                reserveVisitTime: _timeSet,
-                                reserveItems: ['어항', '가방류']).toJson();
-                            await _db.collection('reservation').document().setData(myReservation.myJsonObjects);
-
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('SUCCESS'),
-                                  content: Text('예약이 완료되었습니다.'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          Navigator.popUntil(
-                                              context,
-                                              ModalRoute.withName(
-                                                  TabPage.routeName));
-                                        },
-                                        child: Text('Confirm')),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('인터넷 연결 오류'),
-                                  content: Text('인터넷 연결 상태를 확인 바랍니다.'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('Confirm')),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        });
+                      onPressed: () async{
+                        myReservation.myJsonObjects = ReservationDTO(reserveId: args.currentAccount.data['id'], reserveDate: DateTime.now(), reserveAddress: args.currentAccount.data['address'], reserveState: "접수 완료", reserveVisitDate: selectedDate, reserveVisitTime: _timeSet, reserveItems: ['어항', '가방류']).toJson();
+                        myReservation.accessMyFirestore();
                       }),
                 ),
               ],
@@ -393,59 +315,5 @@ class _CustomerForm extends State<CustomerForm> {
         ),
       ),
     );
-  }
-
-  Widget _buildListView(CustomerForm_AccountSnapshot args) {
-    return ListView.builder(
-      // scrollDirection: Axis.vertical,
-      itemCount: args.selectedListItem.toList().length * 2,
-      itemBuilder: (context, index) {
-        if (index.isOdd) {
-          return Divider();
-        } else {
-          var realIdx = index ~/ 2;
-
-          return _buildListItem(args, realIdx);
-        }
-      },
-    );
-  }
-
-  Widget _buildListItem(CustomerForm_AccountSnapshot args, int realIdx) {
-    Map listItemMap = args.selectedListItem.toList()[realIdx];
-
-    return Card(
-      child: ListTile(
-        title: Text(listItemMap.keys.first, textScaleFactor: 1.5),
-        subtitle: Text(listItemMap.values.first, textScaleFactor: 1.1),
-        trailing: IconButton(
-            color: Colors.pinkAccent,
-            icon: Icon(Icons.remove_circle),
-            onPressed: () {
-              setState(() {
-                args.selectedListItem.remove(listItemMap);
-                int temp_index = waste_obj
-                    .trashList[listItemMap.keys.first].detailWaste
-                    .indexOf(listItemMap.values.first);
-                args.totalPrice -= waste_obj
-                    .trashList[listItemMap.keys.first].wastePrice
-                    .elementAt(temp_index);
-                // TODO : 신청 목록에서 삭제 시키면 가격 -
-              });
-            }),
-      ),
-    );
-  }
-
-  Future<bool> _checkInternetAccess() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        print('Connected');
-        return true;
-      }
-    } on SocketException catch (_) {
-      return false;
-    }
   }
 }
