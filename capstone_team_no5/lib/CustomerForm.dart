@@ -344,7 +344,10 @@ class _CustomerForm extends State<CustomerForm> {
                                 reserveVisitDate: selectedDate,
                                 reserveVisitTime: _timeSet,
                                 reserveItems: ['어항', '가방류']).toJson();
-                            await _db.collection('reservation').document().setData(myReservation.myJsonObjects);
+                            await _db
+                                .collection('reservation')
+                                .document()
+                                .setData(myReservation.myJsonObjects);
 
                             showDialog(
                               context: context,

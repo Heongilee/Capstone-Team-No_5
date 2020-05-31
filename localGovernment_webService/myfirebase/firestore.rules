@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+		// 2020년 5월 1일 까지 접속 URL을 통하면 누구나 데이터베이스에 접근이 가능한 설정.
+    match /{document=**} {
+      allow read, write: if request.time < timestamp.date(2020, 12, 31);
+    }
+    
+    // firebase auth로 로그인만 한다면, 모든 문서를 CRUD 수행이 가능함. (권장X)
+    // match /{document=**}{
+    // 	allow read, write: if request.auth.uid != null;
+    // }
+    
+    // 특정 컬랙션의 읽기 쓰기 작업의 권한을 분리해서 설정한 예
+    // match /user/{document}{	//'user'라는 컬랙션에 대해서 규칙을 부여하는데...
+    // 	allow read: if true		// 읽기 모두 가능
+    //   // Create는 요청 메시지의 auth.uid값과 생성할 문서(data)의 author.uid값이 같을때만 가능
+    //   alow create: if request.auth.uid == request.resource.data.author_uid;
+    //   allow update, delete: if request.auth.uid == resource.data.author_uid;
+    // }
+  }
+}
