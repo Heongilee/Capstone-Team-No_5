@@ -12,10 +12,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class mainpage_text_editing_controller {
   final _id = TextEditingController();
   final _pw = TextEditingController();
-  StreamController _checkboxController_remember_my_id = StreamController<bool>()
-    ..add(false);
-  StreamController _checkboxController_auto_login = StreamController<bool>()
-    ..add(false);
+  StreamController _checkboxController_remember_my_id =
+      StreamController<bool>();
+  StreamController _checkboxController_auto_login = StreamController<bool>();
   bool remember_my_id = false;
   bool auto_login = false;
 
@@ -27,18 +26,23 @@ class mainpage_text_editing_controller {
   }
 }
 
-class MainPage extends StatelessWidget with mainpage_text_editing_controller {
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage>
+    with mainpage_text_editing_controller {
   final _db = Firestore.instance;
   DocumentSnapshot _currentDoc;
 
-  // 기본 생성자 오버로딩
-  MainPage() {
-    // 싱글톤 객체 호출
-    MyApp_config().readMyconfig().then((obj) {
-      _checkboxController_remember_my_id.add(obj.chkboxID);
-      _checkboxController_auto_login.add(obj.chkboxAUTO);
-      _id.text = obj.receiveID;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _checkboxController_remember_my_id.add(false);
+    _checkboxController_auto_login.add(false);
+
+    setting_myAppConfig();
   }
 
   @override
@@ -177,7 +181,7 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                       return SizedBox(
                           height: 30.0,
                           child: Checkbox(
-                              value: snapshot.data,
+                              value: (snapshot.hasData) ? snapshot.data : false,
                               onChanged: (bool value1) {
                                 // TODO : 아이디 기억
                                 switch_checkbox('remember_my_id');
@@ -191,7 +195,7 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                       return SizedBox(
                           height: 30.0,
                           child: Checkbox(
-                              value: snapshot.data,
+                              value: (snapshot.hasData) ? snapshot.data : false,
                               onChanged: (bool value2) {
                                 // TODO : 자동 로그인
                                 switch_checkbox('auto_login');
@@ -266,27 +270,27 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                                 _updateStatus(1); // 로그인 상태로 전환.
 
                                 // dispose();  // Stream close
-                                MyApp_config().chkboxID = remember_my_id;
-                                MyApp_config().chkboxAUTO = auto_login;
-                                MyApp_config().receiveID =
-                                    (MyApp_config().chkboxID ||
-                                            MyApp_config().chkboxAUTO)
+                                myapp_config_instance.chkboxID = remember_my_id;
+                                myapp_config_instance.chkboxAUTO = auto_login;
+                                // ID기억이나, 자동로그인이 켜져있는 경우 receiveID를 받음.
+                                myapp_config_instance.receiveID =
+                                    (myapp_config_instance.chkboxID ||
+                                            myapp_config_instance.chkboxAUTO)
                                         ? _id.text
                                         : "";
-                                MyApp_config()
-                                    .writeMyconfig(MyApp_config().toJson());
+
+                                print(
+                                    "${myapp_config_instance.chkboxID}, ${myapp_config_instance.chkboxAUTO}");
+                                print(
+                                    "---------- receiveID : ${myapp_config_instance.receiveID} | _id.text : ${_id.text}로 해당 정보가 저장되었습니다!!! ----------");
+                                myapp_config_instance.writeMyconfig(
+                                    myapp_config_instance.toJson());
 
                                 // 페이지 전환으로 인한 텍스트 필드값 초기화
-                                if (!remember_my_id) {
+                                if (!myapp_config_instance.chkboxID)
                                   _id.clear();
-                                }
                                 _pw.clear();
 
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) =>
-                                //             TabPage(_currentDoc)));
                                 Navigator.pushNamed(context, TabPage.routeName,
                                     arguments:
                                         TabPage_AccountSnapshot(_currentDoc));
@@ -380,9 +384,10 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
                         MaterialPageRoute(builder: (context) => SignUp()));
                   }),
             ),
-            Padding(padding: EdgeInsets.only(top:24.0)),
+            Padding(padding: EdgeInsets.only(top: 24.0)),
             InkWell(
-              child: Text('개발자 옵션 : 모든 계정 로그아웃.', style: TextStyle(decoration: TextDecoration.underline)),
+              child: Text('개발자 옵션 : 모든 계정 로그아웃.',
+                  style: TextStyle(decoration: TextDecoration.underline)),
               onTap: () {
                 _allOfUserAccountSetSignOut().then((value) {
                   _showMyToastAlertMsg("모든 유저를 로그아웃 시켰습니다.");
@@ -443,9 +448,20 @@ class MainPage extends StatelessWidget with mainpage_text_editing_controller {
 
   void _showMyToastAlertMsg(String my_msg) {
     Fluttertoast.showToast(
-      toastLength: Toast.LENGTH_LONG,
-      webBgColor: "#e74c3c",
-      timeInSecForIosWeb: 3,
-      msg: my_msg);
+        toastLength: Toast.LENGTH_LONG,
+        webBgColor: "#e74c3c",
+        timeInSecForIosWeb: 3,
+        msg: my_msg);
+  }
+
+  Future<void> setting_myAppConfig() async {
+    // 싱글톤 객체 호출
+    await myapp_config_instance.readMyconfig().then((obj) {
+      _checkboxController_remember_my_id.add(obj.chkboxID);
+      _checkboxController_auto_login.add(obj.chkboxAUTO);
+      _id.text = obj.receiveID;
+    });
+
+    return;
   }
 }

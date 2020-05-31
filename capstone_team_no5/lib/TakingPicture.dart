@@ -112,8 +112,10 @@ class _TakingPictureState extends State<TakingPicture> {
                           );
                         },
                       );
-                    } else { // 사진이 촬영됐을 경우.
-                      await _loadMyDeepLearningModule(context).then((Map<int, List<String>> myResultStrList) {
+                    } else {
+                      // 사진이 촬영됐을 경우.
+                      await _loadMyDeepLearningModule(context)
+                          .then((Map<int, List<String>> myResultStrList) {
                         Navigator.pushNamed(
                             context, TrashListComfirmation.routeName,
                             arguments: TrashListComfirmation_AccounSnapshot(
@@ -264,7 +266,9 @@ class _TakingPictureState extends State<TakingPicture> {
   }
 
   // 딥러닝 결과를 받아올 메소드
-  Future<Map<int, List<String>>> _loadMyDeepLearningModule(BuildContext context) async {showDialog(
+  Future<Map<int, List<String>>> _loadMyDeepLearningModule(
+      BuildContext context) async {
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -321,5 +325,4 @@ class _TakingPictureState extends State<TakingPicture> {
 
     return _myDeepLearningResults;
   }
-  
 }
