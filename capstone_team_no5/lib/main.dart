@@ -7,6 +7,8 @@ import 'package:recycle/TrashListComfirmation.dart';
 import 'package:recycle/TakingPicture.dart';
 import 'package:recycle/CustomerForm.dart';
 
+import 'Example.dart';
+
 // 2020-05-07
 void main() => runApp(MyApp());
 
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: RootPage(),
-      // home: ExamplePage(),
+      // home: Example(),
       routes: <String, WidgetBuilder>{
         '/MainPage': (BuildContext context) => new MainPage(),
         TakingPicture.routeName: (context) => TakingPicture(),
