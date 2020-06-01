@@ -208,6 +208,11 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 ),
               ),
               Padding(padding: EdgeInsets.all(10.0)),
+              // ListView(
+              //   children: <Widget>[
+                  
+              //   ],
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
