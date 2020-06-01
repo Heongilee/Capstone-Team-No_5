@@ -1,84 +1,53 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:random_string/random_string.dart';
-import 'package:recycle/model/EmailerModule.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 
-const PROTOCOL = "http";
-const ANDROID_HOST = "192.168.2.204";
-// const ANDROID_HOST = "10.0.2.2";
-const IOS_HOST = "localhost";
-const PORT = "8080";
-const ROUTE = "create-mailer";
+// void main(){
+//   runApp(MaterialApp(
+//     home: HomeScreen(),
+//   ));
+// }
+class Example extends StatelessWidget{
+  Widget build(BuildContext context){
 
-class ExamplePage extends StatefulWidget {
-  @override
-  _ExamplePageState createState() => _ExamplePageState();
-}
+    String appId = "ca-app-pub-9179900992913670~4602448319";
+    FirebaseAdMob.instance.initialize(appId: appId);
 
-class _ExamplePageState extends State<ExamplePage> {
-  String _serverResponse = "N/A";
+    MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['flutterio', 'beautiful apps'],
+  contentUrl: 'https://flutter.io',
+  childDirected: false,// or MobileAdGender.female, MobileAdGender.unknown
+  testDevices: <String>[], // Android emulators are considered test devices
+);
 
-  @override
-  Widget build(BuildContext context) {
+BannerAd myBanner = BannerAd(
+  // Replace the testAdUnitId with an ad unit id from the AdMob dash.
+  // https://developers.google.com/admob/android/test-ads
+  // https://developers.google.com/admob/ios/test-ads
+  adUnitId: BannerAd.testAdUnitId,
+  size: AdSize.smartBanner,
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("BannerAd event is $event");
+  },
+);
+
+myBanner
+  // typically this happens well before the ad is shown
+  ..load()
+  ..show(
+    // Positions the banner ad 60 pixels from the bottom of the screen
+    anchorOffset: 0.0,
+    // Positions the banner ad 10 pixels from the center of the screen to the right
+    horizontalCenterOffset: 10.0,
+    // Banner Position
+    anchorType: AnchorType.bottom,
+  );
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Http req, res',
-          textScaleFactor: 1.2,
-        ),
-        centerTitle: true,
+        title: Text('Exam'),
       ),
-      body: _buildBody(),
+      body: Center(child: Text('AdMob')),
     );
-  }
-
-  Widget _buildBody() {
-    return SafeArea(
-        child: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: SizedBox(
-            width: 200,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(
-                  // onPressed: () => _makeGetResponse(),
-                  onPressed: () => my_emailer.postReq(new EmailerDTO(authenticationCode: randomAlpha(6), receipent: "gjsrl1@gmail.com", ok: false)),
-                  child: Text('Send request to Server.'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(_serverResponse),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ));
-  }
-
-  _makeGetResponse() async {
-    var server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8080);
-    print('Listening on ${server.address}:${server.port}');
-
-    await for (var httpRequest in server) {
-      httpRequest.response.write('Hello World!');
-
-      await httpRequest.response.close();
-    }
-  }
-
-  String _localhost() {
-    String _api_prefix = "";
-
-    if (Platform.isAndroid)
-      _api_prefix = "$PROTOCOL://$ANDROID_HOST:$PORT/$ROUTE";
-    else if (Platform.isIOS) _api_prefix = "$PROTOCOL://$IOS_HOST:$PORT/$ROUTE";
-
-    return _api_prefix;
   }
 }

@@ -1,7 +1,7 @@
 library flutter_calendar_dooboo;
 
 import 'dart:io';
-
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
@@ -58,6 +58,19 @@ class _CustomerForm extends State<CustomerForm> {
   DateTime selectedDate; //선택한 날짜
 
   WasteListAsset waste_obj;
+  
+  //광고 삽입 부분
+  static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['flutter', 'firebase', 'admob'],
+    testDevices: <String>[],
+  );
+  BannerAd myBanner = BannerAd(
+    adUnitId: BannerAd.testAdUnitId,
+    size: AdSize.smartBanner,
+    targetingInfo: targetingInfo,
+    listener: (MobileAdEvent event) {
+      print("BannerAd event is $event");
+  });
 
   @override
   void initState() {
@@ -66,6 +79,11 @@ class _CustomerForm extends State<CustomerForm> {
 
     waste_obj = new WasteListAsset();
     super.initState();
+
+    //광고 appId 부분
+    String appId = "ca-app-pub-9179900992913670~4602448319";
+    FirebaseAdMob.instance.initialize(appId: appId);
+    myBanner..load()..show();
   }
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
@@ -390,6 +408,7 @@ class _CustomerForm extends State<CustomerForm> {
                         });
                       }),
                 ),
+
               ],
             ),
           ),

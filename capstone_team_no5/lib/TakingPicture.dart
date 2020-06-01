@@ -126,6 +126,7 @@ class _TakingPictureState extends State<TakingPicture> {
                                 {},
                                 0));
                       });
+                      // TrashListComfirmation.getDropDownMenuItems_Product();
                     }
                   }),
             ),
@@ -283,7 +284,7 @@ class _TakingPictureState extends State<TakingPicture> {
     );
 
     Map<int, List<String>> _myDeepLearningResults = {
-      0: ["시계"], // 0번째 사진에서 검출된 객체들은 어항, 이불, 화분, 자전거, 항아리가 있다.
+      // 0: ["시계"] 0번째 사진에서 검출된 객체들은 어항, 이불, 화분, 자전거, 항아리가 있다.
       // 1: ["가방류", "고무통", "러닝머신", "옥매트"], // 1번째 사진에서 검출된 객체들은 다음과 같다.
       // 2: ["유리(거울,판유리)", "재봉틀", "화일캐비넷", "피아노", "환풍기", "카페트"],
       // 3: ["어항", "이불", "화분", "자전거", "항아리"], // 0번째 사진에서 검출된 객체들은 어항, 이불, 화분, 자전거, 항아리가 있다.
@@ -315,8 +316,10 @@ class _TakingPictureState extends State<TakingPicture> {
 
         tmp = res.body;
         int tmp_idx = _myDeepLearningResults.length;
-        List<String> response_list = tmp.split(", ");
+        List<String> response_list = tmp.split(",");
+        
         _myDeepLearningResults.addAll({tmp_idx: response_list});
+        
       }).catchError((err) {
         print(err);
       });
