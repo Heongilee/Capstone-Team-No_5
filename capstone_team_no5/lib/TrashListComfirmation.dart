@@ -53,8 +53,6 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
       List<String> myDeepLearningResults) {
     //DropdownMenu에 추가시킬 items 리스트 선언. (이를 반환 시킬 것임.)
     List<DropdownMenuItem<String>> items = new List();
-    //같은 객체 중복 방지 리스트
-    List<String>incheck = new List();
 
     for (String i in myDeepLearningResults) {
       // TODO : 만약 "noDetected" 결과라면...?
@@ -63,15 +61,11 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
         break;
       }
       // 딥러닝 결과와 매칭된 폐기물 품목 리스트만 items에 add 시킬 것.
-      else if (WasteListAsset().trashList.containsKey(i) && !incheck.contains(i)){
-        incheck.add(i);
-        items.add(new DropdownMenuItem(value: i, child: Text(WasteListAsset().trashList[i].koreaname)));
-      }
-      // end user가 제품 목록을 선택하기 전에 띄울 콤보박스 아이템
-      else if (i == "제품 목록을 선택하세요." && !incheck.contains(i)){
-        incheck.add(i);
+      if (WasteListAsset().trashList.containsKey(i))
         items.add(new DropdownMenuItem(value: i, child: Text(i)));
-      }
+      // end user가 제품 목록을 선택하기 전에 띄울 콤보박스 아이템
+      if (i == "제품 목록을 선택하세요.")
+        items.add(new DropdownMenuItem(value: i, child: Text(i)));
     }
 
     return items;
@@ -208,11 +202,6 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 ),
               ),
               Padding(padding: EdgeInsets.all(10.0)),
-              // ListView(
-              //   children: <Widget>[
-                  
-              //   ],
-              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -260,7 +249,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                               args.listViewItem.length) {
                             // TrashListConfirmation.dart -> CustomerForm.dart
                             args.selectedListItem
-                                .add({WasteListAsset().trashList[_currentProduct].koreaname: _currentDetail});
+                                .add({_currentProduct: _currentDetail});
 
                             if (!waste_obj.trashList.containsKey(_currentProduct)) {
                               args.totalPrice += 0;
