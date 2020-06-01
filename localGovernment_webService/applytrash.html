@@ -20,16 +20,12 @@ Released   : 20130902
   <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
   <!-- <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script> -->
 
-  <!-- <script>
-    $(document).ready(function(){
-      
-    });
-  </script> -->
   <script>
-      $(document).ready(function(){
+  $(document).ready(function(){
+    // 슬라이더 Enable... ------------- Not Working...
     $(".button").click(function(){
         //여기서 승인해줘야됨
-      $("align-right").hide();
+      $(".align-right").hide();
     });
   });
   </script>
@@ -40,7 +36,6 @@ Released   : 20130902
 <link href="default.css" rel="stylesheet" type="text/css" media="all" />
 <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
 
-<!--[if IE 6]><link href="default_ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
 <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
 <script>
@@ -68,94 +63,128 @@ Released   : 20130902
       </ul>
    </div>
 </div>
-<div id="featured" class="container" >
-   <div class="align-left">
-        <div class="slider"  width= auto; height= auto; max-width= 400px; max-height= 300px;>
-          <!-- <img src="https://firebasestorage.googleapis.com/v0/b/capstone-no5.appspot.com/o/reservationList_assetImage%2Ffishtank001.png?alt=media&token=2ff08756-2b53-4ad7-b99e-15cad89980d7" alt="대형 폐기물">
-          <img src="https://firebasestorage.googleapis.com/v0/b/capstone-no5.appspot.com/o/reservationList_assetImage%2Fbag001.jpg?alt=media&token=9c7e001c-65d4-40ab-8906-f9aa0024cbde" alt="대형 폐기물"> -->
-        </div>
-   </div>
-   <div class="align-right">
-     <div class='align-right-contents'>
-     </div>
-      <a href="#" class="button">승인하기</a>
-   </div>
+<div id="featured" class="container">
+  <!-- 내용들이 들어갈 것임. -->
 </div>
 <div id="copyright" class="container">
    <p>&copy; Untitled. All rights reserved. | Photos by <a href="http://fotogrph.com/">Fotogrph</a> | Design by <a href="http://templated.co" rel="nofollow">TEMPLATED</a>.</p>
 </div>
 <script>
   $(document).ready(function () {
-    var mySlider = $('.slider').bxSlider();
+    $('.bxslider').bxSlider();
     var db = firebase.firestore();
     var docRef = db.collection("reservation");
-
+    var myAppendPosition = document.getElementById("featured");
+    
     docRef.get().then(function (querySnapshot) {
-      // 이미지 태그를 참조할 문서 객체
-      var myImgSlider = document.getElementsByClassName('slider');
-      var myContents = document.getElementsByClassName('align-right-contents');
-
+      
       if(querySnapshot){
+        var i = 0;
+
+        // 이미지 태그를 참조할 문서 객체
+        var myContents = document.getElementsByClassName('align-right-contents');
+        // DB에 저장된 예약 내역 개수만큼 생성할 것임.
         querySnapshot.forEach(function (doc) {
+          var myImgSlider = document.getElementsByClassName("bxslider");
+          // container 클래스 'featured~' id값을 가지는 동적 div 태그 생성.
+          var newDiv = document.createElement("div");
+          newDiv.setAttribute("id", "featured" + i);
+          newDiv.setAttribute("class", "container");
+
+          // align-left 동적 태그 생성
+          var newDiv_alignleft = document.createElement("div");
+          newDiv_alignleft.setAttribute("class", "align-left");
+
+            // slider 동적 태그 생성
+            var newDiv_alignleft_slider = document.createElement("div");
+            newDiv_alignleft_slider.setAttribute("class", "bxslider");
+            newDiv_alignleft_slider.setAttribute("id", "bxslider" + i);
+            newDiv_alignleft_slider.setAttribute("max-width", 400);
+            newDiv_alignleft_slider.setAttribute("max-height", 300);
+
+          // align-right 동적 태그 생성
+          var newDiv_alignright = document.createElement("div");
+          newDiv_alignright.setAttribute("class", "align-right");
+
+            // align-right-contents 동적 태그 생성 : 여기에 상세 내역 표시.
+            var newDiv_alignright_contents = document.createElement("div");
+            newDiv_alignright_contents.setAttribute("class", "align-right-contents");
+            
+            // 승인하기 위한 a태그 생성
+            var newDiv_alignright_button = document.createElement("a");
+            newDiv_alignright_button.setAttribute("href", "#");
+            newDiv_alignright_button.setAttribute("class", "button");
+            newDiv_alignright_button.innerHTML = "승인하기";
+
+          // 태그가 생성된 순서와 반대 순서로 Merge.
+          newDiv_alignright.appendChild(newDiv_alignright_contents); 
+          newDiv_alignright.appendChild(newDiv_alignright_button);
+
+          newDiv_alignleft.appendChild(newDiv_alignleft_slider);
+
+          newDiv.appendChild(newDiv_alignleft);
+          newDiv.appendChild(newDiv_alignright);
+
+          myAppendPosition.appendChild(newDiv);
+
           // class는 align-right
           let docs = doc.data();
-          ImgFileLength = docs['reserveFiles'].length;
 
           for(let item in docs){
-            // alert('key : ' + item); // alert('value : '+ docs[item]);
             if(item == "reserveAddress"){
               var newP = document.createElement("p");
               newP.setAttribute("id", "mystylecss01");
               newP.innerHTML = "주소 : " + docs[item];
-              myContents[0].appendChild(newP);
+              myContents[i].appendChild(newP);
             } else if(item == "reserveDate"){
               var newP = document.createElement("p");
               newP.setAttribute("id", "mystylecss01");
               newP.innerHTML = "예약 날짜 : " + docs[item];
-              myContents[0].appendChild(newP);
+              myContents[i].appendChild(newP);
             } else if(item == "reserveFiles"){
-              for(var i = 0;i < docs[item].length; i++){
+              var list_Files = docs[item].toString().split(',');
+              for(var j=0;j<list_Files.length;j++){
                 var newImg = document.createElement("img");
-                newImg.setAttribute("src", docs[item][i]);
-                newImg.setAttribute("alt", "폐기물 사진");
-                // TODO : https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js 참고
-                myImgSlider[0].appendChild(newImg);
-                $('.slider').append(newImg);
+                newImg.setAttribute("src", list_Files[j]);
+                newImg.setAttribute("alt", "폐기물 배출 신청" + i);
+                myImgSlider[i].appendChild(newImg);
               }
+              // TODO : https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js 참고
             } else if(item == "reserveId"){
               var newP = document.createElement("p");
               newP.setAttribute("id", "mystylecss01");
               newP.innerHTML = "아이디 : " + docs[item];
-              myContents[0].appendChild(newP);
+              myContents[i].appendChild(newP);
             } else if(item == "reserveItems"){
               var newP = document.createElement("p");
               newP.setAttribute("id", "mystylecss01");
               var str = "";
-              for(var i = 0;i < docs[item].length;i++){
-                str = str.concat(docs[item][i]);
-                if(i != docs[item].length - 1) str = str.concat(", ");
+              for(var j = 0;j < docs[item].length;j++){
+                str = str.concat(docs[item][j]);
+                if(j != docs[item].length - 1) str = str.concat(", ");
               }
               newP.innerHTML = "항목 : " + str;
-              myContents[0].appendChild(newP);
+              myContents[i].appendChild(newP);
             } else if(item == "reserveState"){
               var newP = document.createElement("p");
               newP.setAttribute("id", "mystylecss01");
               newP.innerHTML = "상태 : " + docs[item];
-              myContents[0].appendChild(newP);
+              myContents[i].appendChild(newP);
             } else if(item == "reserveVisitDate"){
               var newP = document.createElement("p");
               newP.setAttribute("id", "mystylecss01");
               newP.innerHTML = "방문 희망 날짜 : " + docs[item];
-              myContents[0].appendChild(newP);
+              myContents[i].appendChild(newP);
             } else if(item == "reserveVisitTime"){
               var newP = document.createElement("p");
               newP.setAttribute("id", "mystylecss01");
               newP.innerHTML = "방문 희망 시간 : " + docs[item];
-              myContents[0].appendChild(newP);
+              myContents[i].appendChild(newP);
             } else {
               // ???
             }
           }
+          i++;
         });
       } else{
         // doc.data() will be undefined in this case
@@ -166,7 +195,12 @@ Released   : 20130902
     });
 
     // TODO : Output ERROR...
-    mySlider.reloadSlider();
+    // loadSlider();
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    
   });
 </script>
 </body>

@@ -388,6 +388,18 @@
 		padding: 5em 0em;
 		border-top: 1px solid rgba(0,0,0,0.1);
 	}
+	#featured0
+	{
+		overflow: hidden;
+		padding: 5em 0em;
+		border-top: 1px solid rgba(0,0,0,0.1);
+	}
+	#featured1
+	{
+		overflow: hidden;
+		padding: 5em 0em;
+		border-top: 1px solid rgba(0,0,0,0.1);
+	}
 	
 	#featured .align-left
 	{
@@ -430,4 +442,10 @@
 		font-weight: 600;
 		font-size: 1.2em;
 		color: #FFF;
+	}
+
+	.slider
+	{
+		width: auto;
+		height: auto;
 	}

@@ -840,6 +840,8 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
     _authcode = randomAlpha(6);
     EmailerDTO eObj = new EmailerDTO(authenticationCode: _authcode, receipent: _email.text, ok: false);
 
+    
+
     return eObj.ok;
   }
 
