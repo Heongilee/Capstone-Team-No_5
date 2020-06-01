@@ -7,7 +7,7 @@ import 'package:recycle/TrashListComfirmation.dart';
 import 'package:recycle/TakingPicture.dart';
 import 'package:recycle/CustomerForm.dart';
 
-// 2020-05-07
+// 2020-06-01 :: Master
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
