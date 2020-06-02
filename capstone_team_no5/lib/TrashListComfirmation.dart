@@ -118,7 +118,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
 
   //상세목록 변화
   void changedDropDownDetailItem(String selectedItem) {
-    if (selectedItem == "상세 목록을 선택하세요.") return;
+    if (_currentProduct == "제품 목록을 선택하세요." || selectedItem == "상세 목록을 선택하세요.") return;
 
     setState(() {
       _currentDetail = selectedItem;
