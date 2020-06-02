@@ -193,272 +193,218 @@ class _CustomerForm extends State<CustomerForm> {
   }
 
   Widget _buildBody(CustomerForm_AccountSnapshot args) {
-    return SafeArea(
-      child: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height + 460.0,
-            child: Column(
-              children: <Widget>[
-                Padding(padding: EdgeInsets.all(10.0)),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(padding: const EdgeInsets.all(10.0)),
-                    Text('폐기물 신청 목록',
-                        textScaleFactor: 1.2,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic)),
-                  ],
-                ),
-                Padding(padding: const EdgeInsets.all(5.0)),
-                Container(
-                  width: 300.0,
-                  height: 300.0,
-                  child: Scrollbar(child: _buildListView(args)),
-                ),
-                Flexible(
-                  // address
-                  child: Container(
-                    alignment: Alignment(0.0, 0.0),
-                    height: 45,
-                    margin: EdgeInsets.only(left: 30, right: 30, top: 15),
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      border: Border.all(width: 1, color: Colors.black12),
+    return WillPopScope(
+      onWillPop: () {
+        myBanner.dispose();
+        Navigator.pop(context);
+      },
+      child: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height + 200.0,
+              child: Column(
+                children: <Widget>[
+                  Padding(padding: EdgeInsets.all(10.0)),
+                  Flexible(
+                    // address
+                    child: Container(
+                      alignment: Alignment(0.0, 0.0),
+                      height: 45,
+                      margin: EdgeInsets.only(left: 30, right: 30, top: 15),
+                      padding: EdgeInsets.only(left: 20, right: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        border: Border.all(width: 1, color: Colors.black12),
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            width: 60,
+                            child: Text(
+                              "주소",
+                              style: TextStyle(
+                                  fontSize: 16.0, color: Colors.black),
+                            ),
+                          ),
+                          Flexible(
+                            child: Container(
+                              margin: EdgeInsets.only(right: 20),
+                              child: StreamBuilder<DocumentSnapshot>(
+                                  stream: _db
+                                      .collection('user')
+                                      .document(args.currentAccount.documentID)
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    } else {
+                                      final DocumentSnapshot document =
+                                          snapshot.data;
+                                      _address.text = document['address'];
+                                      return TextField(
+                                        readOnly: true,
+                                        controller: _address,
+                                        style: TextStyle(color: Colors.black),
+                                        decoration: InputDecoration(
+                                          hintText: null,
+                                          border: InputBorder.none,
+                                          hintStyle: TextStyle(
+                                              color: Colors.grey[300]),
+                                        ),
+                                        cursorColor: Colors.blue,
+                                      );
+                                    }
+                                  }),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Row(
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: _calendarCarousel,
+                  ), // This trailing comma makes auto-formatting nicer for build methods.
+                  //custom icon without header
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: 30.0,
+                      bottom: 16.0,
+                      left: 16.0,
+                      right: 16.0,
+                    ),
+                    child: new Row(
                       children: <Widget>[
-                        Container(
-                          width: 60,
-                          child: Text(
-                            "주소",
-                            style:
-                                TextStyle(fontSize: 16.0, color: Colors.black),
+                        Expanded(
+                            child: Text(
+                          _currentMonth,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24.0,
                           ),
+                        )),
+                        FlatButton(
+                          child: Text('PREV'),
+                          onPressed: () {
+                            setState(() {
+                              _targetDateTime = DateTime(_targetDateTime.year,
+                                  _targetDateTime.month - 1);
+                              _currentMonth =
+                                  DateFormat.yMMM().format(_targetDateTime);
+                            });
+                          },
                         ),
-                        Flexible(
-                          child: Container(
-                            margin: EdgeInsets.only(right: 20),
-                            child: StreamBuilder<DocumentSnapshot>(
-                                stream: _db
-                                    .collection('user')
-                                    .document(args.currentAccount.documentID)
-                                    .snapshots(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Center(
-                                        child: CircularProgressIndicator());
-                                  } else {
-                                    final DocumentSnapshot document =
-                                        snapshot.data;
-                                    _address.text = document['address'];
-                                    return TextField(
-                                      readOnly: true,
-                                      controller: _address,
-                                      style: TextStyle(color: Colors.black),
-                                      decoration: InputDecoration(
-                                        hintText: null,
-                                        border: InputBorder.none,
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey[300]),
-                                      ),
-                                      cursorColor: Colors.blue,
-                                    );
-                                  }
-                                }),
-                          ),
-                        ),
+                        FlatButton(
+                          child: Text('NEXT'),
+                          onPressed: () {
+                            setState(() {
+                              _targetDateTime = DateTime(_targetDateTime.year,
+                                  _targetDateTime.month + 1);
+                              _currentMonth =
+                                  DateFormat.yMMM().format(_targetDateTime);
+                            });
+                          },
+                        )
                       ],
                     ),
                   ),
-                ),
-
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: _calendarCarousel,
-                ), // This trailing comma makes auto-formatting nicer for build methods.
-                //custom icon without header
-                Container(
-                  margin: EdgeInsets.only(
-                    top: 30.0,
-                    bottom: 16.0,
-                    left: 16.0,
-                    right: 16.0,
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: _calendarCarouselNoHeader,
                   ),
-                  child: new Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: Text(
-                        _currentMonth,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24.0,
+                  SizedBox(
+                    width: 250,
+                    child: DropdownButtonHideUnderline(
+                      child: ButtonTheme(
+                        child: DropdownButton(
+                          value: _timeSet,
+                          items: _dropDownMenuItems,
+                          onChanged: changedDropDownItem,
                         ),
-                      )),
-                      FlatButton(
-                        child: Text('PREV'),
-                        onPressed: () {
-                          setState(() {
-                            _targetDateTime = DateTime(_targetDateTime.year,
-                                _targetDateTime.month - 1);
-                            _currentMonth =
-                                DateFormat.yMMM().format(_targetDateTime);
-                          });
-                        },
-                      ),
-                      FlatButton(
-                        child: Text('NEXT'),
-                        onPressed: () {
-                          setState(() {
-                            _targetDateTime = DateTime(_targetDateTime.year,
-                                _targetDateTime.month + 1);
-                            _currentMonth =
-                                DateFormat.yMMM().format(_targetDateTime);
-                          });
-                        },
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: _calendarCarouselNoHeader,
-                ),
-
-                SizedBox(
-                  width: 250,
-                  child: DropdownButtonHideUnderline(
-                    child: ButtonTheme(
-                      child: DropdownButton(
-                        value: _timeSet,
-                        items: _dropDownMenuItems,
-                        onChanged: changedDropDownItem,
                       ),
                     ),
                   ),
-                ),
-                Padding(padding: EdgeInsets.all(10.0)),
-                Text(
-                  'Total : ${args.totalPrice} 원',
-                  style: TextStyle(fontSize: 20),
-                ),
-                Padding(padding: EdgeInsets.all(10.0)),
-                SizedBox(
-                  width: 300,
-                  child: RaisedButton(
-                      child: Text(
-                        '제 출',
-                        style: TextStyle(fontSize: 20.0),
-                      ),
-                      onPressed: () {
-                        _checkInternetAccess().then((bool onValue) async {
-                          if (onValue) {
-                            // 인터넷 정상 연결..
-                            myReservation.myJsonObjects = ReservationDTO(
-                                reserveId: args.currentAccount.data['id'],
-                                reserveDate: DateTime.now(),
-                                reserveAddress:
-                                    args.currentAccount.data['address'],
-                                reserveState: "접수 완료",
-                                reserveVisitDate: selectedDate,
-                                reserveVisitTime: _timeSet,
-                                reserveItems: ['어항', '가방류']).toJson();
-                            await _db
-                                .collection('reservation')
-                                .document()
-                                .setData(myReservation.myJsonObjects);
+                  Padding(padding: EdgeInsets.all(10.0)),
+                  Text(
+                    'Total : ${args.totalPrice} 원',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Padding(padding: EdgeInsets.all(10.0)),
+                  SizedBox(
+                    width: 300,
+                    child: RaisedButton(
+                        child: Text(
+                          '제 출',
+                          style: TextStyle(fontSize: 20.0),
+                        ),
+                        onPressed: () {
+                          myBanner.dispose();
+                          _checkInternetAccess().then((bool onValue) async {
+                            if (onValue) {
+                              // 인터넷 정상 연결..
+                              myReservation.myJsonObjects = ReservationDTO(
+                                  reserveId: args.currentAccount.data['id'],
+                                  reserveDate: DateTime.now(),
+                                  reserveAddress:
+                                      args.currentAccount.data['address'],
+                                  reserveState: "접수 완료",
+                                  reserveVisitDate: selectedDate,
+                                  reserveVisitTime: _timeSet,
+                                  reserveItems: ['어항', '가방류']).toJson();
+                              await _db
+                                  .collection('reservation')
+                                  .document()
+                                  .setData(myReservation.myJsonObjects);
 
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('SUCCESS'),
-                                  content: Text('예약이 완료되었습니다.'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          Navigator.popUntil(
-                                              context,
-                                              ModalRoute.withName(
-                                                  TabPage.routeName));
-                                        },
-                                        child: Text('Confirm')),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('인터넷 연결 오류'),
-                                  content: Text('인터넷 연결 상태를 확인 바랍니다.'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('Confirm')),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        });
-                      }),
-                ),
-              ],
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('SUCCESS'),
+                                    content: Text('예약이 완료되었습니다.'),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            Navigator.popUntil(
+                                                context,
+                                                ModalRoute.withName(
+                                                    TabPage.routeName));
+                                          },
+                                          child: Text('Confirm')),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('인터넷 연결 오류'),
+                                    content: Text('인터넷 연결 상태를 확인 바랍니다.'),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('Confirm')),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                          });
+                        }),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildListView(CustomerForm_AccountSnapshot args) {
-    return ListView.builder(
-      // scrollDirection: Axis.vertical,
-      itemCount: args.selectedListItem.toList().length * 2,
-      itemBuilder: (context, index) {
-        if (index.isOdd) {
-          return Divider();
-        } else {
-          var realIdx = index ~/ 2;
-
-          return _buildListItem(args, realIdx);
-        }
-      },
-    );
-  }
-
-  Widget _buildListItem(CustomerForm_AccountSnapshot args, int realIdx) {
-    Map listItemMap = args.selectedListItem.toList()[realIdx];
-
-    return Card(
-      child: ListTile(
-        title: Text(listItemMap.keys.first, textScaleFactor: 1.5),
-        subtitle: Text(listItemMap.values.first, textScaleFactor: 1.1),
-        trailing: IconButton(
-            color: Colors.pinkAccent,
-            icon: Icon(Icons.remove_circle),
-            onPressed: () {
-              setState(() {
-                args.selectedListItem.remove(listItemMap);
-                int temp_index = waste_obj
-                    .trashList[listItemMap.keys.first].detailWaste
-                    .indexOf(listItemMap.values.first);
-                args.totalPrice -= waste_obj
-                    .trashList[listItemMap.keys.first].wastePrice
-                    .elementAt(temp_index);
-                // TODO : 신청 목록에서 삭제 시키면 가격 -
-              });
-            }),
       ),
     );
   }

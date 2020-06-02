@@ -163,161 +163,172 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
     return SafeArea(
       child: SingleChildScrollView(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Padding(padding: EdgeInsets.all(12.0)),
-              Container(
-                width: 300.0,
-                height: 300.0,
-                child: Center(
-                  child: Image.file(
-                      File(args.listViewItem[args.current_Idx].path)),
-                ),
-              ),
-              Padding(padding: EdgeInsets.all(2.0)),
-              Text(
-                '제품 목록',
-                textScaleFactor: 1.5,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  border: Border.all(width: 1, style: BorderStyle.solid),
-                  color: Colors.grey[200],
-                ),
-                child: DropdownButton(
-                  value: _currentProduct,
-                  items: _dropDownMenuItems_Product,
-                  onChanged: changedDropDownProductItem,
-                ),
-              ),
-              Padding(padding: EdgeInsets.all(10.0)),
-              Text(
-                '상세 목록',
-                textScaleFactor: 1.5,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  border: Border.all(width: 1, style: BorderStyle.solid),
-                  color: Colors.grey[200],
-                ),
-                child: DropdownButton(
-                  value: _currentDetail,
-                  items: _dropDownMenuItems_Detail,
-                  onChanged: changedDropDownDetailItem,
-                ),
-              ),
-              Padding(padding: EdgeInsets.all(10.0)),
-              // ListView(
-              //   children: <Widget>[
-
-              //   ],
-              // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RaisedButton(
-                    child: Text('다시찍기',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20.0)),
-                    onPressed: () {
-                      _getImage(args);
-                    },
+          child: Container(
+            height: MediaQuery.of(context).size.height + 150.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Padding(padding: EdgeInsets.all(12.0)),
+                Container(
+                  width: 300.0,
+                  height: 300.0,
+                  child: Center(
+                    child: Image.file(
+                        File(args.listViewItem[args.current_Idx].path)),
                   ),
-                  Padding(padding: EdgeInsets.only(left: 40.0, right: 30.0)),
-                  RaisedButton(
-                      child: (args.current_Idx + 1 == args.listViewItem.length)
-                          ? Text(' 신청하기 ',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20.0))
-                          : Text(' 다 음 ',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20.0)),
+                ),
+                Padding(padding: EdgeInsets.all(2.0)),
+                Text(
+                  '제품 목록',
+                  textScaleFactor: 1.5,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    border: Border.all(width: 1, style: BorderStyle.solid),
+                    color: Colors.grey[200],
+                  ),
+                  child: DropdownButton(
+                    value: _currentProduct,
+                    items: _dropDownMenuItems_Product,
+                    onChanged: changedDropDownProductItem,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(10.0)),
+                Text(
+                  '상세 목록',
+                  textScaleFactor: 1.5,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    border: Border.all(width: 1, style: BorderStyle.solid),
+                    color: Colors.grey[200],
+                  ),
+                  child: DropdownButton(
+                    value: _currentDetail,
+                    items: _dropDownMenuItems_Detail,
+                    onChanged: changedDropDownDetailItem,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(10.0)),
+                Container(
+                  width: 300.0,
+                  height: 150.0,
+                  color: Colors.grey[100],
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {},
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    RaisedButton(
+                      child: Text('다시찍기',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20.0)),
                       onPressed: () {
-                        // TODO : 제품목록이나 상세목록을 선택하지 않았을 경우 에러메시지 출력하기.
-                        if (_currentProduct == "제품 목록을 선택하세요." ||
-                            _currentDetail == "상세 목록을 선택하세요.") {
-                          // * 제품 목록을 다시 선택하세요.
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('ERROR'),
-                                content: Text('제품 목록이나 상세 목록을 선택하시기 바랍니다.'),
-                                actions: <Widget>[
-                                  FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('Confirm')),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          // * 다음 페이지로...
-                          if (args.current_Idx + 1 ==
-                              args.listViewItem.length) {
-                            // TrashListConfirmation.dart -> CustomerForm.dart
-                            args.selectedListItem.add({
-                              WasteListAsset()
-                                  .trashList[_currentProduct]
-                                  .koreaname: _currentDetail
-                            });
-
-                            if (!waste_obj.trashList
-                                .containsKey(_currentProduct)) {
-                              args.totalPrice += 0;
-                            } else {
-                              // 최종 가격 합산
-                              int temp_idx = waste_obj
-                                  .trashList[_currentProduct].detailWaste
-                                  .indexOf(_currentDetail);
-                              args.totalPrice += waste_obj
-                                  .trashList[_currentProduct].wastePrice
-                                  .elementAt(temp_idx);
-                            }
-
-                            Navigator.pushNamed(context, CustomerForm.routeName,
-                                arguments: CustomerForm_AccountSnapshot(
-                                    args.currentAccount,
-                                    args.selectedListItem,
-                                    args.totalPrice));
+                        _getImage(args);
+                      },
+                    ),
+                    Padding(padding: EdgeInsets.only(left: 40.0, right: 30.0)),
+                    RaisedButton(
+                        child:
+                            (args.current_Idx + 1 == args.listViewItem.length)
+                                ? Text(' 신청하기 ',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0))
+                                : Text(' 다 음 ',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0)),
+                        onPressed: () {
+                          // TODO : 제품목록이나 상세목록을 선택하지 않았을 경우 에러메시지 출력하기.
+                          if (_currentProduct == "제품 목록을 선택하세요." ||
+                              _currentDetail == "상세 목록을 선택하세요.") {
+                            // * 제품 목록을 다시 선택하세요.
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('ERROR'),
+                                  content: Text('제품 목록이나 상세 목록을 선택하시기 바랍니다.'),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Confirm')),
+                                  ],
+                                );
+                              },
+                            );
                           } else {
-                            // TrashListConfirmation.dart(현재 인덱스) -> TrashListConfirmation.dart(다음 인덱스)
-                            args.selectedListItem
-                                .add({_currentProduct: _currentDetail});
+                            // * 다음 페이지로...
+                            if (args.current_Idx + 1 ==
+                                args.listViewItem.length) {
+                              // TrashListConfirmation.dart -> CustomerForm.dart
+                              args.selectedListItem.add({
+                                WasteListAsset()
+                                    .trashList[_currentProduct]
+                                    .koreaname: _currentDetail
+                              });
 
-                            if (!waste_obj.trashList
-                                .containsKey(_currentProduct)) {
-                              args.totalPrice += 0;
+                              if (!waste_obj.trashList
+                                  .containsKey(_currentProduct)) {
+                                args.totalPrice += 0;
+                              } else {
+                                // 최종 가격 합산
+                                int temp_idx = waste_obj
+                                    .trashList[_currentProduct].detailWaste
+                                    .indexOf(_currentDetail);
+                                args.totalPrice += waste_obj
+                                    .trashList[_currentProduct].wastePrice
+                                    .elementAt(temp_idx);
+                              }
+
+                              Navigator.pushNamed(
+                                  context, CustomerForm.routeName,
+                                  arguments: CustomerForm_AccountSnapshot(
+                                      args.currentAccount,
+                                      args.selectedListItem,
+                                      args.totalPrice));
                             } else {
-                              // 최종 가격 합산
-                              int temp_idx = waste_obj
-                                  .trashList[_currentProduct].detailWaste
-                                  .indexOf(_currentDetail);
-                              args.totalPrice += waste_obj
-                                  .trashList[_currentProduct].wastePrice
-                                  .elementAt(temp_idx);
-                            }
+                              // TrashListConfirmation.dart(현재 인덱스) -> TrashListConfirmation.dart(다음 인덱스)
+                              args.selectedListItem
+                                  .add({_currentProduct: _currentDetail});
 
-                            Navigator.pushNamed(
-                                context, TrashListComfirmation.routeName,
-                                arguments: TrashListComfirmation_AccounSnapshot(
-                                    args.currentAccount,
-                                    args.listViewItem,
-                                    args.current_Idx + 1,
-                                    args.myDeepLearningResultStr,
-                                    args.selectedListItem,
-                                    args.totalPrice));
+                              if (!waste_obj.trashList
+                                  .containsKey(_currentProduct)) {
+                                args.totalPrice += 0;
+                              } else {
+                                // 최종 가격 합산
+                                int temp_idx = waste_obj
+                                    .trashList[_currentProduct].detailWaste
+                                    .indexOf(_currentDetail);
+                                args.totalPrice += waste_obj
+                                    .trashList[_currentProduct].wastePrice
+                                    .elementAt(temp_idx);
+                              }
+
+                              Navigator.pushNamed(
+                                  context, TrashListComfirmation.routeName,
+                                  arguments:
+                                      TrashListComfirmation_AccounSnapshot(
+                                          args.currentAccount,
+                                          args.listViewItem,
+                                          args.current_Idx + 1,
+                                          args.myDeepLearningResultStr,
+                                          args.selectedListItem,
+                                          args.totalPrice));
+                            }
                           }
-                        }
-                      }),
-                ],
-              ),
-            ],
+                        }),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
