@@ -19,6 +19,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
+  #광고 삽입을 위한 패키지
+  firebase_core: ^0.4.5
+  firebase_admob: ^0.9.3+2
 
   # 이메일 인증 코드를 발급하기 위한 random code generator library
   random_string: ^2.0.1

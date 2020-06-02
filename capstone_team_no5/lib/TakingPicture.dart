@@ -315,7 +315,7 @@ class _TakingPictureState extends State<TakingPicture> {
 
         tmp = res.body;
         int tmp_idx = _myDeepLearningResults.length;
-        List<String> response_list = tmp.split(", ");
+        List<String> response_list = tmp.split(",");
         _myDeepLearningResults.addAll({tmp_idx: response_list});
       }).catchError((err) {
         print(err);

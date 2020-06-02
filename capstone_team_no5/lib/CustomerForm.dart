@@ -2,6 +2,7 @@ library flutter_calendar_dooboo;
 
 import 'dart:io';
 
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
@@ -59,6 +60,18 @@ class _CustomerForm extends State<CustomerForm> {
 
   WasteListAsset waste_obj;
 
+  static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['flutter', 'firebase', 'admob'],
+    testDevices: <String>[],
+  );
+  BannerAd myBanner = BannerAd(
+      adUnitId: BannerAd.testAdUnitId,
+      size: AdSize.smartBanner,
+      targetingInfo: targetingInfo,
+      listener: (MobileAdEvent event) {
+        print("BannerAd event is $event");
+      });
+
   @override
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
@@ -66,6 +79,15 @@ class _CustomerForm extends State<CustomerForm> {
 
     waste_obj = new WasteListAsset();
     super.initState();
+
+    //광고 appId 부분
+    String appId = "ca-app-pub-9179900992913670~4602448319";
+    FirebaseAdMob.instance.initialize(appId: appId);
+    myBanner
+      ..load()
+      ..show(
+        anchorType: AnchorType.bottom,
+      );
   }
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
@@ -152,6 +174,7 @@ class _CustomerForm extends State<CustomerForm> {
               color: Colors.black,
             ),
             onPressed: () {
+              myBanner.dispose();
               Navigator.popUntil(
                   context, ModalRoute.withName(TakingPicture.routeName));
             }),
@@ -174,7 +197,7 @@ class _CustomerForm extends State<CustomerForm> {
       child: Center(
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height + 1000,
+            height: MediaQuery.of(context).size.height + 460.0,
             child: Column(
               children: <Widget>[
                 Padding(padding: EdgeInsets.all(10.0)),

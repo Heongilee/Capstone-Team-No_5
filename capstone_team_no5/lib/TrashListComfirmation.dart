@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
@@ -41,7 +40,6 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
     subInitState_flag = false;
     waste_obj = new WasteListAsset();
 
-    // "상세 목록을 선택하세요." 셋팅.
     _dropDownMenuItems_Detail = new List();
     _dropDownMenuItems_Detail.add(new DropdownMenuItem(
         value: _detailProduct[0], child: Text(_detailProduct[0])));
@@ -55,6 +53,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
       List<String> myDeepLearningResults) {
     //DropdownMenu에 추가시킬 items 리스트 선언. (이를 반환 시킬 것임.)
     List<DropdownMenuItem<String>> items = new List();
+    //같은 객체 중복 방지 리스트
+    List<String> incheck = new List();
 
     for (String i in myDeepLearningResults) {
       // TODO : 만약 "noDetected" 결과라면...?
@@ -63,15 +63,17 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
         break;
       }
       // 딥러닝 결과와 매칭된 폐기물 품목 리스트만 items에 add 시킬 것.
-      if (WasteListAsset().trashList.containsKey(i)) {
+      else if (WasteListAsset().trashList.containsKey(i) &&
+          !incheck.contains(i)) {
+        incheck.add(i);
         items.add(new DropdownMenuItem(
-            value: WasteListAsset().trashList[i].koreaname, child: Text(i)));
-        _currentResult.add(WasteListAsset().trashList[i].koreaname);
+            value: i, child: Text(WasteListAsset().trashList[i].koreaname)));
       }
-
       // end user가 제품 목록을 선택하기 전에 띄울 콤보박스 아이템
-      if (i == "제품 목록을 선택하세요.")
+      else if (i == "제품 목록을 선택하세요." && !incheck.contains(i)) {
+        incheck.add(i);
         items.add(new DropdownMenuItem(value: i, child: Text(i)));
+      }
     }
 
     return items;
@@ -124,12 +126,9 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
       subInitState_flag = true;
 
       // 현재 인덱스의 딥러닝 분석 결과를(List<String>) 가져오고,
-      List<String> temp_deepLearning_Result_List = ["제품 목록을 선택하세요."];
-      temp_deepLearning_Result_List
-          .addAll(args.myDeepLearningResultStr[args.current_Idx]);
+      _currentResult.addAll(args.myDeepLearningResultStr[args.current_Idx]);
       // 제품 목록 콤보박스에 추가시킨다.
-      _dropDownMenuItems_Product =
-          getDropDownMenuItems_Product(temp_deepLearning_Result_List);
+      _dropDownMenuItems_Product = getDropDownMenuItems_Product(_currentResult);
       // 현재 제품목록 인덱스를 0번으로 셋팅한다.
       _currentProduct = _dropDownMenuItems_Product[0].value;
     }
@@ -187,15 +186,11 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                   border: Border.all(width: 1, style: BorderStyle.solid),
                   color: Colors.grey[200],
                 ),
-                child: StreamBuilder<List<DropdownMenuItem<String>>>(
-                    stream: null,
-                    builder: (context, snapshot) {
-                      return DropdownButton(
-                        value: _currentProduct,
-                        items: _dropDownMenuItems_Product,
-                        onChanged: changedDropDownProductItem,
-                      );
-                    }),
+                child: DropdownButton(
+                  value: _currentProduct,
+                  items: _dropDownMenuItems_Product,
+                  onChanged: changedDropDownProductItem,
+                ),
               ),
               Padding(padding: EdgeInsets.all(10.0)),
               Text(
@@ -215,6 +210,11 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                 ),
               ),
               Padding(padding: EdgeInsets.all(10.0)),
+              // ListView(
+              //   children: <Widget>[
+
+              //   ],
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -258,10 +258,14 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                           );
                         } else {
                           // * 다음 페이지로...
-                          if (args.current_Idx + 1 == args.listViewItem.length) {
+                          if (args.current_Idx + 1 ==
+                              args.listViewItem.length) {
                             // TrashListConfirmation.dart -> CustomerForm.dart
-                            args.selectedListItem
-                                .add({_currentProduct :_currentDetail});
+                            args.selectedListItem.add({
+                              WasteListAsset()
+                                  .trashList[_currentProduct]
+                                  .koreaname: _currentDetail
+                            });
 
                             if (!waste_obj.trashList
                                 .containsKey(_currentProduct)) {

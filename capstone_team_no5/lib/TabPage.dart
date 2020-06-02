@@ -45,8 +45,13 @@ class _TabPageState extends State<TabPage> {
     ];
     return Scaffold(
       // appBar: AppBar(),
-      body: Center(
-        child: _pages[_selectedIdx],
+      body: WillPopScope(
+        onWillPop: () {
+          print('눌렸습니다.');
+        },
+        child: Center(
+          child: _pages[_selectedIdx],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         fixedColor: Colors.black,
