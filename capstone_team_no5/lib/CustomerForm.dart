@@ -202,7 +202,7 @@ class _CustomerForm extends State<CustomerForm> {
         child: Center(
           child: SingleChildScrollView(
             child: Container(
-              height: MediaQuery.of(context).size.height + 200.0,
+              height: MediaQuery.of(context).size.height,
               child: Column(
                 children: <Widget>[
                   Padding(padding: EdgeInsets.all(10.0)),

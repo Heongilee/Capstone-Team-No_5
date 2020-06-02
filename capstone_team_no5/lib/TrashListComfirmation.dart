@@ -15,6 +15,9 @@ class TrashListComfirmation extends StatefulWidget {
 }
 
 class _TrashListComfirmationState extends State<TrashListComfirmation> {
+  // 사용자가 선택한 _myTrashListSet -> _selectedListItem
+  Set<Map<String, String>> _selectedListItem = {};
+
   // 이전 페이지 인자를 불러오고나서 초기화 하기위한 변수.
   bool subInitState_flag;
 
@@ -34,6 +37,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   // 현재 DropdownMenuItem이 선택된 값.
   String _currentProduct;
   String _currentDetail;
+  bool toggleValue = false;
 
   @override
   void initState() {
@@ -82,7 +86,10 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   //상세목록
   List<DropdownMenuItem<String>> getDropDownMenuItems_Detail(
       String selectedItem) {
-    List<DropdownMenuItem<String>> items = new List();
+    List<DropdownMenuItem<String>> items = [
+      new DropdownMenuItem(
+          value: "상세 목록을 선택하세요.", child: new Text("상세 목록을 선택하세요."))
+    ];
 
     if (_currentProduct == "noDetected") {
       items.add(new DropdownMenuItem(
@@ -111,8 +118,14 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
 
   //상세목록 변화
   void changedDropDownDetailItem(String selectedItem) {
+    if (selectedItem == "상세 목록을 선택하세요.") return;
+
     setState(() {
       _currentDetail = selectedItem;
+
+      _addMyTrashListItem();
+      _currentProduct = _dropDownMenuItems_Product[0].value;
+      _currentDetail = _dropDownMenuItems_Detail[0].value;
     });
   }
 
@@ -164,10 +177,58 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
       child: SingleChildScrollView(
         child: Center(
           child: Container(
-            height: MediaQuery.of(context).size.height + 150.0,
+            height: MediaQuery.of(context).size.height + 400.0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
+                Padding(padding: EdgeInsets.all(2.0)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text('전체 리스트 조회'),
+                    Padding(padding: EdgeInsets.all(2.0)),
+                    AnimatedContainer(
+                      duration: Duration(milliseconds: 500),
+                      height: 30.0,
+                      width: 50.0,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                          color: toggleValue
+                              ? Colors.greenAccent[100]
+                              : Colors.redAccent[100].withOpacity(0.5)),
+                      child: Stack(children: <Widget>[
+                        AnimatedPositioned(
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.easeIn,
+                          top: 3.0,
+                          left: toggleValue ? 25.0 : 0.0,
+                          right: toggleValue ? 0.0 : 25.0,
+                          child: InkWell(
+                            onTap: _toggleButton,
+                            child: AnimatedSwitcher(
+                              duration: Duration(milliseconds: 500),
+                              transitionBuilder:
+                                  (Widget child, Animation<double> animation) {
+                                return RotationTransition(
+                                    child: child, turns: animation);
+                              },
+                              child: toggleValue
+                                  ? Icon(Icons.check_circle,
+                                      color: Colors.green,
+                                      size: 25.0,
+                                      key: UniqueKey())
+                                  : Icon(Icons.remove_circle_outline,
+                                      color: Colors.red,
+                                      size: 25.0,
+                                      key: UniqueKey()),
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                    Padding(padding: EdgeInsets.only(right: 30.0)),
+                  ],
+                ),
                 Padding(padding: EdgeInsets.all(12.0)),
                 Container(
                   width: 300.0,
@@ -216,9 +277,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                   width: 300.0,
                   height: 150.0,
                   color: Colors.grey[100],
-                  child: ListView.builder(
-                    itemBuilder: (context, index) {},
-                  ),
+                  child: _buildListView(args),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -387,5 +446,70 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
             ],
           );
         });
+  }
+
+  // 제품 목록, 상세 목록 아이템 리스트에 넣기 위한 메소드
+  void _addMyTrashListItem() {
+    _selectedListItem.add({_currentProduct: _currentDetail});
+
+    return;
+  }
+
+  Widget _buildListView(TrashListComfirmation_AccounSnapshot args) {
+    return ListView.builder(
+      itemCount: _selectedListItem.length * 2,
+      itemBuilder: (context, index) {
+        if (index.isOdd) {
+          return Divider();
+        } else {
+          var realIdx = index ~/ 2;
+
+          return _buildListItem(args, realIdx);
+        }
+      },
+    );
+  }
+
+  Widget _buildListItem(
+      TrashListComfirmation_AccounSnapshot args, int realIdx) {
+    Map listItemMap = _selectedListItem.toList()[realIdx];
+
+    return Card(
+      child: ListTile(
+        title: Text(
+          listItemMap.keys.first,
+          textScaleFactor: 1.5,
+        ),
+        subtitle: Text(
+          listItemMap.values.first,
+          textScaleFactor: 1.1,
+        ),
+        trailing: IconButton(
+          color: Colors.pinkAccent,
+          icon: Icon(Icons.remove_circle),
+          onPressed: () {
+            setState(() {
+              _selectedListItem.remove(listItemMap);
+            });
+
+            // 신청 목록에서 삭제시키면 가격도 같이 차감.
+            int temp_index = waste_obj
+                .trashList[listItemMap.keys.first].detailWaste
+                .indexOf(listItemMap.values.first);
+            args.totalPrice -= waste_obj
+                .trashList[listItemMap.keys.first].wastePrice
+                .elementAt(temp_index);
+          },
+        ),
+      ),
+    );
+  }
+
+  void _toggleButton() {
+    setState(() {
+      toggleValue = !toggleValue;
+
+      // TODO : 제품목록 불러오는 로직.
+    });
   }
 }

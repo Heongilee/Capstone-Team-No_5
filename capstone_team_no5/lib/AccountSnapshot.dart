@@ -62,8 +62,8 @@ class TrashListComfirmation_AccounSnapshot extends AccountSnapshot {
 }
 
 class CustomerForm_AccountSnapshot extends AccountSnapshot {
-  Set<Map<String, String>> _selectedListItem;
   int _totalPrice; // 사용자가 선택한 폐기물 토탈 처리 비용.
+  Set<Map<String, String>> _selectedListItem; // 사용자가 선택한 _selectedListItem
 
   // getter
   Set<Map<String, String>> get selectedListItem => _selectedListItem;
