@@ -318,8 +318,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                                         fontSize: 20.0)),
                         onPressed: () {
                           // TODO : 제품목록이나 상세목록을 선택하지 않았을 경우 에러메시지 출력하기.
-                          if (_currentProduct == "제품 목록을 선택하세요." ||
-                              _currentDetail == "상세 목록을 선택하세요.") {
+                          if (_selectedListItem.length == 0) {
                             // * 제품 목록을 다시 선택하세요.
                             showDialog(
                               context: context,
@@ -339,14 +338,9 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                             );
                           } else {
                             // * 다음 페이지로...
-                            if (args.current_Idx + 1 ==
-                                args.listViewItem.length) {
+                            if (args.current_Idx + 1 == args.listViewItem.length) {
                               // TrashListConfirmation.dart -> CustomerForm.dart
-                              args.selectedListItem.add({
-                                WasteListAsset()
-                                    .trashList[_currentProduct]
-                                    .koreaname: _currentDetail
-                              });
+                              args.selectedListItem.addAll(_selectedListItem);
 
                               if (!waste_obj.trashList
                                   .containsKey(_currentProduct)) {
@@ -369,14 +363,13 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                                       args.totalPrice));
                             } else {
                               // TrashListConfirmation.dart(현재 인덱스) -> TrashListConfirmation.dart(다음 인덱스)
-                              args.selectedListItem
-                                  .add({_currentProduct: _currentDetail});
+                              args.selectedListItem.addAll(_selectedListItem);
 
                               if (!waste_obj.trashList
                                   .containsKey(_currentProduct)) {
                                 args.totalPrice += 0;
                               } else {
-                                // 최종 가격 합산
+                                // TODO : 최종 가격 합산 하기
                                 int temp_idx = waste_obj
                                     .trashList[_currentProduct].detailWaste
                                     .indexOf(_currentDetail);

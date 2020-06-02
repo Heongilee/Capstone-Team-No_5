@@ -202,7 +202,8 @@ class _CustomerForm extends State<CustomerForm> {
         child: Center(
           child: SingleChildScrollView(
             child: Container(
-              height: MediaQuery.of(context).size.height,
+              // TODO : 상수값 말고 디바이스 프레임 사이즈 얻어오는 방법 알아보기...
+              height: MediaQuery.of(context).size.height + 1000.0,
               child: Column(
                 children: <Widget>[
                   Padding(padding: EdgeInsets.all(10.0)),
