@@ -118,7 +118,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
 
   //상세목록 변화
   void changedDropDownDetailItem(String selectedItem) {
-    if (_currentProduct == "제품 목록을 선택하세요." || selectedItem == "상세 목록을 선택하세요.") return;
+    if (_currentProduct == "제품 목록을 선택하세요." || selectedItem == "상세 목록을 선택하세요.")
+      return;
 
     setState(() {
       _currentDetail = selectedItem;
@@ -177,7 +178,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
       child: SingleChildScrollView(
         child: Center(
           child: Container(
-            height: MediaQuery.of(context).size.height + 400.0,
+            height: MediaQuery.of(context).size.height + 150.0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -204,7 +205,9 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                           left: toggleValue ? 25.0 : 0.0,
                           right: toggleValue ? 0.0 : 25.0,
                           child: InkWell(
-                            onTap: _toggleButton,
+                            onTap: () {
+                              _toggleButton(args);
+                            },
                             child: AnimatedSwitcher(
                               duration: Duration(milliseconds: 500),
                               transitionBuilder:
@@ -272,7 +275,18 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                     onChanged: changedDropDownDetailItem,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(10.0)),
+                Padding(padding: EdgeInsets.all(5.0)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(padding: EdgeInsets.only(left: 30.0)),
+                    Text('폐기물 신청 목록',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic)),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.all(5.0)),
                 Container(
                   width: 300.0,
                   height: 150.0,
@@ -477,7 +491,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
     return Card(
       child: ListTile(
         title: Text(
-          listItemMap.keys.first,
+          waste_obj.trashList[listItemMap.keys.first].koreaname,
           textScaleFactor: 1.5,
         ),
         subtitle: Text(
@@ -505,11 +519,30 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
     );
   }
 
-  void _toggleButton() {
+  void _toggleButton(TrashListComfirmation_AccounSnapshot args) {
     setState(() {
       toggleValue = !toggleValue;
+      List<String> myWasteKeys = new List();
+      waste_obj.trashList.keys.forEach((String element) {
+        myWasteKeys.add(element);
+      });
+      if (toggleValue) {
+        _currentResult.clear();
+        _currentResult.add("제품 목록을 선택하세요.");
+        _currentResult.addAll(myWasteKeys);
 
-      // TODO : 제품목록 불러오는 로직.
+        _dropDownMenuItems_Product =
+            getDropDownMenuItems_Product(_currentResult);
+        _currentProduct = _dropDownMenuItems_Product[0].value;
+      } else {
+        _currentResult.clear();
+        _currentResult.add("제품 목록을 선택하세요.");
+        _currentResult.addAll(args.myDeepLearningResultStr[args.current_Idx]);
+
+        _dropDownMenuItems_Product =
+            getDropDownMenuItems_Product(_currentResult);
+        _currentProduct = _dropDownMenuItems_Product[0].value;
+      }
     });
   }
 }
