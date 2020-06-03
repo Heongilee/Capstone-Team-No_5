@@ -16,6 +16,7 @@ class TrashListComfirmation extends StatefulWidget {
 
 class _TrashListComfirmationState extends State<TrashListComfirmation> {
   // 사용자가 선택한 _myTrashListSet -> _selectedListItem
+  //! FIXME : args.selectedListItem 으로 받아올 것!
   Set<Map<String, String>> _selectedListItem = {};
 
   // 이전 페이지 인자를 불러오고나서 초기화 하기위한 변수.
@@ -138,6 +139,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
     // subInitState : route를 통해 arguments 들이 들어오고 나서 콤보박스 리스트를 활성화 시킬 것임.
     if (subInitState_flag == false) {
       subInitState_flag = true;
+
+      _selectedListItem = args.selectedListItem;
 
       // 현재 인덱스의 딥러닝 분석 결과를(List<String>) 가져오고,
       _currentResult.addAll(args.myDeepLearningResultStr[args.current_Idx]);
@@ -338,7 +341,8 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                             );
                           } else {
                             // * 다음 페이지로...
-                            if (args.current_Idx + 1 == args.listViewItem.length) {
+                            if (args.current_Idx + 1 ==
+                                args.listViewItem.length) {
                               // TrashListConfirmation.dart -> CustomerForm.dart
                               args.selectedListItem.addAll(_selectedListItem);
 
@@ -457,7 +461,11 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
 
   // 제품 목록, 상세 목록 아이템 리스트에 넣기 위한 메소드
   void _addMyTrashListItem() {
-    _selectedListItem.add({_currentProduct: _currentDetail});
+    if (_currentProduct == "noDetected" || _currentDetail == "noDetected") {
+      // nothing...
+    } else {
+      _selectedListItem.add({_currentProduct: _currentDetail});
+    }
 
     return;
   }

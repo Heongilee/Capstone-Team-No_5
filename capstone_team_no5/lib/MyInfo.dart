@@ -165,7 +165,7 @@ class MyInfo extends StatelessWidget {
                   foregroundColor: Colors.black,
                   icon: Icon(Icons.question_answer),
                   onPressed: () {
-                    _emailSending("gjsrl1@gmail.com");
+                    _emailSending("putitaway2020@gmail.com");
                   },
                   label: Container(
                       width: 200.0,
