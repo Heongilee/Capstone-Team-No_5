@@ -346,18 +346,16 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                               // TrashListConfirmation.dart -> CustomerForm.dart
                               args.selectedListItem.addAll(_selectedListItem);
 
-                              if (!waste_obj.trashList
-                                  .containsKey(_currentProduct)) {
-                                args.totalPrice += 0;
-                              } else {
-                                // 최종 가격 합산
+                              args.selectedListItem.forEach((Map trashProduct) {
                                 int temp_idx = waste_obj
-                                    .trashList[_currentProduct].detailWaste
-                                    .indexOf(_currentDetail);
+                                    .trashList[trashProduct.keys.first]
+                                    .detailWaste
+                                    .indexOf(trashProduct.values.first);
                                 args.totalPrice += waste_obj
-                                    .trashList[_currentProduct].wastePrice
+                                    .trashList[trashProduct.keys.first]
+                                    .wastePrice
                                     .elementAt(temp_idx);
-                              }
+                              });
 
                               Navigator.pushNamed(
                                   context, CustomerForm.routeName,
@@ -369,18 +367,19 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                               // TrashListConfirmation.dart(현재 인덱스) -> TrashListConfirmation.dart(다음 인덱스)
                               args.selectedListItem.addAll(_selectedListItem);
 
-                              if (!waste_obj.trashList
-                                  .containsKey(_currentProduct)) {
-                                args.totalPrice += 0;
-                              } else {
-                                // TODO : 최종 가격 합산 하기
-                                int temp_idx = waste_obj
-                                    .trashList[_currentProduct].detailWaste
-                                    .indexOf(_currentDetail);
-                                args.totalPrice += waste_obj
-                                    .trashList[_currentProduct].wastePrice
-                                    .elementAt(temp_idx);
-                              }
+                              // if (!waste_obj.trashList
+                              //     .containsKey(_currentProduct)) {
+                              //   args.totalPrice += 0;
+                              // } else {
+                              //   // // TODO : 최종 가격 합산 하기
+                              //   // int temp_idx = waste_obj
+                              //   //     .trashList[_currentProduct].detailWaste
+                              //   //     .indexOf(_currentDetail);
+                              //   // args.totalPrice += waste_obj
+                              //   //     .trashList[_currentProduct].wastePrice
+                              //   //     .elementAt(temp_idx);
+                              //   // print('${args.totalPrice}');
+                              // }
 
                               Navigator.pushNamed(
                                   context, TrashListComfirmation.routeName,
