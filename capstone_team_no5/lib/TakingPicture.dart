@@ -292,8 +292,10 @@ class _TakingPictureState extends State<TakingPicture> {
     };
 
     // !-------------------- AWS EC2 서버 가동중일때만 가능. ---------------------
+    int tmp_idx;
+    String tmp='';
     for (File element in _listViewItem) {
-      String tmp; // res.body를 받아올 임시 변수
+      // res.body를 받아올 임시 변수
       final String nodeEndPoint = API_PREFIX;
 
       if (element == null) {
@@ -313,16 +315,18 @@ class _TakingPictureState extends State<TakingPicture> {
         print("상태코드 : ");
         print(res.statusCode);
 
-        tmp = res.body;
-        int tmp_idx = _myDeepLearningResults.length;
-        List<String> response_list = tmp.split(",");
-        _myDeepLearningResults.addAll({tmp_idx: response_list});
+        String tmp1 = res.body;
+        tmp = tmp + tmp1;
+        print("진행중인 tmp 값은: " + tmp);
+        tmp_idx = _myDeepLearningResults.length;
       }).catchError((err) {
         print(err);
       });
     }
     // !------------------------------------------------------------------------
 
+    List<String> response_list = tmp.split(",");
+    _myDeepLearningResults.addAll({tmp_idx: response_list});
     return _myDeepLearningResults;
   }
 }

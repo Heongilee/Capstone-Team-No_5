@@ -178,7 +178,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
       child: SingleChildScrollView(
         child: Center(
           child: Container(
-            height: MediaQuery.of(context).size.height + 150.0,
+            height: MediaQuery.of(context).size.height + 300.0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
