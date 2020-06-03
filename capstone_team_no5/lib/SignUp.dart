@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kopo/kopo.dart';
 import 'package:random_string/random_string.dart';
 import 'package:recycle/model/EmailerModule.dart';
+import 'package:recycle/myNodejsServer/MyHTTPhost.dart';
 
 class signup_text_editing_controller {
   final _id = TextEditingController();
@@ -446,7 +448,7 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
                         _checkInternetAccess().then((bool onValue) {
                           if (onValue) {
                             // node emailer(External Library) call
-                            _emailSending();
+                            _emailSending(context);
                           } else {
                             showDialog(
                               context: context,
@@ -804,8 +806,7 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
 
   // 인증코드가 맞는지 체크하는 메소드.
   Future<bool> checkmyAuthCode() async {
-    // 임시 방편으로 true를 리턴
-    return true;
+    return (_comfilm.text == eObj.authenticationCode) ? true : false;
   }
 
   Future<bool> _checkInternetAccess() async {
@@ -836,18 +837,64 @@ class SignUp extends StatelessWidget with signup_text_editing_controller {
     return;
   }
 
-  Future<bool> _emailSending() async {
+  Future<bool> _emailSending(BuildContext context) async {
     _authcode = randomAlpha(6);
-    EmailerDTO eObj = new EmailerDTO(authenticationCode: _authcode, receipent: _email.text, ok: false);
 
-    
+    // 싱글톤 객체 셋팅
+    eObj.authenticationCode = _authcode;
+    eObj.receipent = _email.text;
+    eObj.ok = false;
+
+    print('코드값은 ? ' + eObj.authenticationCode);
+
+    var nodeEndPoint = httpHost.API_PREFIX;
+
+    await _checkInternetAccess().then((bool onValue) {
+      if (onValue) {
+        http.post(nodeEndPoint, body: {
+          "code": eObj.authenticationCode,
+          "email": eObj.receipent
+        }).then((res) {
+          print(res.statusCode);
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('SUCCESS'),
+                content: Text('이메일을 정상적으로 전송했습니다.'),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Confirm')),
+                ],
+              );
+            },
+          );
+        }).catchError((err) {
+          print(err);
+        });
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('인터넷 연결 오류'),
+              content: Text('인터넷 연결 상태를 확인 바랍니다.'),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Confirm')),
+              ],
+            );
+          },
+        );
+      }
+    });
 
     return eObj.ok;
-  }
-
-  String _authCodeGenerator() {
-    String result = "345678";
-
-    return result;
   }
 }
