@@ -1,12 +1,6 @@
 import 'dart:async';
 import 'package:http/http.dart' as http;
-
-const PROTOCOL = "http";
-// const HOST = "localhost";
-const HOST = "192.168.0.7";
-const PORT = "8080";
-const ROUTE = "create-mailer";
-const EMAILER_API_PREFIX = "$PROTOCOL://$HOST:$PORT/$ROUTE";
+import 'package:recycle/myNodejsServer/MyHTTPhost.dart';
 
 class EmailerDAO {
   static final EmailerDAO _instance = EmailerDAO._internal();
@@ -44,7 +38,7 @@ class EmailerDAO {
 
     Map jsonObj = obj.toJson();
 
-    response = await http.get(EMAILER_API_PREFIX);
+    response = await http.get(httpHost.API_PREFIX);
     print("HTTP TEST_OUTPUT\n" + response.body);
 
     return;
@@ -94,3 +88,4 @@ class EmailerDTO {
         "ok": ok,
       };
 }
+EmailerDTO eObj = new EmailerDTO();
