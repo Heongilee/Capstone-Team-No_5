@@ -313,7 +313,7 @@ class _TakingPictureState extends State<TakingPicture> {
         print("상태코드 : ");
         print(res.statusCode);
         tmp = res.body;
-        
+
         List<String> response_list = tmp.split(",");
         _myDeepLearningResults.addAll({_myDeepLearningResults.length: response_list});
       }).catchError((err) {

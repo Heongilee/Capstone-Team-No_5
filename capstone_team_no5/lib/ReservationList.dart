@@ -54,8 +54,7 @@ class _ReservationListState extends State<ReservationList> {
         child: StreamBuilder<QuerySnapshot>(
             stream: _db
                 .collection('reservation')
-                .where("reserveId",
-                    isEqualTo: widget._currentAccount.data['id'])
+                .where("reserveId", isEqualTo: widget._currentAccount.data['id'])
                 .getDocuments()
                 .asStream(),
             builder: (context, snapshot) {
@@ -132,25 +131,6 @@ class _ReservationListState extends State<ReservationList> {
 
     return dataRow;
   }
-
-  // Future<void> _accessMyReservationList() async {
-  //   List<DataCell> myreturnList = [];
-  //   _qs = await _db
-  //       .collection('reservation')
-  //       .where("reserveId", isEqualTo: widget._currentAccount['id'])
-  //       .getDocuments();
-  //   _qs.documents.forEach((element) {
-  //     myreturnList.add(DataCell(Text('${element['reserveVisitDate']}')));
-  //     myreturnList.add(DataCell(Text('${element['reserveVisitTime']}')));
-  //     myreturnList.add(DataCell(Text('${element['reserveState']}')));
-  //     print(
-  //         '${element['reserveVisitDate']}, ${element['reserveVisitTime']}, ${element['reserveState']}');
-
-  //     dataRow.add(DataRow(cells: myreturnList));
-  //   });
-
-  //   return;
-  // }
 
   Widget _buildMyBody(List<DocumentSnapshot> myQ) {
     return SingleChildScrollView(

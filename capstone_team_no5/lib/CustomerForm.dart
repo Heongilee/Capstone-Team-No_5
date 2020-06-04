@@ -345,20 +345,26 @@ class _CustomerForm extends State<CustomerForm> {
                           myBanner.dispose();
                           _checkInternetAccess().then((bool onValue) async {
                             if (onValue) {
-                              // 인터넷 정상 연결..
-                              myReservation.myJsonObjects = ReservationDTO(
-                                  reserveId: args.currentAccount.data['id'],
-                                  reserveDate: DateTime.now(),
-                                  reserveAddress:
-                                      args.currentAccount.data['address'],
-                                  reserveState: "접수 완료",
-                                  reserveVisitDate: selectedDate,
-                                  reserveVisitTime: _timeSet,
-                                  reserveItems: ['어항', '가방류']).toJson();
-                              await _db
-                                  .collection('reservation')
-                                  .document()
-                                  .setData(myReservation.myJsonObjects);
+                              // TODO : URL을 얻어서 같이 업로드함.
+                              myReservation.uploadMyListViewItem(args).then((List<String> outputURL) {
+                                List<String> _getselectedItem_Products = new List();
+                                List<String> _getselectedItem_Details = new List();
+                                args.selectedListItem.forEach((Map selectedItem) {
+                                  _getselectedItem_Products.add(selectedItem.keys.first);
+                                  _getselectedItem_Details.add(selectedItem.values.first);
+                                });
+                                myReservation.insertReservation(
+                                  new ReservationDTO(
+                                    reserveId:args.currentAccount.data['id'],
+                                    reserveDate: DateTime.now(),
+                                    reserveAddress: args.currentAccount.data['address'],
+                                    reserveState: myReservation.reservationStateList[0], // 접수 완료
+                                    reserveVisitDate: selectedDate,
+                                    reserveVisitTime: _timeSet,
+                                    reserveProducts:_getselectedItem_Products,
+                                    reserveDetails:_getselectedItem_Details,
+                                    reserveFiles: outputURL).toJson());
+                                });
 
                               showDialog(
                                 context: context,

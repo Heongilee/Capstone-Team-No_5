@@ -361,6 +361,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
                                   context, CustomerForm.routeName,
                                   arguments: CustomerForm_AccountSnapshot(
                                       args.currentAccount,
+                                      args.listViewItem,
                                       args.selectedListItem,
                                       args.totalPrice));
                             } else {

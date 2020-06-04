@@ -38,7 +38,8 @@ class TakingPicture_AccountSnapshot extends AccountSnapshot {
 class TrashListComfirmation_AccounSnapshot extends AccountSnapshot {
   List<File> _listViewItem; // 이미지 파일 리스트
   final current_Idx; // 현재 페이지 인덱스
-  Map<int, List<String>> _myDeepLearningResultStr; // int번째 인덱스의 딥러닝 다중 검출 결과 List<String>
+  Map<int, List<String>>
+      _myDeepLearningResultStr; // int번째 인덱스의 딥러닝 다중 검출 결과 List<String>
   Set<Map<String, String>> _selectedListItem; // 사용자가 선택한 _selectedListItem
   int _totalPrice; // 사용자가 선택한 폐기물 토탈 처리 비용.
 
@@ -61,16 +62,24 @@ class TrashListComfirmation_AccounSnapshot extends AccountSnapshot {
 }
 
 class CustomerForm_AccountSnapshot extends AccountSnapshot {
+  List<File> _listViewItem; // 이미지 파일 리스트
   int _totalPrice; // 사용자가 선택한 폐기물 토탈 처리 비용.
   Set<Map<String, String>> _selectedListItem; // 사용자가 선택한 _selectedListItem
+  /*
+  {
+    {"어항", "2m"},
+    {""}
+  }
+  */
 
   // getter
+  List<File> get listViewItem => _listViewItem;
   Set<Map<String, String>> get selectedListItem => _selectedListItem;
   int get totalPrice => _totalPrice;
   set totalPrice(int totalPrice) => this._totalPrice = totalPrice;
 
-  CustomerForm_AccountSnapshot(
-      DocumentSnapshot currentAccount, this._selectedListItem, this._totalPrice)
+  CustomerForm_AccountSnapshot(DocumentSnapshot currentAccount,
+      this._listViewItem, this._selectedListItem, this._totalPrice)
       : super(currentAccount);
 }
 
