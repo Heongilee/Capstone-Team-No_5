@@ -9,6 +9,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/TakingPicture.dart';
@@ -342,9 +343,9 @@ class _CustomerForm extends State<CustomerForm> {
                           style: TextStyle(fontSize: 20.0),
                         ),
                         onPressed: () {
-                          myBanner.dispose();
                           _checkInternetAccess().then((bool onValue) async {
                             if (onValue) {
+                              _showMyToastAlertMsg("잠시만 기다려 주세요...");
                               // TODO : URL을 얻어서 같이 업로드함.
                               myReservation.uploadMyListViewItem(args).then((List<String> outputURL) {
                                 List<String> _getselectedItem_Products = new List();
@@ -364,28 +365,29 @@ class _CustomerForm extends State<CustomerForm> {
                                     reserveProducts:_getselectedItem_Products,
                                     reserveDetails:_getselectedItem_Details,
                                     reserveFiles: outputURL).toJson());
-                                });
-
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('SUCCESS'),
-                                    content: Text('예약이 완료되었습니다.'),
-                                    actions: <Widget>[
-                                      FlatButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                            Navigator.popUntil(
-                                                context,
-                                                ModalRoute.withName(
+                                  }).then((value) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('SUCCESS'),
+                                          content: Text('예약이 완료되었습니다.'),
+                                          actions: <Widget>[
+                                            FlatButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                Navigator.popUntil(
+                                                  context,
+                                                  ModalRoute.withName(
                                                     TabPage.routeName));
-                                          },
-                                          child: Text('Confirm')),
-                                    ],
-                                  );
-                                },
-                              );
+                                                },
+                                                child: Text('Confirm')),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  });
+                              myBanner.dispose();
                             } else {
                               showDialog(
                                 context: context,
@@ -427,4 +429,12 @@ class _CustomerForm extends State<CustomerForm> {
       return false;
     }
   }
+
+  void _showMyToastAlertMsg(String my_msg) {
+    Fluttertoast.showToast(
+      toastLength: Toast.LENGTH_LONG,
+      webBgColor: "#e74c3c",
+      timeInSecForIosWeb: 3,
+      msg: my_msg);
+    }
 }

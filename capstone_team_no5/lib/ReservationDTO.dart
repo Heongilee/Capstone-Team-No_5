@@ -39,34 +39,27 @@ class ReservationDAO {
 
   // Firestore 'reservation' 컬렉션에 데이터 쓰기 시도.
   Future<void> insertReservation(Map myJsonObject) async {
-    var doc = await _db
-        .collection('reservation')
-        .document()
-        .setData(myJsonObject);
+    var doc = await _db.collection('reservation').document().setData(myJsonObject);
 
     return;
   }
 
   // Firestorage에 이미지를 업로드 해서 URL String이 담긴 리스트를 반환하는 메솓.
-  Future<List<String>> uploadMyListViewItem(
-      CustomerForm_AccountSnapshot args) async {
+  Future<List<String>> uploadMyListViewItem(CustomerForm_AccountSnapshot args) async {
     List<String> _outputURL = [];
 
-    // * FIXME : 인풋이 되긴 하는데 온전히 담아오지 못함
-    // * 아마 비동기 관리 부분에서 문제 생기는 듯. (2020-06-04 :: 10:57)
+    var i = 0;
     for (File f in args.listViewItem) {
-      final firebaseStorageRef = FirebaseStorage.instance.ref().child('reserveImages')
-      .child('${args.currentAccount.data['id']}_${DateTime.now().millisecondsSinceEpoch}.png');
+      final firebaseStorageRef = FirebaseStorage.instance.ref().child('reserveImages').child('${args.currentAccount.data['id']}_${i++}_${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}(${DateTime.now().hour}${DateTime.now().minute}).png');
       final task = firebaseStorageRef.putFile(f, StorageMetadata(contentType: 'image/png'));
 
-      await task.onComplete.then((StorageTaskSnapshot value) {
+      await task.onComplete.then((StorageTaskSnapshot value) async{
         // 동적으로 생성된 정보이기 때문에 URI가 ref에 담겨져 있고,
         // 그 URI를 가지고 URL을 얻어 낸다. ( getDownloadURL() )
 
         // myDownloadURL는 Future 객체
-        var myDownloadURL = value.ref.getDownloadURL();
-
-        myDownloadURL.then((dynamic uri) {
+        // var myDownloadURL = await value.ref.getDownloadURL();
+        await value.ref.getDownloadURL().then((dynamic uri){
           // uri.toString() 에 URL이 담김.
           _outputURL.add(uri.toString());
         });
@@ -76,6 +69,7 @@ class ReservationDAO {
     return _outputURL;
   }
 }
+
 ReservationDAO myReservation = ReservationDAO();
 
 class ReservationDTO {
