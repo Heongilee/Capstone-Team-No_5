@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:recycle/MainPage.dart';
 import 'package:recycle/RootPage.dart';
+import 'package:recycle/SelectedReservationInfo.dart';
 import 'package:recycle/TabPage.dart';
 import 'package:recycle/TrashListComfirmation.dart';
 import 'package:recycle/TakingPicture.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       ),
       home: RootPage(),
       // home: ExamplePage(),
+      // home: SelectedReservationInfo(),
       routes: <String, WidgetBuilder>{
         '/MainPage': (BuildContext context) => new MainPage(),
         TakingPicture.routeName: (context) => TakingPicture(),

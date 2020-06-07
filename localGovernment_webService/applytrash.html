@@ -6,15 +6,14 @@
 <!-- jQuery CDN -->
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 <!-- jQuery CDN/ -->
-<!-- bxSlider CDN -->
+<!-- bxslider CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
-<!-- bxSlider CDN/ -->
+<!-- bxslider CDN/ -->
 <!-- Firestore CDN -->
 <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
-<!-- Firestore CDN/ -->
 <script>
     firebase.initializeApp({
         apiKey: "AIzaSyDfLG-WSkckQnW0m95_4Jz2lYH5mAlzIzo",
@@ -28,27 +27,44 @@
     });
 </script>
 <!-- Firestore CDN/ -->
-<link rel="stylesheet" type="text/css" href="applytrash.css">
-
-  <script>
-  $(document).ready(function(){
-    var mySlider = $('.bxslider').bxSlider({
-      onSliderLoad : function () {
-        console.log("Loaded my Slider...");
-      }
-    });
-    $(".button").click(function(){
-        // TODO : 여기서 승인해줘야됨
-      $(".align-right").hide();
-    });
-  });
-  </script>
-<title></title>
+<title>강남구청 :: 치워</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
 <link href="default.css" rel="stylesheet" type="text/css" media="all" />
 <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+<script>
+  $(document).ready(function(){
+    $('.bxslider').bxSlider({
+      moveSlides: 1,
+      maxSlides:1,
+      slideWidth:400,
+      infiniteLoop:false,
+      onSliderLoad: function(){
+        console.log("Loaded my slider...");
+        $(".align-left").css("visibility", "visible").animate({opacity:1});
+      }
+    });
+  });
+</script>
+<script>
+  $(document).on("click", ".button", function(){
+    var db = firebase.firestore();
+    var getDocumentId = $(this).parent().parent().prop("id");
+    var docRef = db.collection("reservation").doc(getDocumentId);
+
+    return docRef.update({
+      reserveState : "방문 예정",
+    }).then(function(){
+      alert("정상 처리되었습니다.");
+
+      // TODO : FCM 을 넣을 순 없을 까...?
+      location.reload();  // 웹 페이지 새로 고침
+    }).catch(function(err){
+      alert("정상 처리에 실패했습니다!!")
+    });
+  });
+</script>
 </head>
 <body>
 <div id="header" class="container">
@@ -62,13 +78,30 @@
       </ul>
    </div>
 </div>
-<div id="featured" class="container">
-  <!-- 내용들이 들어갈 것임. -->
+<div id="featured0" class="featured-container">
+  <div class="align-left" style="visibility: hidden;opacity: 0">
+    <div class="bxslider" max-width="400" max-height="300">
+      <img src=".\assets\img\NO_IMAGE.gif" alt="" class="my_images">
+      <img src=".\assets\img\NO_IMAGE.gif" alt="" class="my_images">
+      <img src=".\assets\img\NO_IMAGE.gif" alt="" class="my_images">
+      <img src=".\assets\img\NO_IMAGE.gif" alt="" class="my_images">
+      <img src=".\assets\img\NO_IMAGE.gif" alt="" class="my_images">
+      <!-- <img src="https://via.placeholder.com/400x300" class="my_images">
+      <img src="https://via.placeholder.com/400x300" class="my_images"> -->
+    </div>
+  </div>
+  <div class="align-right">
+    <div class="align-right-contents">
+      <p>Not Applicable</p>
+    </div>
+    <a href="#bxslider" class="button">승인하기</a>
+  </div>
 </div>
 <div id="copyright" class="container">
    <p>&copy; Untitled. All rights reserved. | Photos by <a href="http://fotogrph.com/">Fotogrph</a> | Design by <a href="http://templated.co" rel="nofollow">TEMPLATED</a>.</p>
 </div>
 <script type="text/javascript">
+  var i = 0;
   $(document).ready(function () {
     var db = firebase.firestore();
     var docRef = db.collection("reservation");
@@ -76,52 +109,58 @@
     
     docRef.get().then(function (querySnapshot) {
       if(querySnapshot){
-        var i = 0;
-
         // 이미지 태그를 참조할 문서 객체
         var myContents = document.getElementsByClassName('align-right-contents');
+
         // DB에 저장된 예약 내역 개수만큼 생성할 것임.
         querySnapshot.forEach(function (doc) {
+          var docs = doc.data();
+          if(docs["reserveState"] == "방문 예정") return true;  //continue
+
           var myImgSlider = document.getElementsByClassName("bxslider");
-          // container 클래스 'featured~' id값을 가지는 동적 div 태그 생성.
-          var newDiv = document.createElement("div");
-          newDiv.setAttribute("class", "container");
-          newDiv.id = "featured" + i;
+          var myImgSliderItem = document.getElementsByClassName("my_images");
+          var myFeaturedContainer = document.getElementsByClassName("featured-container");
+          myFeaturedContainer[i].setAttribute("id", doc.id);
+          // // container 클래스 'featured~' id값을 가지는 동적 div 태그 생성.
+          // var newDiv = document.createElement("div");
+          // newDiv.setAttribute("class", "container");
+          // newDiv.id = doc.id; //Firestore의 document.id (이걸 가지고 접근함.)
 
-          // align-left 동적 태그 생성
-          var newDiv_alignleft = document.createElement("div");
-          newDiv_alignleft.setAttribute("class", "align-left");
+          // // align-left 동적 태그 생성
+          // var newDiv_alignleft = document.createElement("div");
+          // newDiv_alignleft.setAttribute("class", "align-left");
 
-            // slider 동적 태그 생성
-            var newDiv_alignleft_slider = document.createElement("div");
-            newDiv_alignleft_slider.setAttribute("class", "bxslider");
-            newDiv_alignleft_slider.setAttribute("max-width", 400);
-            newDiv_alignleft_slider.setAttribute("max-height", 300);
+          //   // slider 동적 태그 생성
+          //   var newDiv_alignleft_slider = document.createElement("div");
+          //   newDiv_alignleft_slider.setAttribute("class", "slider");
+          //   newDiv_alignleft_slider.setAttribute("max-width", 400);
+          //   newDiv_alignleft_slider.setAttribute("max-height", 300);
 
-          // align-right 동적 태그 생성
-          var newDiv_alignright = document.createElement("div");
-          newDiv_alignright.setAttribute("class", "align-right");
+          // // align-right 동적 태그 생성
+          // var newDiv_alignright = document.createElement("div");
+          // newDiv_alignright.setAttribute("class", "align-right");
 
-            // align-right-contents 동적 태그 생성 : 여기에 상세 내역 표시.
-            var newDiv_alignright_contents = document.createElement("div");
-            newDiv_alignright_contents.setAttribute("class", "align-right-contents");
+          //   // align-right-contents 동적 태그 생성 : 여기에 상세 내역 표시.
+          //   var newDiv_alignright_contents = document.createElement("div");
+          //   newDiv_alignright_contents.setAttribute("class", "align-right-contents");
             
-            // 승인하기 위한 a태그 생성
-            var newDiv_alignright_button = document.createElement("a");
-            newDiv_alignright_button.setAttribute("href", "#bxslider" + i);
-            newDiv_alignright_button.setAttribute("class", "button");
-            newDiv_alignright_button.innerHTML = "승인하기";
+          //   // 승인하기 위한 a태그 생성
+          //   var newDiv_alignright_button = document.createElement("a");
+          //   newDiv_alignright_button.setAttribute("href", "#bxslider" + i);
+          //   newDiv_alignright_button.id = "#bxslider" + i;
+          //   newDiv_alignright_button.setAttribute("class", "button");
+          //   newDiv_alignright_button.innerHTML = "승인하기";
 
-          // 태그가 생성된 순서와 반대 순서로 Merge.
-          newDiv_alignright.appendChild(newDiv_alignright_contents); 
-          newDiv_alignright.appendChild(newDiv_alignright_button);
+          // // 태그가 생성된 순서와 반대 순서로 Merge.
+          // newDiv_alignright.appendChild(newDiv_alignright_contents); 
+          // newDiv_alignright.appendChild(newDiv_alignright_button);
 
-          newDiv_alignleft.appendChild(newDiv_alignleft_slider);
+          // newDiv_alignleft.appendChild(newDiv_alignleft_slider);
 
-          newDiv.appendChild(newDiv_alignleft);
-          newDiv.appendChild(newDiv_alignright);
+          // newDiv.appendChild(newDiv_alignleft);
+          // newDiv.appendChild(newDiv_alignright);
 
-          myAppendPosition.appendChild(newDiv);
+          // myAppendPosition.appendChild(newDiv);
 
           // class는 align-right
           var List = function(){
@@ -161,12 +200,13 @@
             return this.dataStore;
           }
           List.prototype.length = function(){
-            return this.listSize;
+            return (this.listSize);
           }
-          let docs = doc.data();
           // 제품 목록과 상세 목록을 가져올 2개의 리스트.
           var myProductsList = new List();
           var myDetailsList = new List();
+          // 임시로 넣은 p태그 삭제.
+          $('.align-right-contents:first-child').empty();
           for(let item in docs){
             if(item == "reserveAddress"){
               var newP = document.createElement("p");
@@ -181,10 +221,12 @@
             } else if(item == "reserveFiles"){
               var list_Files = docs[item].toString().split(',');
               for(var j=0;j<list_Files.length;j++){
-                var newImg = document.createElement("img");
-                newImg.setAttribute("src", list_Files[j]);
-                newImg.setAttribute("alt", "폐기물 배출 신청" + i);
-                myImgSlider[i].appendChild(newImg);
+                if(j >= 5) break; //5개 이상은 무리!!
+                // var newImg = document.createElement("img");
+                // newImg.setAttribute("src", list_Files[j]);
+                // newImg.setAttribute("alt", "폐기물 배출 신청" + i);
+                // myImgSlider[i].appendChild(newImg);
+                myImgSliderItem[(5 * i) + j].setAttribute("src", list_Files[j]);
               }
             } else if(item == "reserveId"){
               var newP = document.createElement("p");
@@ -196,19 +238,15 @@
               for(var j = 0;j < docs[item].length;j++){
                 myProductsList.append(docs[item][j]);
               }
-              console.log("reserveProducts :: myProductsLIst : " + myProductsList.toString());
-              console.log("reserveProducts :: myDetailsLIst : " + myDetailsList.toString());
 
               if(myDetailsList.isNotEmpty()){
                 // Generating dynamic tags
                 var newP = document.createElement("p");
                 newP.setAttribute("id", "mystylecss01");
                 var str = "";
-                for(var j = 0;j < myProductsList.length;j++){
-                  console.log("TEST : " + myProductsList.getElement(j));
-                  console.log(myProductsList.getElement(j) + "[ " + myDetailsList.getElement(j) + " ]");
-                  str.concat();
-                  str.concat((j != myProductsList.listSize) ? ", " : "");
+                for(var j = 0;j < (myProductsList.length());j++){
+                  str = str.concat(myProductsList.getElement(j) + "[ " + myDetailsList.getElement(j) + " ]");
+                  str = str.concat((j != (myProductsList.length() - 1)) ? ", " : "");
                 }
                 newP.innerHTML = "항목 : " + str;
                 myContents[i].appendChild(newP);
@@ -219,19 +257,15 @@
                 myDetailsList.append(docs[item][j]);
               }
 
-              console.log("reserveDetails :: myProductsLIst : " + myProductsList.toString());
-              console.log("reserveDetails :: myDetailsLIst : " + myDetailsList.toString());
               if(myProductsList.isNotEmpty()){
-                console.log("1");
                 // Generating dynamic tags
                 var newP = document.createElement("p");
                 newP.setAttribute("id", "mystylecss01");
                 var str = "";
-                console.log(myProductsList.listSize);
-                for(var j = 0;j < myProductsList.length;j++){
-                  console.log("TEST : " + myProductsList.getElement(j));
+
+                for(var j = 0;j < (myDetailsList.length());j++){
                   str.concat(myProductsList.getElement(j) + "[ " + myDetailsList.getElement(j) + " ]");
-                  str.concat((j != myProductsList.listSize) ? ", " : "");
+                  str.concat((j != (myProductsList.length() - 1)) ? ", " : "");
                 }
                 newP.innerHTML = "항목 : " + str;
                 myContents[i].appendChild(newP);
@@ -264,9 +298,6 @@
     }).catch(function (error) {
       console.log("Error getting document: ", error);
     });
-
-    // TODO : Output ERROR...
-    // loadSlider();
   });
 </script>
 </body>
