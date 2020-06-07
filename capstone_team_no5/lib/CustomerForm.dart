@@ -26,10 +26,12 @@ class CustomerForm extends StatefulWidget {
   _CustomerForm createState() => _CustomerForm();
 }
 
+
+
+
 class _CustomerForm extends State<CustomerForm> {
   final _address = TextEditingController();
   final _db = Firestore.instance;
-
   //현재 날짜 객체 생성후 년 월 일 삽입
   static var now = DateTime.now();
   DateTime _currentDate = DateTime(now.year, now.month, now.day);
