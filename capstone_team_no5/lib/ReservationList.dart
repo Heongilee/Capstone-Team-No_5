@@ -20,15 +20,17 @@ class _ReservationListState extends State<ReservationList> {
   final _db = Firestore.instance;
   QuerySnapshot _qs;
 
-  final _statusList = ["접수 완료", "처리중...", "처리 완료"];
+  // final _statusList = ["접수 완료", "처리중...", "처리 완료"];
 
   // DataTable
-  List<DataColumn> dataColumn = [];
-  List<DataRow> dataRow = [];
+  List<DataColumn> dataColumn;
+  List<DataRow> dataRow;
 
   @override
   void initState() {
     super.initState();
+    dataColumn = new List<DataColumn>();
+    dataRow = new List<DataRow>();
   }
   
 
@@ -65,6 +67,7 @@ class _ReservationListState extends State<ReservationList> {
                 return _myCircularProgressIndicator();
               } else {
                 final message = snapshot.data.documents;
+
                 return _buildMyBody(message);
               }
             }),
@@ -114,26 +117,34 @@ class _ReservationListState extends State<ReservationList> {
       style: TextStyle(
           fontWeight: FontWeight.bold,
           fontStyle: FontStyle.italic,
-          fontSize: 16.0),
+          fontSize: 16.0), 
       textAlign: TextAlign.center,
     )));
 
-    print('${dataColumn.length}');
     return dataColumn;
   }
 
   List<DataRow> _getDataRows(List<DocumentSnapshot> myQ) {
-    List<DataCell> myreturnList = [];
+    List<DataCell> myreturnList;
 
     for (DocumentSnapshot element in myQ) {
-      myreturnList.clear();
+      // 인스턴스 생성은 for문에서 해줘야 DataRows 오류가 발생하지 않는다.
+      myreturnList = new List<DataCell>();
+
       myreturnList.add(DataCell(Text('${element['reserveVisitDate']}')));
+      print(element['reserveVisitDate']);
       myreturnList.add(DataCell(Text('${element['reserveVisitTime']}')));
+      print(element['reserveVisitTime']);
       myreturnList.add(DataCell(Text('${element['reserveState']}')));
-      dataRow.add(DataRow(cells: myreturnList,onSelectChanged: (onValue) {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>SelectedReservationInfo(element)));
-      },));
-    }
+      print(element['reserveState']);
+      dataRow.add(DataRow(
+        cells: myreturnList,
+        onSelectChanged: (bool onValue) {
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>SelectedReservationInfo(element)));
+        },
+      )
+    );
+  }
 
     return dataRow;
   }
