@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Sample Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" type="text/css" href="default.css">
+    <!-- jQuery 의존성 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <!-- jQuery 의존성/ -->
+    <!-- bxSlider 의존성 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+    <!-- bxSlider 의존성/ -->
+    <!-- Firestore 의존성 -->
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <script>
+        firebase.initializeApp({
+            apiKey: "AIzaSyDfLG-WSkckQnW0m95_4Jz2lYH5mAlzIzo",
+            authDomain: "capstone-no5.firebaseapp.com",
+            databaseURL: "https://capstone-no5.firebaseio.com",
+            projectId: "capstone-no5",
+            storageBucket: "capstone-no5.appspot.com",
+            messagingSenderId: "80279008633",
+            appId: "1:80279008633:web:9f59fbcca33ef8a8cdaba8",
+            measurementId: "G-EQ9RSJSGE6"
+        });
+    </script>
+    <!-- Firestore 의존성/ -->
+    <script>
+        $(document).ready(function(){
+            var mySlider = $('.slider').bxSlider({
+                onSliderLoad : function () {
+                    console.log("Loaded my Slider...");
+                }
+            });
+            $('.bx-prev').on('click', function(){
+                mySlider.goToPrevSlide();
+            });
+            $('.bx-next').on('click', function(){
+                mySlider.goToNextSlide();
+            });
+        });
+    </script>
+</head>
+<body>
+    <p>My Sample Page...</p>
+    <div class="slider slideWrap"></div>
+    <script>
+        $(document).ready(function () {
+            var db = firebase.firestore();
+            var docRef = db.collection("reservation");
+            
+            // document object Ref
+            var mySliderDiv = document.getElementsByClassName("slider");
+           
+           docRef.get().then(function (querySnapshot) {
+               if(querySnapshot){
+                   // querySnapshot으로 컬렉션이 들어오고, forEach문으로 document(doc)을 순회함.
+                   querySnapshot.forEach(function (doc) {
+                       // docs에는 문서들이 들어온다.
+                       var docs = doc.data();
+                       // d에는 문서 필드들이 담겨 있음.
+                       for(let df in docs){
+                           if(df == "reserveFiles"){
+                               var myUrlList = docs[df].toString().split(',');
+                               
+                               var i = 0;
+                               for(var idx=0;idx<myUrlList.length;idx++){
+                                    // // new items div
+                                    var newItemDivID = "myPicture" + i;
+                                    i = i + 1;
+                                    // var newItemDiv = document.createElement("div");
+                                    // newItemDiv.id = newItemDivID;
+
+                                   // new img
+                                   var newImg = document.createElement("img");
+                                   newImg.src = myUrlList[idx];
+                                   newImg.alt = newItemDivID;
+
+                                   // appending
+                                //    newItemDiv.appendChild(newImg);
+                                   mySliderDiv[0].appendChild(newImg);
+                                }
+                            } else {
+                                console.log(df);
+                            }
+                           }
+                       });
+                }else{
+                    console.log("Not Found my Firestore instance...");
+                }
+            }).catch(function (err) {
+                console.log(err);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,30 +1,44 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<!--
-Design by TEMPLATED
-http://templated.co
-Released for free under the Creative Commons Attribution License
 
-Name       : PlainLeaf 
-Description: A two-column, fixed-width design with dark color scheme.
-Version    : 1.0
-Released   : 20130902
-
--->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<!-- jQuery CDN/ -->
+<!-- bxSlider CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+<!-- bxSlider CDN/ -->
+<!-- Firestore CDN -->
+<script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+<!-- Firestore CDN/ -->
+<script>
+    firebase.initializeApp({
+        apiKey: "AIzaSyDfLG-WSkckQnW0m95_4Jz2lYH5mAlzIzo",
+        authDomain: "capstone-no5.firebaseapp.com",
+        databaseURL: "https://capstone-no5.firebaseio.com",
+        projectId: "capstone-no5",
+        storageBucket: "capstone-no5.appspot.com",
+        messagingSenderId: "80279008633",
+        appId: "1:80279008633:web:9f59fbcca33ef8a8cdaba8",
+        measurementId: "G-EQ9RSJSGE6"
+    });
+</script>
+<!-- Firestore CDN/ -->
 <link rel="stylesheet" type="text/css" href="applytrash.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
-  <!-- <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script> -->
 
   <script>
   $(document).ready(function(){
-    // 슬라이더 Enable... ------------- Not Working...
+    var mySlider = $('.bxslider').bxSlider({
+      onSliderLoad : function () {
+        console.log("Loaded my Slider...");
+      }
+    });
     $(".button").click(function(){
-        //여기서 승인해줘야됨
+        // TODO : 여기서 승인해줘야됨
       $(".align-right").hide();
     });
   });
@@ -35,21 +49,6 @@ Released   : 20130902
 <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
 <link href="default.css" rel="stylesheet" type="text/css" media="all" />
 <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
-
-<script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
-<script>
-  firebase.initializeApp({
-    apiKey: "AIzaSyDfLG-WSkckQnW0m95_4Jz2lYH5mAlzIzo",
-    authDomain: "capstone-no5.firebaseapp.com",
-    databaseURL: "https://capstone-no5.firebaseio.com",
-    projectId: "capstone-no5",
-    storageBucket: "capstone-no5.appspot.com",
-    messagingSenderId: "80279008633",
-    appId: "1:80279008633:web:9f59fbcca33ef8a8cdaba8",
-    measurementId: "G-EQ9RSJSGE6"
-  });
-</script>
 </head>
 <body>
 <div id="header" class="container">
@@ -69,15 +68,13 @@ Released   : 20130902
 <div id="copyright" class="container">
    <p>&copy; Untitled. All rights reserved. | Photos by <a href="http://fotogrph.com/">Fotogrph</a> | Design by <a href="http://templated.co" rel="nofollow">TEMPLATED</a>.</p>
 </div>
-<script>
+<script type="text/javascript">
   $(document).ready(function () {
-    $('.bxslider').bxSlider();
     var db = firebase.firestore();
     var docRef = db.collection("reservation");
     var myAppendPosition = document.getElementById("featured");
     
     docRef.get().then(function (querySnapshot) {
-      
       if(querySnapshot){
         var i = 0;
 
@@ -88,8 +85,8 @@ Released   : 20130902
           var myImgSlider = document.getElementsByClassName("bxslider");
           // container 클래스 'featured~' id값을 가지는 동적 div 태그 생성.
           var newDiv = document.createElement("div");
-          newDiv.setAttribute("id", "featured" + i);
           newDiv.setAttribute("class", "container");
+          newDiv.id = "featured" + i;
 
           // align-left 동적 태그 생성
           var newDiv_alignleft = document.createElement("div");
@@ -98,7 +95,6 @@ Released   : 20130902
             // slider 동적 태그 생성
             var newDiv_alignleft_slider = document.createElement("div");
             newDiv_alignleft_slider.setAttribute("class", "bxslider");
-            newDiv_alignleft_slider.setAttribute("id", "bxslider" + i);
             newDiv_alignleft_slider.setAttribute("max-width", 400);
             newDiv_alignleft_slider.setAttribute("max-height", 300);
 
@@ -112,7 +108,7 @@ Released   : 20130902
             
             // 승인하기 위한 a태그 생성
             var newDiv_alignright_button = document.createElement("a");
-            newDiv_alignright_button.setAttribute("href", "#");
+            newDiv_alignright_button.setAttribute("href", "#bxslider" + i);
             newDiv_alignright_button.setAttribute("class", "button");
             newDiv_alignright_button.innerHTML = "승인하기";
 
@@ -128,8 +124,49 @@ Released   : 20130902
           myAppendPosition.appendChild(newDiv);
 
           // class는 align-right
-          let docs = doc.data();
+          var List = function(){
+            this.dataStore = [];
+            this.pos = 0;
+            this.listSize = 0;
+          }
+          List.prototype.append = function(elem){
+            this.dataStore[this.listSize] = elem;
+            this.listSize++;
+          }
+          List.prototype.find = function(elem){
+            for(var i = 0;i<this.listSize;i++){
+              if(this.dataStore[i] === elem){
+                return i;
+              }
+            }
+            return -1;
+          }
+          List.prototype.remove = function(elem){
+            var pos = this.find(elem);
 
+            if(pos > -1){
+              this.dataStore.splice(pos, 1);
+              this.listSize--;
+              return true;
+            }
+            return false;
+          }
+          List.prototype.getElement = function(i){
+            return this.dataStore[i];
+          }
+          List.prototype.isNotEmpty = function(){
+            return (this.listSize != 0) ? true : false;
+          }
+          List.prototype.toString = function(){
+            return this.dataStore;
+          }
+          List.prototype.length = function(){
+            return this.listSize;
+          }
+          let docs = doc.data();
+          // 제품 목록과 상세 목록을 가져올 2개의 리스트.
+          var myProductsList = new List();
+          var myDetailsList = new List();
           for(let item in docs){
             if(item == "reserveAddress"){
               var newP = document.createElement("p");
@@ -149,22 +186,56 @@ Released   : 20130902
                 newImg.setAttribute("alt", "폐기물 배출 신청" + i);
                 myImgSlider[i].appendChild(newImg);
               }
-              // TODO : https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js 참고
             } else if(item == "reserveId"){
               var newP = document.createElement("p");
               newP.setAttribute("id", "mystylecss01");
               newP.innerHTML = "아이디 : " + docs[item];
               myContents[i].appendChild(newP);
-            } else if(item == "reserveItems"){
-              var newP = document.createElement("p");
-              newP.setAttribute("id", "mystylecss01");
-              var str = "";
+            } else if(item == "reserveProducts"){
+              // Add myProductList
               for(var j = 0;j < docs[item].length;j++){
-                str = str.concat(docs[item][j]);
-                if(j != docs[item].length - 1) str = str.concat(", ");
+                myProductsList.append(docs[item][j]);
               }
-              newP.innerHTML = "항목 : " + str;
-              myContents[i].appendChild(newP);
+              console.log("reserveProducts :: myProductsLIst : " + myProductsList.toString());
+              console.log("reserveProducts :: myDetailsLIst : " + myDetailsList.toString());
+
+              if(myDetailsList.isNotEmpty()){
+                // Generating dynamic tags
+                var newP = document.createElement("p");
+                newP.setAttribute("id", "mystylecss01");
+                var str = "";
+                for(var j = 0;j < myProductsList.length;j++){
+                  console.log("TEST : " + myProductsList.getElement(j));
+                  console.log(myProductsList.getElement(j) + "[ " + myDetailsList.getElement(j) + " ]");
+                  str.concat();
+                  str.concat((j != myProductsList.listSize) ? ", " : "");
+                }
+                newP.innerHTML = "항목 : " + str;
+                myContents[i].appendChild(newP);
+              }
+            } else if(item == "reserveDetails"){
+              // Add myDetailsList
+              for(var j = 0;j < docs[item].length;j++){
+                myDetailsList.append(docs[item][j]);
+              }
+
+              console.log("reserveDetails :: myProductsLIst : " + myProductsList.toString());
+              console.log("reserveDetails :: myDetailsLIst : " + myDetailsList.toString());
+              if(myProductsList.isNotEmpty()){
+                console.log("1");
+                // Generating dynamic tags
+                var newP = document.createElement("p");
+                newP.setAttribute("id", "mystylecss01");
+                var str = "";
+                console.log(myProductsList.listSize);
+                for(var j = 0;j < myProductsList.length;j++){
+                  console.log("TEST : " + myProductsList.getElement(j));
+                  str.concat(myProductsList.getElement(j) + "[ " + myDetailsList.getElement(j) + " ]");
+                  str.concat((j != myProductsList.listSize) ? ", " : "");
+                }
+                newP.innerHTML = "항목 : " + str;
+                myContents[i].appendChild(newP);
+              }
             } else if(item == "reserveState"){
               var newP = document.createElement("p");
               newP.setAttribute("id", "mystylecss01");
@@ -196,11 +267,6 @@ Released   : 20130902
 
     // TODO : Output ERROR...
     // loadSlider();
-  });
-</script>
-<script type="text/javascript">
-  $(document).ready(function(){
-    
   });
 </script>
 </body>

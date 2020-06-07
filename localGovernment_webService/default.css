@@ -444,8 +444,16 @@
 		color: #FFF;
 	}
 
-	.slider
+	/* .slider
 	{
 		width: auto;
 		height: auto;
+	} */
+
+	.slideWrap
+	{
+		width: 300px;
+		height: 300px;
+		margin: 2em auto;
+		position: relative;
 	}

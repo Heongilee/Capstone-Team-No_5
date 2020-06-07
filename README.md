@@ -18,8 +18,10 @@
 >팀 원 : 컴퓨터공학과 15012970 이헌기   
    
 * 개발 일정 : 
-![개발_일정](https://github.com/Heongilee/Capstone-Team-No_5/blob/master/Development_schedule.jpg?raw=true)
+![개발_일정](https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/Development_schedule.jpg?raw=true)
    
-* 기능 스펙 :   
-* 개발 스펙(기술 스택) :   
-![개발_일정](https://github.com/Heongilee/Capstone-Team-No_5/blob/master/Tech_stack.jpg?raw=true)
+* 시스템 구성도 : 
+![시스템 구성도](https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/SystemConfigurationDiagram.jpg?raw=true)
+
+* 포스터 : 
+![포스터](https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/Poster.jpg?raw=true)

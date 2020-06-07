@@ -266,8 +266,7 @@ class _TakingPictureState extends State<TakingPicture> {
   }
 
   // 딥러닝 결과를 받아올 메소드
-  Future<Map<int, List<String>>> _loadMyDeepLearningModule(
-      BuildContext context) async {
+  Future<Map<int, List<String>>> _loadMyDeepLearningModule(BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -283,8 +282,8 @@ class _TakingPictureState extends State<TakingPicture> {
     );
 
     Map<int, List<String>> _myDeepLearningResults = {
-      // 0: ["시계"], // 0번째 사진에서 검출된 객체들은 어항, 이불, 화분, 자전거, 항아리가 있다.
-      // 1: ["가방류", "고무통", "러닝머신", "옥매트"], // 1번째 사진에서 검출된 객체들은 다음과 같다.
+      0: ["시계"], // 0번째 사진에서 검출된 객체들은 어항, 이불, 화분, 자전거, 항아리가 있다.
+      1: ["가방류", "고무통", "러닝머신", "옥매트"], // 1번째 사진에서 검출된 객체들은 다음과 같다.
       // 2: ["유리(거울,판유리)", "재봉틀", "화일캐비넷", "피아노", "환풍기", "카페트"],
       // 3: ["어항", "이불", "화분", "자전거", "항아리"], // 0번째 사진에서 검출된 객체들은 어항, 이불, 화분, 자전거, 항아리가 있다.
       // 4: ["가방류", "고무통", "러닝머신", "옥매트"], // 1번째 사진에서 검출된 객체들은 다음과 같다.
@@ -297,34 +296,35 @@ class _TakingPictureState extends State<TakingPicture> {
     for (File element in _listViewItem) {
       final String nodeEndPoint = API_PREFIX;
 
-      if (element == null) {
-        print("어 파일인식 안됨");
-        break;
-      }
-      String base64Image = base64Encode(element.readAsBytesSync());
-      String fileName = element.path.split("/").last;
+    //   if (element == null) {
+    //     print("어 파일인식 안됨");
+    //     break;
+    //   }
+    //   String base64Image = base64Encode(element.readAsBytesSync());
+    //   String fileName = element.path.split("/").last;
 
-      print("파일이름 : " + fileName);
+    //   print("파일이름 : " + fileName);
 
-      await http.post(nodeEndPoint, body: {
-        "image": base64Image,
-        "name": fileName,
-      }).then((res) {
-        print(res.body);
-        print("상태코드 : ");
-        print(res.statusCode);
-        tmp = res.body;
-        
-        List<String> response_list = tmp.split(",");
-        _myDeepLearningResults.addAll({_myDeepLearningResults.length: response_list});
-      }).catchError((err) {
-        print(err);
-      });
-    }
+    //   await http.post(nodeEndPoint, body: {
+    //     "image": base64Image,
+    //     "name": fileName,
+    //   }).then((res) {
+    //     print(res.body);
+    //     print("상태코드 : ");
+    //     print(res.statusCode);
+    //     tmp = res.body;
+
+    //     List<String> response_list = tmp.split(",");
+    //     _myDeepLearningResults.addAll({_myDeepLearningResults.length: response_list});
+    //   }).catchError((err) {
+    //     print(err);
+    //   });
+    // }
     // !------------------------------------------------------------------------
 
     List<String> response_list = tmp.split(",");
     _myDeepLearningResults.addAll({tmp_idx: response_list});
     return _myDeepLearningResults;
+    }
   }
 }
