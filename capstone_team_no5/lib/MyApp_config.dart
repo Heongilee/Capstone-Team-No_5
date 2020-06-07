@@ -31,9 +31,9 @@ class MyApp_config with MyAppConfigFunction {
 
   set chkboxAUTO(bool value) => _chkboxAUTO = value;
 
-  dynamic get client_token => _clientToken;
+  dynamic get clientToken => _clientToken;
 
-  set client_token(dynamic client_token) => _clientToken = client_token;
+  set clientToken(dynamic client_token) => _clientToken = client_token;
 
   // MyApp_config(this._receiveID, this._chkboxID, this._chkboxAUTO);
   factory MyApp_config() => _getInstance;
