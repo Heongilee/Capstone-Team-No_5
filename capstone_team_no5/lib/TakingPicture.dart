@@ -266,8 +266,7 @@ class _TakingPictureState extends State<TakingPicture> {
   }
 
   // 딥러닝 결과를 받아올 메소드
-  Future<Map<int, List<String>>> _loadMyDeepLearningModule(
-      BuildContext context) async {
+  Future<Map<int, List<String>>> _loadMyDeepLearningModule(BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -292,9 +291,10 @@ class _TakingPictureState extends State<TakingPicture> {
     };
 
     // !-------------------- AWS EC2 서버 가동중일때만 가능. ---------------------
-    // String tmp; // res.body를 받아올 임시 변수
-    // for (File element in _listViewItem) {
-    //   final String nodeEndPoint = API_PREFIX;
+    int tmp_idx;
+    String tmp; // res.body를 받아올 임시 변수
+    for (File element in _listViewItem) {
+      final String nodeEndPoint = API_PREFIX;
 
     //   if (element == null) {
     //     print("어 파일인식 안됨");
@@ -322,6 +322,9 @@ class _TakingPictureState extends State<TakingPicture> {
     // }
     // !------------------------------------------------------------------------
 
+    List<String> response_list = tmp.split(",");
+    _myDeepLearningResults.addAll({tmp_idx: response_list});
     return _myDeepLearningResults;
+    }
   }
 }

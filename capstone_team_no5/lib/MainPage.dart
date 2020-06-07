@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:recycle/SignUp.dart';
 import 'package:recycle/TabPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class mainpage_text_editing_controller {
   final _id = TextEditingController();
@@ -34,6 +35,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage>
     with mainpage_text_editing_controller {
   final _db = Firestore.instance;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging(); 
   DocumentSnapshot _currentDoc;
 
   @override
@@ -42,7 +44,27 @@ class _MainPageState extends State<MainPage>
     _checkboxController_remember_my_id.add(false);
     _checkboxController_auto_login.add(false);
 
+    firebaseCloudMessaging_Listeners();
+
     setting_myAppConfig();
+  }
+
+   void firebaseCloudMessaging_Listeners() {
+    _firebaseMessaging.getToken().then((token){
+      print('token:'+token);
+    });
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
   }
 
   @override

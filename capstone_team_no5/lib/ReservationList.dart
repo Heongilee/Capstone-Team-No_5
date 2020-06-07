@@ -1,5 +1,6 @@
 // TODO : 예약 조회 내역을 클릭하면 사진과 함께 예약 상세 페이지에서 조회하도록.
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class _ReservationListState extends State<ReservationList> {
   void initState() {
     super.initState();
   }
+  
 
   @override
   Widget build(BuildContext context) {

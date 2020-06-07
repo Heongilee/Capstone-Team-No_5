@@ -15,6 +15,7 @@ import 'package:recycle/AccountSnapshot.dart';
 import 'package:recycle/TakingPicture.dart';
 import 'package:recycle/model/WasteListAsset.dart';
 import 'package:recycle/ReservationDTO.dart';
+import 'package:recycle/MyApp_config.dart';
 
 import 'TabPage.dart';
 
@@ -364,7 +365,9 @@ class _CustomerForm extends State<CustomerForm> {
                                     reserveVisitTime: _timeSet,
                                     reserveProducts:_getselectedItem_Products,
                                     reserveDetails:_getselectedItem_Details,
-                                    reserveFiles: outputURL).toJson());
+                                    reserveFiles: outputURL,
+                                    clientToken: myapp_config_instance.clientToken,
+                                    ).toJson());
                                   }).then((value) {
                                     showDialog(
                                       context: context,

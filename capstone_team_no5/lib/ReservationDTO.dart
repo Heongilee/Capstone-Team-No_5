@@ -82,6 +82,7 @@ class ReservationDTO {
   List<dynamic> reserveDetails; //선택한 물품의 규격
   String reserveState; //예약 상태
   List<String> reserveFiles; //촬영된 사진
+  String clientToken;//기기 토큰
 
   ReservationDTO({
     this.reserveId,
@@ -93,6 +94,7 @@ class ReservationDTO {
     this.reserveDetails,
     this.reserveState,
     this.reserveFiles,
+    this.clientToken,
   });
 
   factory ReservationDTO.fromJson(Map<String, dynamic> json) => ReservationDTO(
@@ -105,6 +107,7 @@ class ReservationDTO {
         reserveDetails: json["reserveDetails"],
         reserveState: json["reserveState"],
         reserveFiles: json["reserveFiles"],
+        clientToken: json["clientToken"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -119,5 +122,6 @@ class ReservationDTO {
         "reserveDetails": reserveDetails,
         "reserveState": reserveState,
         "reserveFiles": reserveFiles,
+        "clientToken" : clientToken,
       };
 }

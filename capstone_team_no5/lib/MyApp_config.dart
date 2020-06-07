@@ -31,9 +31,9 @@ class MyApp_config with MyAppConfigFunction {
 
   set chkboxAUTO(bool value) => _chkboxAUTO = value;
 
-  dynamic get client_token => _clientToken;
+  dynamic get clientToken => _clientToken;
 
-  set client_token(dynamic client_token) => _clientToken = client_token;
+  set clientToken(dynamic client_token) => _clientToken = client_token;
 
   // MyApp_config(this._receiveID, this._chkboxID, this._chkboxAUTO);
   factory MyApp_config() => _getInstance;
@@ -52,7 +52,7 @@ class MyApp_config with MyAppConfigFunction {
 
   @override
   String toString() {
-    return "{ ${this._receiveID}, ${this._chkboxID}, ${this._chkboxAUTO}, ${this._clientToken} ";
+    return "{ ${this._receiveID}, ${this._chkboxID}, ${this._chkboxAUTO}, ${this._clientToken} }";
   }
 
   MyApp_config.fromJson(Map<String, dynamic> json)
@@ -108,7 +108,9 @@ class MyApp_config with MyAppConfigFunction {
   }
 
   Future<dynamic> _getMyAccessToken() async{
-    return _firebaseMessaging.getToken();
+    dynamic myToken = await _firebaseMessaging.getToken();
+
+    return myToken;
   }
 }
 MyApp_config myapp_config_instance = MyApp_config();
