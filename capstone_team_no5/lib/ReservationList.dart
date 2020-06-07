@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:recycle/ReservationDTO.dart';
+import 'package:recycle/SelectedReservationInfo.dart';
 
 class ReservationList extends StatefulWidget {
   final DocumentSnapshot _currentAccount;
@@ -82,6 +83,7 @@ class _ReservationListState extends State<ReservationList> {
       columnSpacing: 24.0,
       columns: _getDataColumns(),
       rows: _getDataRows(myQ),
+      showCheckboxColumn: false,
     );
   }
 
@@ -126,18 +128,26 @@ class _ReservationListState extends State<ReservationList> {
       myreturnList.add(DataCell(Text('${element['reserveVisitDate']}')));
       myreturnList.add(DataCell(Text('${element['reserveVisitTime']}')));
       myreturnList.add(DataCell(Text('${element['reserveState']}')));
-      dataRow.add(DataRow(cells: myreturnList));
+      dataRow.add(DataRow(cells: myreturnList,onSelectChanged: (onValue) {
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>SelectedReservationInfo(element)));
+      },));
     }
 
     return dataRow;
   }
 
   Widget _buildMyBody(List<DocumentSnapshot> myQ) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    return Container(
+      alignment: Alignment.topCenter,
       child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: _getDataTable(myQ),
+        scrollDirection: Axis.horizontal,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: _getDataTable(myQ),
+          ),
+        ),
       ),
     );
   }

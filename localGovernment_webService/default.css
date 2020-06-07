@@ -6,7 +6,7 @@
 	body
 	{
 		margin: 0px;
-		padding: 0px;
+		padding: 50px;
 		background: #FFF;
 		font-family: 'Source Sans Pro', sans-serif;
 		font-size: 12pt;
@@ -382,46 +382,35 @@
 /* Featured                                                                      */
 /*********************************************************************************/
 
-	#featured
-	{
-		overflow: hidden;
-		padding: 5em 0em;
-		border-top: 1px solid rgba(0,0,0,0.1);
-	}
-	#featured0
-	{
-		overflow: hidden;
-		padding: 5em 0em;
-		border-top: 1px solid rgba(0,0,0,0.1);
-	}
-	#featured1
+	.featured-container
 	{
 		overflow: hidden;
 		padding: 5em 0em;
 		border-top: 1px solid rgba(0,0,0,0.1);
 	}
 	
-	#featured .align-left
+	.featured-container > .align-left
 	{
 		float: left;
 		width: 384px;
+		/* width: 1176px; */
 		padding-top: 1em;
 		text-align: center;
 	}
 	
-	#featured .fa
+	.featured-container > .fa
 	{
 		font-size: 14em;
 		color: #8dc63f;
 	}
 
-	#featured .align-right
+	.featured-container > .align-right
 	{
 		float: right;
 		width: 792px;
+		/* width: 1176px; */
 		font-size: 1.4em;
 	}
-
 
 	.box
 	{
@@ -444,11 +433,11 @@
 		color: #FFF;
 	}
 
-	/* .slider
+	.bxslider
 	{
-		width: auto;
-		height: auto;
-	} */
+		width: 400px;
+		height: 300px;
+	}
 
 	.slideWrap
 	{
@@ -457,3 +446,8 @@
 		margin: 2em auto;
 		position: relative;
 	}
+
+	p#mystylecss01{
+		padding: 0px;
+		margin: 0px;
+		}

@@ -349,9 +349,9 @@ class _CustomerForm extends State<CustomerForm> {
                               // TODO : URL을 얻어서 같이 업로드함.
                               myReservation.uploadMyListViewItem(args).then((List<String> outputURL) {
                                 List<String> _getselectedItem_Products = new List();
-                                List<String> _getselectedItem_Details = new List();
+                                List<String> _getselectedItem_Details = new List(); 
                                 args.selectedListItem.forEach((Map selectedItem) {
-                                  _getselectedItem_Products.add(selectedItem.keys.first);
+                                  _getselectedItem_Products.add(waste_obj.trashList[selectedItem.keys.first].koreaname);
                                   _getselectedItem_Details.add(selectedItem.values.first);
                                 });
                                 myReservation.insertReservation(
