@@ -325,3 +325,4 @@ class _TakingPictureState extends State<TakingPicture> {
     return _myDeepLearningResults;
   }
 }
+ 

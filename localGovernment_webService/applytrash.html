@@ -14,6 +14,7 @@
 <!-- Firestore CDN -->
 <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+<!-- Firestore CDN/ -->
 <script>
     firebase.initializeApp({
         apiKey: "AIzaSyDfLG-WSkckQnW0m95_4Jz2lYH5mAlzIzo",
@@ -51,17 +52,41 @@
   $(document).on("click", ".button", function(){
     var db = firebase.firestore();
     var getDocumentId = $(this).parent().parent().prop("id");
+    var getClientToken = $(this).parent().parent().attr("client-token");
     var docRef = db.collection("reservation").doc(getDocumentId);
+    const API_PREFIX = "http://15.164.123.37:3000/create-pushalert"; //서버 주소 입력
 
     return docRef.update({
       reserveState : "방문 예정",
     }).then(function(){
+      alert("currentToken : " + getClientToken);
       alert("정상 처리되었습니다.");
 
-      // TODO : FCM 을 넣을 순 없을 까...?
-      location.reload();  // 웹 페이지 새로 고침
+      // TODO : FCM 전송하기
+      $.ajax({
+        url : API_PREFIX, //AWS EC2 서버
+        data : {
+          "clientToken" : getClientToken,
+        },
+        success : function (data, textStatus, jqXHR){
+          console.log("data : " + data);
+          console.log("textStatus : " + textStatus);
+          console.log("jqXHR : " + jqXHR);
+        },
+        // dataType : JSON, //아마도 디폴트 설정 되어 있을 거임.
+      }).done(function (){
+        // 요청 성공시 호출
+        console.log("push alert success !!");
+      }).fail(function (){
+        // 요청 실패시 호출
+        console.log("push alert fail !!");
+      }).always(function(){
+        // 언제나 항상 실행되는 코드
+      });
+
+      // location.reload();  // 웹 페이지 새로 고침 -> 디버깅을 위해 잠시 막아놓음.
     }).catch(function(err){
-      alert("정상 처리에 실패했습니다!!")
+      alert("정상 처리에 실패했습니다!!");
     });
   });
 </script>
@@ -195,6 +220,7 @@
           var myImgSliderItem = document.getElementsByClassName("my_images");
           var myFeaturedContainer = document.getElementsByClassName("featured-container");
           myFeaturedContainer[i].setAttribute("id", doc.id);
+          myFeaturedContainer[i].setAttribute("client-token", docs["clientToken"]);
           // // container 클래스 'featured~' id값을 가지는 동적 div 태그 생성.
           // var newDiv = document.createElement("div");
           // newDiv.setAttribute("class", "container");
