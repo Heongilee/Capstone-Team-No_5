@@ -2,13 +2,14 @@
   "name": "myfirebase",
   "version": "1.0.0",
   "description": "",
-  "main": "firebaseConfig.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "firebase": "^7.14.5",
     "nodemon": "^2.0.4"
   }

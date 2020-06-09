@@ -1,7 +1,7 @@
 const mypushalert = (deviceToken) => {
     var admin = require("firebase-admin");
     
-    var serviceAccount = require("/capstone-no5-firebase-adminsdk-785vu-221989cb99.json");
+    var serviceAccount = require("/capstone-no5-firebase-adminsdk-785vu-4b40d9a086.json");
     
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),

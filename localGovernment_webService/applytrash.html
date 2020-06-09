@@ -64,7 +64,9 @@
 
       // TODO : FCM 전송하기
       $.ajax({
+        type:"POST",
         url : API_PREFIX, //AWS EC2 서버
+        key: "key = firebase-adminsdk-785vu@capstone-no5.iam.gserviceaccount.com",
         data : {
           "clientToken" : getClientToken,
         },
@@ -84,7 +86,7 @@
         // 언제나 항상 실행되는 코드
       });
 
-      // location.reload();  // 웹 페이지 새로 고침 -> 디버깅을 위해 잠시 막아놓음.
+      location.reload();  // 웹 페이지 새로 고침 -> 디버깅을 위해 잠시 막아놓음.
     }).catch(function(err){
       alert("정상 처리에 실패했습니다!!");
     });
