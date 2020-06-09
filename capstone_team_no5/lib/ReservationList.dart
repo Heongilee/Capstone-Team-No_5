@@ -132,11 +132,11 @@ class _ReservationListState extends State<ReservationList> {
       myreturnList = new List<DataCell>();
 
       myreturnList.add(DataCell(Text('${element['reserveVisitDate']}')));
-      print(element['reserveVisitDate']);
       myreturnList.add(DataCell(Text('${element['reserveVisitTime']}')));
-      print(element['reserveVisitTime']);
       myreturnList.add(DataCell(Text('${element['reserveState']}')));
-      print(element['reserveState']);
+      // print(element['reserveVisitDate']);
+      // print(element['reserveVisitTime']);
+      // print(element['reserveState']);
       dataRow.add(DataRow(
         cells: myreturnList,
         onSelectChanged: (bool onValue) {

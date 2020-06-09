@@ -488,16 +488,22 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   Widget _buildListItem(
       TrashListComfirmation_AccounSnapshot args, int realIdx) {
     Map listItemMap = _selectedListItem.toList()[realIdx];
+    int temp_idx = waste_obj.trashList[listItemMap.keys.first].detailWaste.indexOf(listItemMap.values.first);
+    int temp_price = waste_obj.trashList[listItemMap.keys.first].wastePrice.elementAt(temp_idx);
 
     return Card(
       child: ListTile(
+        isThreeLine: true,
         title: Text(
           waste_obj.trashList[listItemMap.keys.first].koreaname,
           textScaleFactor: 1.5,
         ),
-        subtitle: Text(
-          listItemMap.values.first,
-          textScaleFactor: 1.1,
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(listItemMap.values.first,textScaleFactor: 1.3),
+            Text("$temp_price",textScaleFactor: 1.1),
+          ],
         ),
         trailing: IconButton(
           color: Colors.pinkAccent,
