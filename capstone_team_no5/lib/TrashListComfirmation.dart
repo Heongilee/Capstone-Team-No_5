@@ -501,8 +501,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(listItemMap.values.first,textScaleFactor: 1.3),
-            Text("$temp_price",textScaleFactor: 1.1),
+            Text(listItemMap.values.first + "원",textScaleFactor: 1.3),
           ],
         ),
         trailing: IconButton(
