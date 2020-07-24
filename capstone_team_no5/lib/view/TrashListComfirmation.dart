@@ -3,9 +3,9 @@ import 'package:image_picker/image_picker.dart';
 
 import 'TakingPicture.dart';
 import 'package:flutter/material.dart';
-import 'package:recycle/CustomerForm.dart';
+import 'package:recycle/view/CustomerForm.dart';
 import 'package:recycle/model/WasteListAsset.dart';
-import 'package:recycle/AccountSnapshot.dart';
+import 'package:recycle/model/AccountSnapshot.dart';
 
 class TrashListComfirmation extends StatefulWidget {
   static const routeName = '/TrashListComfirmation'; // 외부 모듈 수행 결과를 받아와서 출력할 것.
@@ -488,8 +488,10 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
   Widget _buildListItem(
       TrashListComfirmation_AccounSnapshot args, int realIdx) {
     Map listItemMap = _selectedListItem.toList()[realIdx];
-    int temp_idx = waste_obj.trashList[listItemMap.keys.first].detailWaste.indexOf(listItemMap.values.first);
-    int temp_price = waste_obj.trashList[listItemMap.keys.first].wastePrice.elementAt(temp_idx);
+    int temp_idx = waste_obj.trashList[listItemMap.keys.first].detailWaste
+        .indexOf(listItemMap.values.first);
+    int temp_price = waste_obj.trashList[listItemMap.keys.first].wastePrice
+        .elementAt(temp_idx);
 
     return Card(
       child: ListTile(
@@ -501,7 +503,7 @@ class _TrashListComfirmationState extends State<TrashListComfirmation> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(listItemMap.values.first + "원",textScaleFactor: 1.3),
+            Text(listItemMap.values.first + "원", textScaleFactor: 1.3),
           ],
         ),
         trailing: IconButton(

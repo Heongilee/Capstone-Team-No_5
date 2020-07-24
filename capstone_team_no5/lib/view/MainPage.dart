@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:recycle/AccountSnapshot.dart';
-import 'package:recycle/MyApp_config.dart';
+import 'package:recycle/model/AccountSnapshot.dart';
+import 'package:recycle/model/MyApp_config.dart';
 
 import 'package:flutter/material.dart';
-import 'package:recycle/SignUp.dart';
-import 'package:recycle/TabPage.dart';
+import 'package:recycle/view/SignUp.dart';
+import 'package:recycle/view/TabPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -35,7 +35,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage>
     with mainpage_text_editing_controller {
   final _db = Firestore.instance;
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging(); 
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   DocumentSnapshot _currentDoc;
 
   @override
@@ -49,9 +49,9 @@ class _MainPageState extends State<MainPage>
     setting_myAppConfig();
   }
 
-   void firebaseCloudMessaging_Listeners() {
-    _firebaseMessaging.getToken().then((token){
-      print('token:'+token);
+  void firebaseCloudMessaging_Listeners() {
+    _firebaseMessaging.getToken().then((token) {
+      print('token:' + token);
     });
 
     _firebaseMessaging.configure(

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:recycle/AccountSnapshot.dart';
-import 'package:recycle/HomePage.dart';
-import 'package:recycle/MyInfo.dart';
-import 'package:recycle/ReservationList.dart';
+import 'package:recycle/model/AccountSnapshot.dart';
+import 'package:recycle/view/HomePage.dart';
+import 'package:recycle/view/MyInfo.dart';
+import 'package:recycle/view/ReservationList.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TabPage extends StatefulWidget {

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NoticeDAO {
@@ -11,9 +10,7 @@ class NoticeDAO {
     return _instance;
   }
 
-  NoticeDAO._internal() {
-    print('33333333333333333333333333333333333333333333');
-  }
+  NoticeDAO._internal() {}
   // *-------------------------------------------------------------
   final _db = Firestore.instance;
   QuerySnapshot _qs;
@@ -38,7 +35,6 @@ class NoticeDAO {
       _myNoticeList.add(new NoticeDTO.fromJson(onValue.data));
     });
 
-    print('222222222222222222222222222222222');
     noticeObserver.add(true);
   }
 }

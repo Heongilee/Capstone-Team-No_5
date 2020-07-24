@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:recycle/AccountSnapshot.dart';
-import 'package:recycle/TrashListComfirmation.dart';
+import 'package:recycle/model/AccountSnapshot.dart';
+import 'package:recycle/view/TrashListComfirmation.dart';
 
 const PROTOCOL = "http";
 const IP_ADDRESS = "15.164.123.37";
@@ -266,7 +266,8 @@ class _TakingPictureState extends State<TakingPicture> {
   }
 
   // 딥러닝 결과를 받아올 메소드
-  Future<Map<int, List<String>>> _loadMyDeepLearningModule(BuildContext context) async {
+  Future<Map<int, List<String>>> _loadMyDeepLearningModule(
+      BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -315,7 +316,8 @@ class _TakingPictureState extends State<TakingPicture> {
         tmp = res.body;
 
         List<String> response_list = tmp.split(",");
-        _myDeepLearningResults.addAll({_myDeepLearningResults.length: response_list});
+        _myDeepLearningResults
+            .addAll({_myDeepLearningResults.length: response_list});
       }).catchError((err) {
         print(err);
       });
@@ -325,4 +327,3 @@ class _TakingPictureState extends State<TakingPicture> {
     return _myDeepLearningResults;
   }
 }
- 

@@ -11,11 +11,11 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:recycle/AccountSnapshot.dart';
-import 'package:recycle/TakingPicture.dart';
+import 'package:recycle/model/AccountSnapshot.dart';
+import 'package:recycle/view/TakingPicture.dart';
 import 'package:recycle/model/WasteListAsset.dart';
-import 'package:recycle/ReservationDTO.dart';
-import 'package:recycle/MyApp_config.dart';
+import 'package:recycle/model/ReservationDTO.dart';
+import 'package:recycle/model/MyApp_config.dart';
 
 import 'TabPage.dart';
 
@@ -348,48 +348,59 @@ class _CustomerForm extends State<CustomerForm> {
                             if (onValue) {
                               _showMyToastAlertMsg("잠시만 기다려 주세요...");
                               // TODO : URL을 얻어서 같이 업로드함.
-                              myReservation.uploadMyListViewItem(args).then((List<String> outputURL) {
-                                List<String> _getselectedItem_Products = new List();
-                                List<String> _getselectedItem_Details = new List(); 
-                                args.selectedListItem.forEach((Map selectedItem) {
-                                  _getselectedItem_Products.add(waste_obj.trashList[selectedItem.keys.first].koreaname);
-                                  _getselectedItem_Details.add(selectedItem.values.first);
+                              myReservation
+                                  .uploadMyListViewItem(args)
+                                  .then((List<String> outputURL) {
+                                List<String> _getselectedItem_Products =
+                                    new List();
+                                List<String> _getselectedItem_Details =
+                                    new List();
+                                args.selectedListItem
+                                    .forEach((Map selectedItem) {
+                                  _getselectedItem_Products.add(waste_obj
+                                      .trashList[selectedItem.keys.first]
+                                      .koreaname);
+                                  _getselectedItem_Details
+                                      .add(selectedItem.values.first);
                                 });
-                                myReservation.insertReservation(
-                                  new ReservationDTO(
-                                    reserveId:args.currentAccount.data['id'],
-                                    reserveDate: DateTime.now(),
-                                    reserveAddress: args.currentAccount.data['address'],
-                                    reserveState: myReservation.reservationStateList[0], // 접수 완료
-                                    reserveVisitDate: selectedDate,
-                                    reserveVisitTime: _timeSet,
-                                    reserveProducts:_getselectedItem_Products,
-                                    reserveDetails:_getselectedItem_Details,
-                                    reserveFiles: outputURL,
-                                    clientToken: myapp_config_instance.clientToken,
-                                    ).toJson());
-                                  }).then((value) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text('SUCCESS'),
-                                          content: Text('예약이 완료되었습니다.'),
-                                          actions: <Widget>[
-                                            FlatButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                Navigator.popUntil(
+                                myReservation
+                                    .insertReservation(new ReservationDTO(
+                                  reserveId: args.currentAccount.data['id'],
+                                  reserveDate: DateTime.now(),
+                                  reserveAddress:
+                                      args.currentAccount.data['address'],
+                                  reserveState: myReservation
+                                      .reservationStateList[0], // 접수 완료
+                                  reserveVisitDate: selectedDate,
+                                  reserveVisitTime: _timeSet,
+                                  reserveProducts: _getselectedItem_Products,
+                                  reserveDetails: _getselectedItem_Details,
+                                  reserveFiles: outputURL,
+                                  clientToken:
+                                      myapp_config_instance.clientToken,
+                                ).toJson());
+                              }).then((value) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('SUCCESS'),
+                                      content: Text('예약이 완료되었습니다.'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              Navigator.popUntil(
                                                   context,
                                                   ModalRoute.withName(
-                                                    TabPage.routeName));
-                                                },
-                                                child: Text('Confirm')),
-                                          ],
-                                        );
-                                      },
+                                                      TabPage.routeName));
+                                            },
+                                            child: Text('Confirm')),
+                                      ],
                                     );
-                                  });
+                                  },
+                                );
+                              });
                               myBanner.dispose();
                             } else {
                               showDialog(
@@ -435,9 +446,9 @@ class _CustomerForm extends State<CustomerForm> {
 
   void _showMyToastAlertMsg(String my_msg) {
     Fluttertoast.showToast(
-      toastLength: Toast.LENGTH_LONG,
-      webBgColor: "#e74c3c",
-      timeInSecForIosWeb: 3,
-      msg: my_msg);
-    }
+        toastLength: Toast.LENGTH_LONG,
+        webBgColor: "#e74c3c",
+        timeInSecForIosWeb: 3,
+        msg: my_msg);
+  }
 }

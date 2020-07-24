@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:recycle/ReservationDTO.dart';
-import 'package:recycle/SelectedReservationInfo.dart';
+import 'package:recycle/model/ReservationDTO.dart';
+import 'package:recycle/view/SelectedReservationInfo.dart';
 
 class ReservationList extends StatefulWidget {
   final DocumentSnapshot _currentAccount;
@@ -32,7 +32,6 @@ class _ReservationListState extends State<ReservationList> {
     dataColumn = new List<DataColumn>();
     dataRow = new List<DataRow>();
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +58,8 @@ class _ReservationListState extends State<ReservationList> {
         child: StreamBuilder<QuerySnapshot>(
             stream: _db
                 .collection('reservation')
-                .where("reserveId", isEqualTo: widget._currentAccount.data['id'])
+                .where("reserveId",
+                    isEqualTo: widget._currentAccount.data['id'])
                 .getDocuments()
                 .asStream(),
             builder: (context, snapshot) {
@@ -117,7 +117,7 @@ class _ReservationListState extends State<ReservationList> {
       style: TextStyle(
           fontWeight: FontWeight.bold,
           fontStyle: FontStyle.italic,
-          fontSize: 16.0), 
+          fontSize: 16.0),
       textAlign: TextAlign.center,
     )));
 
@@ -140,11 +140,13 @@ class _ReservationListState extends State<ReservationList> {
       dataRow.add(DataRow(
         cells: myreturnList,
         onSelectChanged: (bool onValue) {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>SelectedReservationInfo(element)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SelectedReservationInfo(element)));
         },
-      )
-    );
-  }
+      ));
+    }
 
     return dataRow;
   }

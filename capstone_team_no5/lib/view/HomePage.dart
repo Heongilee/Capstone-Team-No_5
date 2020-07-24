@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:recycle/AccountSnapshot.dart';
-import 'package:recycle/TakingPicture.dart';
+import 'package:recycle/model/AccountSnapshot.dart';
+import 'package:recycle/view/TakingPicture.dart';
 
 class HomePage extends StatelessWidget {
   final DocumentSnapshot _currentAccount;

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:kopo/kopo.dart';
 import 'package:random_string/random_string.dart';
 import 'package:recycle/model/EmailerModule.dart';
-import 'package:recycle/myNodejsServer/MyHTTPhost.dart';
+import 'package:recycle/model/MyHTTPhost.dart';
 
 class signup_text_editing_controller {
   final _id = TextEditingController();
