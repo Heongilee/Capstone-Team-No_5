@@ -25,6 +25,13 @@
 ![시스템 구성도](https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/SystemConfigurationDiagram.jpg?raw=true)
 
 ## 시연 :iphone:
+### 회원가입
+<img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/10.gif?raw=true" height="360"> <img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/11.gif?raw=true" height="360"> <img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/12.gif?raw=true" height="360"> <img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/13.jpg?raw=true" height="360">
+   
+회원가입 시스템에 중복된 아이디가 없는지 유효성 체크를 합니다. (첫 번째 사진)   
+도로명 주소 라이브러리(Flutter kopo)를 사용하여 사용자는 쉽게 주소를 입력할 수 있습니다. (두 번째 사진)   
+본인 인증을 위해 이메일로 인증코드를 입력 받도록 요구합니다. (세 번째, 네 번째 사진)   
+
 ### 사진 불러오기
 <img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/01.gif?raw=true" height="480"> <img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/02.gif?raw=true" height="480">   
    
