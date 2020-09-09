@@ -36,7 +36,7 @@ class _RootPageState extends State<RootPage> {
             Image(image: AssetImage('assets/images/Logo.png')),
             Padding(padding: EdgeInsets.all(8.0)),
             Text(
-              '생활 폐기물 품목 측정 기술',
+              '2020 공개SW 개발자대회',
               style: TextStyle(
                 fontSize: 27.0,
                 fontWeight: FontWeight.bold,
@@ -45,14 +45,14 @@ class _RootPageState extends State<RootPage> {
             ),
             Padding(padding: EdgeInsets.all(3.0)),
             Text(
-              '캡스톤 01반 5조',
+              '생활 폐기물 품목 측정 기술',
               style: TextStyle(
                 fontSize: 15.0,
               ),
             ),
             Padding(padding: EdgeInsets.all(3.0)),
             Text(
-              '외 유 내 강',
+              '팀 이 름',
               style: TextStyle(
                 fontSize: 15.0,
               ),

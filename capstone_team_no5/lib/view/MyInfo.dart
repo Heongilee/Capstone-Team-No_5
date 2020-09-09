@@ -10,7 +10,7 @@ class Consts {
   Consts._();
 
   static const double padding = 16.0;
-  static const double avatarRadius = 66.0;
+  static const double avatarRadius = 36.0;
 }
 
 class UserInfo {
@@ -279,22 +279,15 @@ class MyInfo extends StatelessWidget {
             mainAxisSize: MainAxisSize.min, // To make the card compact
             children: <Widget>[
               Text(
-                "2020 캡스톤 디자인",
+                "2020 공개SW 개발자대회",
                 style: TextStyle(
-                  fontSize: 24.0,
+                  fontSize: 22.0,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               SizedBox(height: 10.0),
               Text(
-                '캡스톤 01반 5조',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20.0,
-                ),
-              ),
-              Text(
-                '외 유 내 강',
+                '팀 이름',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16.0,
