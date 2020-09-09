@@ -64,7 +64,7 @@
 예약된 내역은 '예약 조회' 탭에서 예약 내역 정보와 함께 조회가 가능합니다.
    
 ### 지자체에서 승인 시 사용자 장치로 푸시 알림
-<img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/09.gif?raw=true" width="700"> <img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/08.gif?raw=true" height="480">
+<img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/09.gif?raw=true" width="640"> <img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/08.gif?raw=true" height="480">
    
 강남구청 사이트(모의 사이트)로 부터 승인이 떨어지면, 사용자 장치(모바일 기기)로 푸시 알람이 전송됩니다.
 
