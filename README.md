@@ -42,7 +42,8 @@
 <img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/01.gif?raw=true" height="480"> <img src="https://github.com/Heongilee/Capstone-Team-No_5/blob/master/README_ASSET/02.gif?raw=true" height="480">   
    
 ```
-대형 폐기물을 버리는 방식은 2가지 입니다. 미리 촬영된 이미지를 불러오거나, 즉석에서 폐기를 원하는 가구를 촬영할 수 있습니다.   
+대형 폐기물을 버리는 방식은 2가지 입니다. 미리 촬영된 이미지를 불러오거나, 즉석에서 폐기를 원하는 가구를 
+촬영할 수 있습니다.   
 ```
    
 ### 딥러닝 결과 확인
